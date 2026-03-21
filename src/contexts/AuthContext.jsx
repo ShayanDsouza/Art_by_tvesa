@@ -4,7 +4,7 @@ import { auth, googleProvider } from '../config/firebase'
 
 const AuthContext = createContext(null)
 
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL
+const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAIL || '').split(',').map(e => e.trim().toLowerCase())
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
@@ -12,7 +12,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      if (firebaseUser && firebaseUser.email === ADMIN_EMAIL) {
+      if (firebaseUser && ADMIN_EMAILS.includes(firebaseUser.email.toLowerCase())) {
         setUser(firebaseUser)
       } else {
         setUser(null)
@@ -25,7 +25,7 @@ export function AuthProvider({ children }) {
   const signInWithGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider)
-      if (result.user.email !== ADMIN_EMAIL) {
+      if (!ADMIN_EMAILS.includes(result.user.email.toLowerCase())) {
         await firebaseSignOut(auth)
         throw new Error('Unauthorized. This account does not have admin access.')
       }
