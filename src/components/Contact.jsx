@@ -1,12 +1,19 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '../config/firebase'
-import { FaInstagram, FaPinterest } from 'react-icons/fa'
-import { HiOutlineMail } from 'react-icons/hi'
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
+
+  useEffect(() => {
+    const handler = (e) => {
+      setForm(prev => ({ ...prev, message: e.detail.message }))
+      setTimeout(() => document.querySelector('#contact textarea')?.focus(), 100)
+    }
+    window.addEventListener('artInquiry', handler)
+    return () => window.removeEventListener('artInquiry', handler)
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -69,11 +76,6 @@ export default function Contact() {
           {status === 'sending' ? 'Sending...' : 'Send Message'}
         </button>
       </form>
-      <div className="social-links">
-        <a href="https://www.instagram.com/artbytvesa/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><FaInstagram /></a>
-        <a href="https://in.pinterest.com/artbytvesa/my-art/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><FaPinterest /></a>
-        <a href="mailto:dsouza.shayan@gmail.com" aria-label="Email"><HiOutlineMail /></a>
-      </div>
     </section>
   )
 }

@@ -29,15 +29,26 @@ export default function AdminLogin() {
 
   return (
     <div className="admin-login">
-      <div className="admin-login-card">
-        <span className="admin-login-overline">Admin Panel</span>
-        <h1>Art by Tvesa</h1>
-        <p>Sign in to manage your portfolio</p>
-        {error && <div className="admin-error">{error}</div>}
-        <button className="admin-google-btn" onClick={handleLogin} disabled={loading}>
-          <FcGoogle size={20} />
-          {loading ? 'Signing in...' : 'Sign in with Google'}
-        </button>
+      <div className="admin-login-brand">
+        <div className="admin-login-brand-logo">Art by Tvesa</div>
+        <div className="admin-login-brand-tagline">Portfolio</div>
+        <div className="admin-login-brand-divider" />
+        <p className="admin-login-brand-quote">
+          "Every painting is a voyage into a sacred harbour."
+        </p>
+      </div>
+
+      <div className="admin-login-form-side">
+        <div className="admin-login-card">
+          <span className="admin-login-overline">Admin Panel</span>
+          <h1>Welcome back</h1>
+          <p>Sign in with your Google account to manage your portfolio</p>
+          {error && <div className="admin-error">{error}</div>}
+          <button className="admin-google-btn" onClick={handleLogin} disabled={loading}>
+            <FcGoogle size={20} />
+            {loading ? 'Signing in...' : 'Sign in with Google'}
+          </button>
+        </div>
       </div>
     </div>
   )

@@ -340,7 +340,13 @@ export default function AdminArtworks() {
                         <span>Compressing image...</span>
                       </div>
                     ) : form.imageUrl ? (
-                      <img src={form.imageUrl} alt="Preview" className="admin-upload-preview" />
+                      <div className="admin-upload-preview-wrap">
+                        <img src={form.imageUrl} alt="Preview" className="admin-upload-preview" />
+                        <div className="admin-upload-change-overlay">
+                          <HiOutlinePhotograph />
+                          <span>Change Image</span>
+                        </div>
+                      </div>
                     ) : (
                       <div className="admin-upload-placeholder">
                         <HiOutlinePhotograph />

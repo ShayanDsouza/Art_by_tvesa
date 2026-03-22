@@ -1,0 +1,27 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Server-side admin check using verified Firebase Auth token
+    function isAdmin() {
+      return request.auth != null
+          && request.auth.token.email_verified == true
+          && request.auth.token.email in [
+               'dsouza.shayan@gmail.com',
+               'aravpradosh06427@gmail.com'
+             ];
+    }
+
+    match /{allPaths=**} {
+      // Public read for gallery images
+      allow read: if true;
+
+      // Only verified admins can upload or delete files
+      allow write: if isAdmin()
+                   && request.resource.size < 10 * 1024 * 1024  // 10 MB limit
+                   && request.resource.contentType.matches('image/.*');
+
+      allow delete: if isAdmin();
+    }
+  }
+}

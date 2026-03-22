@@ -1,56 +1,29 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore'
 import { db } from '../config/firebase'
 
-function GalleryItem({ art, onClick, index }) {
-  const ref = useRef(null)
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setIsVisible(true) },
-      { threshold: 0.15 }
-    )
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [])
-
-  return (
-    <div
-      ref={ref}
-      className={`gallery-item gallery-item-${art.height || 'normal'} ${isVisible ? 'gallery-item-visible' : ''}`}
-      style={{ transitionDelay: `${index * 100}ms` }}
-      onClick={() => onClick(art)}
-    >
-      {art.imageUrl ? (
-        <img src={art.imageUrl} alt={art.title} className="gallery-image" />
-      ) : (
-        <div className="gallery-placeholder">{art.title}</div>
-      )}
-      {art.status === 'sold' && <span className="gallery-sold-badge">Sold</span>}
-      <div className="gallery-overlay">
-        <span className="gallery-overlay-category">{art.category}</span>
-        <h3>{art.title}</h3>
-        <span className="gallery-overlay-cta">View Details</span>
-      </div>
-    </div>
-  )
-}
-
-// Fallback data when Firestore is empty or not configured
 const fallbackArt = [
-  { id: '1', title: 'Artwork 1', description: 'A vibrant expression of color and emotion.', medium: 'Canvas', category: 'Painting', height: 'tall', status: 'available' },
-  { id: '2', title: 'Artwork 2', description: 'Delicate lines capturing a fleeting moment.', medium: 'Paper', category: 'Sketch', height: 'normal', status: 'available' },
-  { id: '3', title: 'Artwork 3', description: 'Bold strokes on a warm-toned surface.', medium: 'Canvas', category: 'Painting', height: 'normal', status: 'available' },
-  { id: '4', title: 'Artwork 4', description: 'A unique design brought to life on fabric.', medium: 'Tote Bag', category: 'Digital', height: 'tall', status: 'available' },
-  { id: '5', title: 'Artwork 5', description: 'Intricate details drawn with care.', medium: 'Paper', category: 'Sketch', height: 'normal', status: 'available' },
-  { id: '6', title: 'Artwork 6', description: 'Rich textures layered with meaning.', medium: 'Canvas', category: 'Painting', height: 'tall', status: 'available' },
+  { id: '1', title: 'Artwork 1', description: 'A vibrant expression of color and emotion.', medium: 'Canvas', category: 'Painting', status: 'available' },
+  { id: '2', title: 'Artwork 2', description: 'Delicate lines capturing a fleeting moment.', medium: 'Paper', category: 'Sketch', status: 'available' },
+  { id: '3', title: 'Artwork 3', description: 'Bold strokes on a warm-toned surface.', medium: 'Canvas', category: 'Painting', status: 'available' },
+  { id: '4', title: 'Artwork 4', description: 'A unique design brought to life on fabric.', medium: 'Tote Bag', category: 'Digital', status: 'available' },
+  { id: '5', title: 'Artwork 5', description: 'Intricate details drawn with care.', medium: 'Paper', category: 'Sketch', status: 'available' },
+  { id: '6', title: 'Artwork 6', description: 'Rich textures layered with meaning.', medium: 'Canvas', category: 'Painting', status: 'available' },
 ]
 
 export default function Gallery() {
   const [artworks, setArtworks] = useState([])
   const [selectedArt, setSelectedArt] = useState(null)
-  const [useFallback, setUseFallback] = useState(false)
+  const [isClosing, setIsClosing] = useState(false)
+  const [rotation, setRotation] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
+  const carouselRef = useRef(null)
+  const dragStartRef = useRef(null)
+  const rotationRef = useRef(0)
+  const velocityRef = useRef(0)
+  const lastXRef = useRef(0)
+  const animFrameRef = useRef(null)
+  const autoRotateRef = useRef(null)
 
   useEffect(() => {
     try {
@@ -58,90 +31,213 @@ export default function Gallery() {
       const unsubscribe = onSnapshot(q, (snapshot) => {
         if (snapshot.empty) {
           setArtworks(fallbackArt)
-          setUseFallback(true)
         } else {
           const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
           docs.sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity))
           setArtworks(docs)
-          setUseFallback(false)
         }
       }, () => {
-        // Firestore error (not configured), use fallback
         setArtworks(fallbackArt)
-        setUseFallback(true)
       })
       return unsubscribe
     } catch {
       setArtworks(fallbackArt)
-      setUseFallback(true)
     }
   }, [])
 
+  // Lock body scroll when modal is open
   useEffect(() => {
-    if (selectedArt) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
+    document.body.style.overflow = selectedArt ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [selectedArt])
 
-  const closeModal = (e) => {
-    if (e.target === e.currentTarget) setSelectedArt(null)
+  // Auto-rotate slowly when not dragging and no modal open
+  useEffect(() => {
+    if (isDragging || selectedArt) return
+    let lastTime = performance.now()
+    const autoRotate = () => {
+      const now = performance.now()
+      const dt = now - lastTime
+      lastTime = now
+      rotationRef.current += 0.015 * (dt / 16)
+      setRotation(rotationRef.current)
+      autoRotateRef.current = requestAnimationFrame(autoRotate)
+    }
+    autoRotateRef.current = requestAnimationFrame(autoRotate)
+    return () => cancelAnimationFrame(autoRotateRef.current)
+  }, [isDragging, selectedArt])
+
+  // Wheel handler
+  useEffect(() => {
+    const el = carouselRef.current
+    if (!el) return
+    const handleWheel = (e) => {
+      e.preventDefault()
+      rotationRef.current += e.deltaY * 0.1
+      setRotation(rotationRef.current)
+    }
+    el.addEventListener('wheel', handleWheel, { passive: false })
+    return () => el.removeEventListener('wheel', handleWheel)
+  }, [])
+
+  const handlePointerDown = useCallback((e) => {
+    dragStartRef.current = e.clientX
+    if (selectedArt) return
+    setIsDragging(true)
+    lastXRef.current = e.clientX
+    velocityRef.current = 0
+    cancelAnimationFrame(animFrameRef.current)
+  }, [selectedArt])
+
+  const handlePointerMove = useCallback((e) => {
+    if (!isDragging) return
+    const dx = e.clientX - lastXRef.current
+    lastXRef.current = e.clientX
+    velocityRef.current = dx
+    rotationRef.current -= dx * 0.25
+    setRotation(rotationRef.current)
+  }, [isDragging])
+
+  const handlePointerUp = useCallback(() => {
+    setIsDragging(false)
+    const decelerate = () => {
+      velocityRef.current *= 0.94
+      if (Math.abs(velocityRef.current) > 0.1) {
+        rotationRef.current -= velocityRef.current * 0.25
+        setRotation(rotationRef.current)
+        animFrameRef.current = requestAnimationFrame(decelerate)
+      }
+    }
+    animFrameRef.current = requestAnimationFrame(decelerate)
+  }, [])
+
+  const handleCardClick = (art, e, cardAngle) => {
+    const startX = dragStartRef.current
+    if (startX !== null && Math.abs(e.clientX - startX) > 8) return
+    // Only open modal for front-facing cards
+    const totalAngle = ((rotationRef.current + cardAngle) % 360 + 360) % 360
+    const isFrontFacing = totalAngle < 90 || totalAngle > 270
+    if (!isFrontFacing) return
+    setSelectedArt(art)
   }
+
+  const handleClose = () => {
+    setIsClosing(true)
+    setTimeout(() => {
+      setSelectedArt(null)
+      setIsClosing(false)
+    }, 480)
+  }
+
+  const closeModal = (e) => {
+    if (e.target === e.currentTarget) handleClose()
+  }
+
+  const handleInquire = (e) => {
+    e.stopPropagation()
+    const message = `Hi, I'm interested in "${selectedArt.title}". Could you share more details?`
+    window.dispatchEvent(new CustomEvent('artInquiry', { detail: { message } }))
+    handleClose()
+    setTimeout(() => {
+      document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
+    }, 520)
+  }
+
+  const count = artworks.length
+  const angleStep = count > 0 ? 360 / count : 0
+  const radius = Math.max(360, count * 80)
 
   return (
     <section id="gallery" className="gallery">
       <span className="section-overline">Collection</span>
       <h2>The Gallery</h2>
       <p className="section-subtitle">Each piece is a window into a world of imagination</p>
+      <p className="carousel-hint">Scroll or drag to explore &middot; Click a piece to see details</p>
 
-      <div className="gallery-masonry">
-        {artworks.map((art, i) => (
-          <GalleryItem key={art.id} art={art} onClick={setSelectedArt} index={i} />
-        ))}
-      </div>
+      <div
+        className="carousel-viewport"
+        ref={carouselRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+      >
+        <div
+          className="carousel-ring"
+          style={{ transform: `rotateY(${rotation}deg)` }}
+        >
+          {artworks.map((art, i) => {
+            const angle = i * angleStep
+            return (
+              <div
+                key={art.id}
+                className="carousel-card"
+                style={{ transform: `rotateY(${angle}deg) translateZ(${radius}px)` }}
+                onClick={(e) => handleCardClick(art, e, angle)}
+              >
+                {/* White canvas — shows when card faces away */}
+                <div className="carousel-face carousel-face-natural-back" />
 
-      {selectedArt && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal">
-            <button className="modal-close" onClick={() => setSelectedArt(null)}>&times;</button>
-            <div className="modal-content">
-              <div className="modal-image">
-                {selectedArt.imageUrl ? (
-                  <img src={selectedArt.imageUrl} alt={selectedArt.title} className="modal-art-image" />
-                ) : (
-                  <div className="gallery-placeholder modal-placeholder">{selectedArt.title}</div>
-                )}
-              </div>
-              <div className="modal-details">
-                <span className="modal-category-tag">{selectedArt.category}</span>
-                <h2>{selectedArt.title}</h2>
-                {selectedArt.status === 'sold' && <span className="modal-sold-tag">This piece has been sold</span>}
-                <p className="modal-description">{selectedArt.description}</p>
-                <div className="modal-meta-group">
-                  <div className="modal-meta">
-                    <span className="modal-label">Medium</span>
-                    <span className="modal-value">{selectedArt.medium}</span>
-                  </div>
-                  <div className="modal-meta">
-                    <span className="modal-label">Category</span>
-                    <span className="modal-value">{selectedArt.category}</span>
-                  </div>
-                  <div className="modal-meta">
-                    <span className="modal-label">Status</span>
-                    <span className="modal-value">{selectedArt.status === 'sold' ? 'Sold' : 'Available'}</span>
+                {/* Front face — artwork image */}
+                <div className="carousel-face carousel-face-front">
+                  {art.imageUrl ? (
+                    <img src={art.imageUrl} alt={art.title} className="carousel-card-image" draggable={false} />
+                  ) : (
+                    <div className="carousel-card-placeholder">{art.title}</div>
+                  )}
+                  {art.status === 'sold' && <span className="carousel-sold-badge">Sold</span>}
+                  <div className="carousel-card-label">
+                    <span className="carousel-card-category">{art.category}</span>
+                    <h3>{art.title}</h3>
                   </div>
                 </div>
-                {selectedArt.status !== 'sold' && (
-                  <a
-                    href={`mailto:dsouza.shayan@gmail.com?subject=Inquiry about "${selectedArt.title}"&body=Hi, I'm interested in "${selectedArt.title}". Could you share more details?`}
-                    className="btn modal-inquiry-btn"
-                  >
-                    Inquire About This Piece
-                  </a>
-                )}
               </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Large popup modal with flip-in animation */}
+      {selectedArt && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className={`modal-popup${isClosing ? ' is-closing' : ''}`}>
+            <button className="modal-popup-close" onClick={handleClose}>×</button>
+
+            <div className="modal-popup-image">
+              {selectedArt.imageUrl ? (
+                <img src={selectedArt.imageUrl} alt={selectedArt.title} draggable={false} />
+              ) : (
+                <div className="carousel-card-placeholder">{selectedArt.title}</div>
+              )}
+            </div>
+
+            <div className="modal-popup-details">
+              <span className="carousel-back-category">{selectedArt.category}</span>
+              <h2 className="modal-popup-title">{selectedArt.title}</h2>
+              {selectedArt.status === 'sold' && <span className="carousel-back-sold">This piece has been sold</span>}
+              <p className="modal-popup-desc">{selectedArt.description}</p>
+              <div className="carousel-back-meta">
+                <div className="carousel-back-meta-row">
+                  <span className="carousel-back-label">Medium</span>
+                  <span className="carousel-back-value">{selectedArt.medium}</span>
+                </div>
+                <div className="carousel-back-meta-row">
+                  <span className="carousel-back-label">Category</span>
+                  <span className="carousel-back-value">{selectedArt.category}</span>
+                </div>
+                <div className="carousel-back-meta-row">
+                  <span className="carousel-back-label">Status</span>
+                  <span className="carousel-back-value">{selectedArt.status === 'sold' ? 'Sold' : 'Available'}</span>
+                </div>
+              </div>
+              {selectedArt.status !== 'sold' && (
+                <button
+                  className="carousel-back-btn modal-popup-btn"
+                  onClick={handleInquire}
+                >
+                  Inquire About This Piece
+                </button>
+              )}
             </div>
           </div>
         </div>
