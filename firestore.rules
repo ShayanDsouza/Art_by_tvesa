@@ -1,0 +1,63 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Server-side admin check using verified Firebase Auth token
+    function isAdmin() {
+      return request.auth != null
+          && request.auth.token.email_verified == true
+          && request.auth.token.email in [
+               'dsouza.shayan@gmail.com',
+               'aravpradosh06427@gmail.com'
+             ];
+    }
+
+    // ── Artworks ────────────────────────────────────────────────────────────
+    // Public gallery reads; only verified admins can add/edit/delete.
+    match /artworks/{artworkId} {
+      allow read: if true;
+
+      allow create: if isAdmin()
+                    && request.resource.data.title is string
+                    && request.resource.data.title.size() >= 1
+                    && request.resource.data.title.size() <= 200
+                    && request.resource.data.description is string
+                    && request.resource.data.description.size() <= 2000
+                    && request.resource.data.status in ['available', 'sold']
+                    && request.resource.data.imageUrl is string;
+
+      allow update: if isAdmin()
+                    && request.resource.data.title is string
+                    && request.resource.data.title.size() >= 1
+                    && request.resource.data.title.size() <= 200
+                    && request.resource.data.description is string
+                    && request.resource.data.description.size() <= 2000
+                    && request.resource.data.status in ['available', 'sold'];
+
+      allow delete: if isAdmin();
+    }
+
+    // ── Messages ─────────────────────────────────────────────────────────────
+    // Anyone can submit the contact form; only admins can read/manage messages.
+    match /messages/{messageId} {
+      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'message', 'read', 'createdAt'])
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() >= 1
+                    && request.resource.data.name.size() <= 100
+                    && request.resource.data.email is string
+                    && request.resource.data.email.size() >= 5
+                    && request.resource.data.email.size() <= 200
+                    && request.resource.data.message is string
+                    && request.resource.data.message.size() >= 1
+                    && request.resource.data.message.size() <= 5000
+                    && request.resource.data.read == false;
+
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ── Default deny ─────────────────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

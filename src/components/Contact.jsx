@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import { FaInstagram, FaPinterest } from 'react-icons/fa'
@@ -7,6 +7,15 @@ import { HiOutlineMail } from 'react-icons/hi'
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
+
+  useEffect(() => {
+    const handler = (e) => {
+      setForm(prev => ({ ...prev, message: e.detail.message }))
+      setTimeout(() => document.querySelector('#contact textarea')?.focus(), 100)
+    }
+    window.addEventListener('artInquiry', handler)
+    return () => window.removeEventListener('artInquiry', handler)
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
