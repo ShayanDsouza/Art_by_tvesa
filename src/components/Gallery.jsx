@@ -1,151 +1,280 @@
-import { useState, useEffect, useRef } from 'react'
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore'
-import { db } from '../config/firebase'
+// src/components/Gallery.jsx
+// ---------------------------------------------------------
+// Features:
+//   1. Masonry CSS grid layout (no JS library needed)
+//   2. Category filter tabs (All + dynamic categories)
+//   3. Search bar filtering by title or tags
+//   4. Click-to-open lightbox with keyboard support (Esc / arrows)
+//   5. Native lazy loading on <img> tags
+//   6. Smooth fade-in entrance animations via IntersectionObserver
+//   7. Fully responsive
+// ---------------------------------------------------------
 
-function GalleryItem({ art, onClick, index }) {
-  const ref = useRef(null)
-  const [isVisible, setIsVisible] = useState(false)
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useFetchArtworks } from "../hooks/useFetchArtworks";
+import "./Gallery.css";
 
+// ── Lightbox ──────────────────────────────────────────────
+function Lightbox({ artwork, onClose, onPrev, onNext, hasPrev, hasNext }) {
+  // Close on backdrop click
+  const handleBackdrop = (e) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
+  // Keyboard navigation
   useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowLeft" && hasPrev) onPrev();
+      if (e.key === "ArrowRight" && hasNext) onNext();
+    };
+    window.addEventListener("keydown", handleKey);
+    // Prevent body scroll while lightbox is open
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", handleKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose, onPrev, onNext, hasPrev, hasNext]);
+
+  if (!artwork) return null;
+
+  return (
+    <div className="lightbox-backdrop" onClick={handleBackdrop} role="dialog" aria-modal="true">
+      <button className="lightbox-close" onClick={onClose} aria-label="Close">
+        ✕
+      </button>
+
+      {hasPrev && (
+        <button className="lightbox-nav lightbox-nav--prev" onClick={onPrev} aria-label="Previous artwork">
+          ‹
+        </button>
+      )}
+
+      <div className="lightbox-content">
+        <img
+          src={artwork.imageUrl}
+          alt={artwork.title}
+          className="lightbox-img"
+        />
+        <div className="lightbox-info">
+          <h2 className="lightbox-title">{artwork.title}</h2>
+          {artwork.category && (
+            <span className="lightbox-category">{artwork.category}</span>
+          )}
+          {artwork.tags?.length > 0 && (
+            <div className="lightbox-tags">
+              {artwork.tags.map((tag) => (
+                <span key={tag} className="lightbox-tag">#{tag}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {hasNext && (
+        <button className="lightbox-nav lightbox-nav--next" onClick={onNext} aria-label="Next artwork">
+          ›
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ── Artwork Card ──────────────────────────────────────────
+function ArtworkCard({ artwork, onClick }) {
+  const cardRef = useRef(null);
+
+  // Fade-in on scroll using IntersectionObserver
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setIsVisible(true) },
-      { threshold: 0.15 }
-    )
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [])
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add("gallery-card--visible");
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div
-      ref={ref}
-      className={`gallery-item gallery-item-${art.height || 'normal'} ${isVisible ? 'gallery-item-visible' : ''}`}
-      style={{ transitionDelay: `${index * 100}ms` }}
-      onClick={() => onClick(art)}
+      ref={cardRef}
+      className="gallery-card"
+      onClick={() => onClick(artwork)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => e.key === "Enter" && onClick(artwork)}
+      aria-label={`View ${artwork.title}`}
     >
-      {art.imageUrl ? (
-        <img src={art.imageUrl} alt={art.title} className="gallery-image" />
-      ) : (
-        <div className="gallery-placeholder">{art.title}</div>
-      )}
-      {art.status === 'sold' && <span className="gallery-sold-badge">Sold</span>}
-      <div className="gallery-overlay">
-        <span className="gallery-overlay-category">{art.category}</span>
-        <h3>{art.title}</h3>
-        <span className="gallery-overlay-cta">View Details</span>
+      <div className="gallery-card__img-wrap">
+        <img
+          src={artwork.imageUrl}
+          alt={artwork.title}
+          className="gallery-card__img"
+          loading="lazy" // native lazy load
+        />
+        <div className="gallery-card__overlay">
+          <span className="gallery-card__zoom-icon">⤢</span>
+          <p className="gallery-card__title">{artwork.title}</p>
+          {artwork.category && (
+            <p className="gallery-card__category">{artwork.category}</p>
+          )}
+        </div>
       </div>
     </div>
-  )
+  );
 }
 
-// Fallback data when Firestore is empty or not configured
-const fallbackArt = [
-  { id: '1', title: 'Artwork 1', description: 'A vibrant expression of color and emotion.', medium: 'Canvas', category: 'Painting', height: 'tall', status: 'available' },
-  { id: '2', title: 'Artwork 2', description: 'Delicate lines capturing a fleeting moment.', medium: 'Paper', category: 'Sketch', height: 'normal', status: 'available' },
-  { id: '3', title: 'Artwork 3', description: 'Bold strokes on a warm-toned surface.', medium: 'Canvas', category: 'Painting', height: 'normal', status: 'available' },
-  { id: '4', title: 'Artwork 4', description: 'A unique design brought to life on fabric.', medium: 'Tote Bag', category: 'Digital', height: 'tall', status: 'available' },
-  { id: '5', title: 'Artwork 5', description: 'Intricate details drawn with care.', medium: 'Paper', category: 'Sketch', height: 'normal', status: 'available' },
-  { id: '6', title: 'Artwork 6', description: 'Rich textures layered with meaning.', medium: 'Canvas', category: 'Painting', height: 'tall', status: 'available' },
-]
-
+// ── Gallery ───────────────────────────────────────────────
 export default function Gallery() {
-  const [artworks, setArtworks] = useState([])
-  const [selectedArt, setSelectedArt] = useState(null)
-  const [useFallback, setUseFallback] = useState(false)
+  const { artworks, loading, error } = useFetchArtworks();
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [lightboxIndex, setLightboxIndex] = useState(null);
 
-  useEffect(() => {
-    try {
-      const q = query(collection(db, 'artworks'), orderBy('order', 'asc'))
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        if (snapshot.empty) {
-          setArtworks(fallbackArt)
-          setUseFallback(true)
-        } else {
-          const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
-          docs.sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity))
-          setArtworks(docs)
-          setUseFallback(false)
-        }
-      }, () => {
-        // Firestore error (not configured), use fallback
-        setArtworks(fallbackArt)
-        setUseFallback(true)
-      })
-      return unsubscribe
-    } catch {
-      setArtworks(fallbackArt)
-      setUseFallback(true)
-    }
-  }, [])
+  // Derive unique categories from fetched artworks
+  const categories = [
+    "All",
+    ...Array.from(new Set(artworks.map((a) => a.category).filter(Boolean))),
+  ];
 
-  useEffect(() => {
-    if (selectedArt) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => { document.body.style.overflow = '' }
-  }, [selectedArt])
+  // Filter artworks
+  const filtered = artworks.filter((a) => {
+    const matchesCategory =
+      activeCategory === "All" || a.category === activeCategory;
+    const query = searchQuery.toLowerCase();
+    const matchesSearch =
+      !query ||
+      a.title?.toLowerCase().includes(query) ||
+      a.tags?.some((t) => t.toLowerCase().includes(query));
+    return matchesCategory && matchesSearch;
+  });
 
-  const closeModal = (e) => {
-    if (e.target === e.currentTarget) setSelectedArt(null)
+  const openLightbox = useCallback(
+    (artwork) => {
+      const idx = filtered.findIndex((a) => a.id === artwork.id);
+      setLightboxIndex(idx);
+    },
+    [filtered]
+  );
+
+  const closeLightbox = () => setLightboxIndex(null);
+  const prevLightbox = () => setLightboxIndex((i) => Math.max(0, i - 1));
+  const nextLightbox = () =>
+    setLightboxIndex((i) => Math.min(filtered.length - 1, i + 1));
+
+  // ── Render ──
+  if (error) {
+    return (
+      <section className="gallery-section">
+        <p className="gallery-error">
+          Could not load artworks. Please try again later.
+        </p>
+      </section>
+    );
   }
 
   return (
-    <section id="gallery" className="gallery">
-      <span className="section-overline">Collection</span>
-      <h2>The Gallery</h2>
-      <p className="section-subtitle">Each piece is a window into a world of imagination</p>
+    <section className="gallery-section" id="gallery">
+      {/* Header */}
+      <div className="gallery-header">
+        <p className="gallery-eyebrow">Portfolio</p>
+        <h1 className="gallery-heading">The Collection</h1>
+        <p className="gallery-subheading">
+          A curated selection of original works — exploring colour, form &amp; emotion.
+        </p>
+      </div>
 
-      <div className="gallery-masonry">
-        {artworks.map((art, i) => (
-          <GalleryItem key={art.id} art={art} onClick={setSelectedArt} index={i} />
+      {/* Search */}
+      <div className="gallery-search-wrap">
+        <input
+          type="text"
+          className="gallery-search"
+          placeholder="Search by title or tag…"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          aria-label="Search artworks"
+        />
+        {searchQuery && (
+          <button
+            className="gallery-search-clear"
+            onClick={() => setSearchQuery("")}
+            aria-label="Clear search"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
+      {/* Category Filters */}
+      <div className="gallery-filters" role="tablist" aria-label="Filter by category">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            className={`gallery-filter-btn${activeCategory === cat ? " gallery-filter-btn--active" : ""}`}
+            onClick={() => setActiveCategory(cat)}
+            role="tab"
+            aria-selected={activeCategory === cat}
+          >
+            {cat}
+          </button>
         ))}
       </div>
 
-      {selectedArt && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal">
-            <button className="modal-close" onClick={() => setSelectedArt(null)}>&times;</button>
-            <div className="modal-content">
-              <div className="modal-image">
-                {selectedArt.imageUrl ? (
-                  <img src={selectedArt.imageUrl} alt={selectedArt.title} className="modal-art-image" />
-                ) : (
-                  <div className="gallery-placeholder modal-placeholder">{selectedArt.title}</div>
-                )}
-              </div>
-              <div className="modal-details">
-                <span className="modal-category-tag">{selectedArt.category}</span>
-                <h2>{selectedArt.title}</h2>
-                {selectedArt.status === 'sold' && <span className="modal-sold-tag">This piece has been sold</span>}
-                <p className="modal-description">{selectedArt.description}</p>
-                <div className="modal-meta-group">
-                  <div className="modal-meta">
-                    <span className="modal-label">Medium</span>
-                    <span className="modal-value">{selectedArt.medium}</span>
-                  </div>
-                  <div className="modal-meta">
-                    <span className="modal-label">Category</span>
-                    <span className="modal-value">{selectedArt.category}</span>
-                  </div>
-                  <div className="modal-meta">
-                    <span className="modal-label">Status</span>
-                    <span className="modal-value">{selectedArt.status === 'sold' ? 'Sold' : 'Available'}</span>
-                  </div>
-                </div>
-                {selectedArt.status !== 'sold' && (
-                  <a
-                    href={`mailto:dsouza.shayan@gmail.com?subject=Inquiry about "${selectedArt.title}"&body=Hi, I'm interested in "${selectedArt.title}". Could you share more details?`}
-                    className="btn modal-inquiry-btn"
-                  >
-                    Inquire About This Piece
-                  </a>
-                )}
-              </div>
-            </div>
-          </div>
+      {/* Results count */}
+      {!loading && (
+        <p className="gallery-count">
+          {filtered.length} {filtered.length === 1 ? "work" : "works"}
+          {activeCategory !== "All" ? ` in ${activeCategory}` : ""}
+          {searchQuery ? ` matching "${searchQuery}"` : ""}
+        </p>
+      )}
+
+      {/* Grid / Loading / Empty */}
+      {loading ? (
+        <div className="gallery-skeleton-grid">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="gallery-skeleton" />
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="gallery-empty">
+          <p>No artworks found.</p>
+          <button
+            className="gallery-filter-btn"
+            onClick={() => {
+              setActiveCategory("All");
+              setSearchQuery("");
+            }}
+          >
+            Clear filters
+          </button>
+        </div>
+      ) : (
+        <div className="gallery-masonry">
+          {filtered.map((artwork) => (
+            <ArtworkCard key={artwork.id} artwork={artwork} onClick={openLightbox} />
+          ))}
         </div>
       )}
+
+      {/* Lightbox */}
+      {lightboxIndex !== null && (
+        <Lightbox
+          artwork={filtered[lightboxIndex]}
+          onClose={closeLightbox}
+          onPrev={prevLightbox}
+          onNext={nextLightbox}
+          hasPrev={lightboxIndex > 0}
+          hasNext={lightboxIndex < filtered.length - 1}
+        />
+      )}
     </section>
-  )
+  );
 }
