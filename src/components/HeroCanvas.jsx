@@ -188,6 +188,30 @@ export default function HeroCanvas() {
       cancelAnimationFrame(animId)
       window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('resize', handleResize)
+
+      // Dispose geometries/materials and remove objects from the scene
+      const objectsToRemove = []
+      scene.traverse((obj) => {
+        if (obj.isMesh || obj.isLine || obj.isPoints) {
+          if (obj.geometry && typeof obj.geometry.dispose === 'function') {
+            obj.geometry.dispose()
+          }
+          if (obj.material) {
+            if (Array.isArray(obj.material)) {
+              obj.material.forEach((mat) => {
+                if (mat && typeof mat.dispose === 'function') mat.dispose()
+              })
+            } else if (typeof obj.material.dispose === 'function') {
+              obj.material.dispose()
+            }
+          }
+          objectsToRemove.push(obj)
+        }
+      })
+      objectsToRemove.forEach((obj) => {
+        if (obj.parent) obj.parent.remove(obj)
+      })
+
       renderer.dispose()
       container.removeChild(renderer.domElement)
     }

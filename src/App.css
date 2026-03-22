@@ -416,6 +416,7 @@
   justify-content: center;
   user-select: none;
   -webkit-user-select: none;
+  touch-action: pan-y;
 }
 
 .carousel-viewport:active {
@@ -446,7 +447,7 @@
   overflow: hidden;
 }
 
-/* Plain black canvas back — always shows when card faces away in the carousel */
+/* Light canvas back — always shows when card faces away in the carousel */
 .carousel-face-natural-back {
   transform: rotateY(180deg);
   backface-visibility: hidden;
@@ -517,7 +518,7 @@
   transition: opacity 0.4s var(--transition);
 }
 
-.carousel-card:not(.carousel-card-flipped):hover .carousel-card-label {
+.carousel-card:hover .carousel-card-label {
   opacity: 1;
 }
 
