@@ -1,0 +1,19 @@
+{
+  "name": "Art by Tvesa Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  },
+
+  "forwardPorts": [5173],
+
+  "postCreateCommand": "npm install",
+
+  "remoteUser": "node"
+}
