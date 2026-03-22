@@ -16,8 +16,8 @@ service firebase.storage {
       // Public read for gallery images
       allow read: if true;
 
-      // Only verified admins can upload or delete files
-      allow write: if isAdmin()
+      // Only verified admins can upload or update files (size and type checked)
+      allow create, update: if isAdmin()
                    && request.resource.size < 10 * 1024 * 1024  // 10 MB limit
                    && request.resource.contentType.matches('image/.*');
 

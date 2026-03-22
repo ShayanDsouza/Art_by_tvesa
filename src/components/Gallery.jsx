@@ -24,6 +24,7 @@ export default function Gallery() {
   const lastXRef = useRef(0)
   const animFrameRef = useRef(null)
   const autoRotateRef = useRef(null)
+  const closeTimeoutRef = useRef(null)
 
   useEffect(() => {
     try {
@@ -83,6 +84,7 @@ export default function Gallery() {
   const handlePointerDown = useCallback((e) => {
     dragStartRef.current = e.clientX
     if (selectedArt) return
+    e.currentTarget.setPointerCapture(e.pointerId)
     setIsDragging(true)
     lastXRef.current = e.clientX
     velocityRef.current = 0
@@ -98,7 +100,10 @@ export default function Gallery() {
     setRotation(rotationRef.current)
   }, [isDragging])
 
-  const handlePointerUp = useCallback(() => {
+  const handlePointerUp = useCallback((e) => {
+    if (e.currentTarget.hasPointerCapture?.(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId)
+    }
     setIsDragging(false)
     const decelerate = () => {
       velocityRef.current *= 0.94
@@ -121,11 +126,25 @@ export default function Gallery() {
     setSelectedArt(art)
   }
 
+  // Cleanup closeTimeout on unmount
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current !== null) {
+        clearTimeout(closeTimeoutRef.current)
+        closeTimeoutRef.current = null
+      }
+    }
+  }, [])
+
   const handleClose = () => {
     setIsClosing(true)
-    setTimeout(() => {
+    if (closeTimeoutRef.current !== null) {
+      clearTimeout(closeTimeoutRef.current)
+    }
+    closeTimeoutRef.current = setTimeout(() => {
       setSelectedArt(null)
       setIsClosing(false)
+      closeTimeoutRef.current = null
     }, 480)
   }
 
@@ -173,7 +192,15 @@ export default function Gallery() {
                 key={art.id}
                 className="carousel-card"
                 style={{ transform: `rotateY(${angle}deg) translateZ(${radius}px)` }}
+                role="button"
+                tabIndex={0}
                 onClick={(e) => handleCardClick(art, e, angle)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    if (e.key !== 'Enter') e.preventDefault()
+                    handleCardClick(art, e, angle)
+                  }
+                }}
               >
                 {/* White canvas — shows when card faces away */}
                 <div className="carousel-face carousel-face-natural-back" />
@@ -201,7 +228,12 @@ export default function Gallery() {
       {selectedArt && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className={`modal-popup${isClosing ? ' is-closing' : ''}`}>
-            <button className="modal-popup-close" onClick={handleClose}>×</button>
+            <button
+              type="button"
+              aria-label="Close"
+              className="modal-popup-close"
+              onClick={handleClose}
+            >×</button>
 
             <div className="modal-popup-image">
               {selectedArt.imageUrl ? (
