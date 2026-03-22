@@ -1114,17 +1114,19 @@
 
 .footer-links {
   display: flex;
-  gap: 20px;
+  gap: 24px;
 }
 
 .footer-links a {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.4);
-  transition: color 0.3s;
+  font-size: 1.6rem;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.3s, transform 0.3s;
+  display: flex;
 }
 
 .footer-links a:hover {
-  color: var(--color-accent);
+  color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
 }
 
 .footer p {
