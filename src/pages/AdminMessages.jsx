@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { collection, deleteDoc, doc, onSnapshot, query, orderBy, updateDoc } from 'firebase/firestore'
 import { db } from '../config/firebase'
-import { HiOutlineTrash, HiOutlineMail, HiOutlineMailOpen } from 'react-icons/hi'
+import { HiOutlineTrash, HiOutlineMail, HiOutlineMailOpen, HiOutlineReply } from 'react-icons/hi'
 
 export default function AdminMessages() {
   const [messages, setMessages] = useState([])
@@ -82,6 +82,9 @@ export default function AdminMessages() {
                 <span className="admin-message-timestamp">{formatDate(selectedMessage.createdAt)}</span>
               </div>
               <div className="admin-message-detail-actions">
+                <a href={`mailto:${selectedMessage.email}?subject=Re: your message`} className="admin-icon-btn" title="Reply via email">
+                  <HiOutlineReply />
+                </a>
                 <button onClick={() => toggleRead(selectedMessage)} className="admin-icon-btn" title={selectedMessage.read ? 'Mark unread' : 'Mark read'}>
                   {selectedMessage.read ? <HiOutlineMail /> : <HiOutlineMailOpen />}
                 </button>
