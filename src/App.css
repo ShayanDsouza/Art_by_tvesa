@@ -1099,7 +1099,7 @@
 .footer {
   padding: 48px 60px;
   text-align: center;
-  background: var(--color-evergreen);
+  background: #2d2845;
   color: rgba(255, 255, 255, 0.5);
 }
 
