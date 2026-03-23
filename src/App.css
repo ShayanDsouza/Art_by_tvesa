@@ -25,11 +25,15 @@
 }
 
 .navbar-logo {
-  font-family: var(--font-heading);
-  font-size: 1.6rem;
-  font-weight: 400;
-  color: var(--color-dark);
-  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo-img {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+  display: block;
 }
 
 .navbar-links {
@@ -197,18 +201,7 @@
   width: 60px;
   height: 1px;
   background: var(--color-accent);
-  margin: 28px auto;
-}
-
-.hero-subtitle {
-  font-size: 1.1rem;
-  color: var(--color-text-light);
-  font-weight: 300;
-  margin-bottom: 48px;
-  letter-spacing: 0.5px;
-  font-style: italic;
-  font-family: var(--font-heading);
-  font-size: 1.4rem;
+  margin: 28px auto 48px;
 }
 
 .hero-scroll-hint {
@@ -246,10 +239,6 @@
   .hero h1 {
     font-size: 3rem;
     letter-spacing: -1px;
-  }
-
-  .hero-subtitle {
-    font-size: 1.1rem;
   }
 
   .hero-scroll-hint {
@@ -339,6 +328,17 @@
   margin-top: 16px;
 }
 
+.about-inline-link {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s;
+}
+
+.about-inline-link:hover {
+  text-decoration-color: var(--color-accent);
+}
+
 @media (max-width: 768px) {
   .about {
     padding: 80px 24px;
@@ -396,6 +396,11 @@
 }
 
 /* ===== 3D CAROUSEL ===== */
+.gallery-view-all {
+  text-align: center;
+  margin-top: 48px;
+}
+
 .carousel-hint {
   font-size: 0.7rem;
   color: var(--color-text-light);

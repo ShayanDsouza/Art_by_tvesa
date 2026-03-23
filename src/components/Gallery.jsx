@@ -168,9 +168,8 @@ export default function Gallery() {
 
   return (
     <section id="gallery" className="gallery">
-      <span className="section-overline">Collection</span>
-      <h2>The Gallery</h2>
-      <p className="section-subtitle">Each piece is a window into a world of imagination</p>
+      <span className="section-overline">Gallery</span>
+      <h2>Selected Works</h2>
       <p className="carousel-hint">Scroll or drag to explore &middot; Click a piece to see details</p>
 
       <div
@@ -225,6 +224,10 @@ export default function Gallery() {
       </div>
 
       {/* Large popup modal with flip-in animation */}
+      <div className="gallery-view-all">
+        <a href="#gallery" className="btn btn-outline">View Full Collection</a>
+      </div>
+
       {selectedArt && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className={`modal-popup${isClosing ? ' is-closing' : ''}`}>

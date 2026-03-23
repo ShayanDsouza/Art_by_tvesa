@@ -5,7 +5,9 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <a href="#hero" className="navbar-logo">Art by Tvesa</a>
+      <a href="#hero" className="navbar-logo">
+        <img src="/logo.jpg" alt="Art by Tvesa" className="navbar-logo-img" />
+      </a>
       <button
         className={`hamburger ${menuOpen ? 'open' : ''}`}
         onClick={() => setMenuOpen(!menuOpen)}
