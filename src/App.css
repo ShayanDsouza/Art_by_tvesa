@@ -376,7 +376,6 @@
     radial-gradient(ellipse at 80% 70%, rgba(13, 26, 13, 0.15) 0%, transparent 50%);
   text-align: center;
   position: relative;
-  overflow: hidden;
 }
 
 /* Inner scene — scaled by scroll zoom effect */

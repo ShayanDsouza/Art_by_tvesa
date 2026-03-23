@@ -143,7 +143,6 @@ export default function Gallery() {
   const handlePointerDown = useCallback((e) => {
     dragStartRef.current = e.clientX
     if (selectedArt) return
-    e.currentTarget.setPointerCapture(e.pointerId)
     setIsDragging(true)
     lastXRef.current = e.clientX
     velocityRef.current = 0
@@ -159,10 +158,7 @@ export default function Gallery() {
     setRotation(rotationRef.current)
   }, [isDragging])
 
-  const handlePointerUp = useCallback((e) => {
-    if (e.currentTarget.hasPointerCapture?.(e.pointerId)) {
-      e.currentTarget.releasePointerCapture(e.pointerId)
-    }
+  const handlePointerUp = useCallback(() => {
     setIsDragging(false)
     const decelerate = () => {
       velocityRef.current *= 0.94
