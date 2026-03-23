@@ -27,7 +27,7 @@ export default function Gallery() {
   const autoRotateRef = useRef(null)
   const closeTimeoutRef = useRef(null)
   const zoomRafRef = useRef(null)
-  const currentScaleRef = useRef(0.82)
+  const currentScaleRef = useRef(0.38)
 
   useEffect(() => {
     try {
@@ -47,58 +47,82 @@ export default function Gallery() {
     }
   }, [])
 
-  // ── Scroll-driven zoom effect ──────────────────────────────────────────────
+  // ── Scroll-driven zoom effect (LN-style punch-through) ────────────────────
   useEffect(() => {
     const scene = gallerySceneRef.current
     if (!scene) return
     const section = scene.parentElement
 
     const lerp = (a, b, t) => a + (b - a) * t
-    // smoothstep easing: feels more organic than linear
-    const smoothstep = t => t * t * (3 - 2 * t)
 
-    let targetScale = 0.82
+    // Expo-in easing: stays tiny, then BURSTS to fill (matches LN site feel)
+    const easeOutExpo = t => t === 0 ? 0 : Math.pow(2, 10 * t - 10)
+
+    let targetScale   = 0.38
+    let targetRadius  = 28
+    let targetOpacity = 0.40
 
     const tick = () => {
-      const prev = currentScaleRef.current
-      currentScaleRef.current = lerp(prev, targetScale, 0.09)
-      scene.style.transform = `scale(${currentScaleRef.current.toFixed(4)})`
-      if (Math.abs(currentScaleRef.current - targetScale) > 0.0003) {
-        zoomRafRef.current = requestAnimationFrame(tick)
-      }
+      const s = currentScaleRef.current
+      currentScaleRef.current = lerp(s, targetScale, 0.16)
+
+      const curScale   = currentScaleRef.current
+      const curRadius  = lerp(parseFloat(scene.style.borderRadius) || 28, targetRadius,  0.16)
+      const curOpacity = lerp(parseFloat(scene.style.opacity)      || 0.40, targetOpacity, 0.16)
+
+      scene.style.transform    = `scale(${curScale.toFixed(4)})`
+      scene.style.borderRadius = `${curRadius.toFixed(2)}px`
+      scene.style.opacity      = curOpacity.toFixed(4)
+
+      const stillMoving =
+        Math.abs(curScale   - targetScale)   > 0.0003 ||
+        Math.abs(curRadius  - targetRadius)  > 0.05   ||
+        Math.abs(curOpacity - targetOpacity) > 0.002
+
+      if (stillMoving) zoomRafRef.current = requestAnimationFrame(tick)
     }
 
     const onScroll = () => {
       const rect = section.getBoundingClientRect()
-      const vh = window.innerHeight
+      const vh   = window.innerHeight
 
       let t = 0
 
       if (rect.top >= vh) {
-        // Section fully below viewport — zoomed out
+        // Fully below viewport — closed
         t = 0
       } else if (rect.bottom <= 0) {
-        // Section fully above viewport — zoomed out
+        // Fully above viewport — closed
         t = 0
       } else if (rect.top > 0) {
-        // Entering from bottom: rect.top vh → 0
-        t = smoothstep(1 - rect.top / vh)
+        // Entering from bottom:
+        // rawT = 0 when section top is at viewport bottom (rect.top = vh)
+        // rawT = 1 when section top reaches viewport top  (rect.top = 0)
+        // Apply easeOutExpo so the zoom STARTS slow then RUSHES to fill
+        const rawT = 1 - rect.top / vh
+        t = easeOutExpo(Math.min(1, Math.max(0, rawT)))
       } else if (rect.bottom < vh) {
-        // Exiting from top: rect.bottom vh → 0
-        t = smoothstep(rect.bottom / vh)
+        // Exiting from top:
+        // rawT = 1 when section bottom is at viewport bottom (rect.bottom = vh)
+        // rawT = 0 when section bottom reaches viewport top  (rect.bottom = 0)
+        const rawT = rect.bottom / vh
+        t = easeOutExpo(Math.min(1, Math.max(0, rawT)))
       } else {
-        // Fully covering viewport — fully zoomed in
+        // Section covers full viewport — fully open
         t = 1
       }
 
-      targetScale = 0.82 + t * 0.18  // 0.82 → 1.0
+      // Scale  0.38 → 1.00  |  radius 28px → 0px  |  opacity 0.40 → 1.00
+      targetScale   = 0.38 + t * 0.62
+      targetRadius  = (1 - t) * 28
+      targetOpacity = 0.40 + t * 0.60
 
       cancelAnimationFrame(zoomRafRef.current)
       zoomRafRef.current = requestAnimationFrame(tick)
     }
 
     window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll() // initialise on mount
+    onScroll()
     return () => {
       window.removeEventListener('scroll', onScroll)
       cancelAnimationFrame(zoomRafRef.current)

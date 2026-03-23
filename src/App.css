@@ -384,8 +384,10 @@
   padding-top: 100px;
   padding-bottom: 120px;
   transform-origin: center center;
-  will-change: transform;
-  transform: scale(0.82);
+  will-change: transform, opacity;
+  transform: scale(0.38);
+  border-radius: 28px;
+  opacity: 0.4;
 }
 
 .gallery::before {
