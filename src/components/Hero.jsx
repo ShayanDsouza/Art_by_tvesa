@@ -9,7 +9,7 @@ export default function Hero() {
   }, [])
 
   return (
-    <section id="hero" className="hero">
+    <section id="home" className="hero">
       <div className="hero-bg-pattern"></div>
       <div className={`hero-content ${visible ? 'hero-visible' : ''}`}>
         <span className="hero-overline">Welcome to the Studio</span>
