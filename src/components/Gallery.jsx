@@ -117,6 +117,19 @@ export default function Gallery() {
       targetRadius  = (1 - t) * 28
       targetOpacity = 0.40 + t * 0.60
 
+      // Fade out all non-carousel text as gallery zooms in
+      // fully gone by t = 0.30
+      const textOpacity = Math.max(0, 1 - t * (1 / 0.30))
+      const textEls = scene.querySelectorAll('.section-overline, h2, .carousel-hint, .gallery-view-all')
+      textEls.forEach(el => { el.style.opacity = textOpacity; el.style.pointerEvents = textOpacity > 0 ? '' : 'none' })
+
+      // Hide navbar when gallery is filling the screen
+      if (t > 0.12) {
+        document.body.classList.add('gallery-active')
+      } else {
+        document.body.classList.remove('gallery-active')
+      }
+
       cancelAnimationFrame(zoomRafRef.current)
       zoomRafRef.current = requestAnimationFrame(tick)
     }
@@ -126,6 +139,7 @@ export default function Gallery() {
     return () => {
       window.removeEventListener('scroll', onScroll)
       cancelAnimationFrame(zoomRafRef.current)
+      document.body.classList.remove('gallery-active')
     }
   }, [])
 

@@ -12,7 +12,14 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   z-index: 100;
-  transition: all 0.4s var(--transition);
+  transition: opacity 0.5s var(--transition), transform 0.5s var(--transition);
+}
+
+/* Hide navbar while gallery is filling the screen */
+body.gallery-active .navbar {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
 }
 
 .navbar::after {
