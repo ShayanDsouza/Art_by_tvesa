@@ -369,15 +369,24 @@
 
 /* ===== GALLERY ===== */
 .gallery {
-  padding: var(--section-padding);
-  padding-top: 100px;
-  padding-bottom: 120px;
+  padding: 0;
   background: #3B0C0C;
   background-image:
     radial-gradient(ellipse at 20% 30%, rgba(144, 136, 192, 0.08) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 70%, rgba(13, 26, 13, 0.15) 0%, transparent 50%);
   text-align: center;
   position: relative;
+  overflow: hidden;
+}
+
+/* Inner scene — scaled by scroll zoom effect */
+.gallery-scene {
+  padding: var(--section-padding);
+  padding-top: 100px;
+  padding-bottom: 120px;
+  transform-origin: center center;
+  will-change: transform;
+  transform: scale(0.82);
 }
 
 .gallery::before {
