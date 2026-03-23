@@ -3,19 +3,22 @@
 :root {
   --font-heading: 'Cormorant Garamond', Georgia, serif;
   --font-body: 'Inter', system-ui, sans-serif;
-  --color-bg: #E7DDDA;
-  --color-bg-alt: #ddd2ce;
-  --color-text: #2a2a2a;
-  --color-text-light: #6a6565;
-  --color-accent: #5F578A;
-  --color-accent-dark: #4a4370;
+  /* Dark mode palette */
+  --color-bg: #130c0a;
+  --color-bg-alt: #1e1410;
+  --color-text: #e2d9d4;
+  --color-text-light: #9a8e8a;
+  --color-accent: #9088c0;
+  --color-accent-dark: #7870b0;
   --color-white: #ffffff;
-  --color-dark: #172C16;
-  --color-border: #ccc3bf;
-  --color-evergreen: #172C16;
-  --color-grape: #5F578A;
+  --color-dark: #e2d9d4;
+  --color-border: #2e2018;
+  --color-evergreen: #0d1a0d;
+  --color-grape: #9088c0;
   --color-mahogany: #3B0C0C;
-  --color-dustgrey: #E7DDDA;
+  --color-dustgrey: #1e1614;
+  --color-surface: #1e1614;
+  --color-surface-alt: #261e1a;
   --section-padding: 100px 60px;
   --transition: cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -102,12 +105,12 @@ a {
 .btn-outline {
   background: transparent;
   color: var(--color-dark);
-  border: 1px solid var(--color-dark);
+  border: 1px solid rgba(226, 217, 212, 0.5);
 }
 
 .btn-outline:hover {
   background: var(--color-dark);
-  color: var(--color-white);
+  color: var(--color-bg);
 }
 
 @media (max-width: 768px) {

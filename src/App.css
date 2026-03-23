@@ -21,7 +21,7 @@
   left: 48px;
   right: 48px;
   height: 1px;
-  background: rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .navbar-logo {
@@ -126,7 +126,7 @@
     padding: 100px 48px;
     gap: 28px;
     transition: right 0.4s var(--transition);
-    box-shadow: -8px 0 40px rgba(0, 0, 0, 0.08);
+    box-shadow: -8px 0 40px rgba(0, 0, 0, 0.4);
   }
 
   .navbar-links.active {
@@ -159,9 +159,9 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 20% 50%, rgba(95, 87, 138, 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(23, 44, 22, 0.04) 0%, transparent 40%),
-    radial-gradient(circle at 50% 80%, rgba(59, 12, 12, 0.03) 0%, transparent 60%);
+    radial-gradient(circle at 20% 50%, rgba(144, 136, 192, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(13, 26, 13, 0.3) 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(59, 12, 12, 0.2) 0%, transparent 60%);
   pointer-events: none;
 }
 
@@ -249,7 +249,7 @@
 /* ===== ABOUT ===== */
 .about {
   padding: 120px 60px;
-  background: var(--color-white);
+  background: var(--color-surface);
   position: relative;
 }
 
@@ -279,18 +279,18 @@
 .placeholder-image {
   width: 320px;
   height: 420px;
-  background: linear-gradient(145deg, #ddd2ce 0%, #ccc3bf 100%);
+  background: linear-gradient(145deg, #2a1e1c 0%, #1e1614 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(120, 110, 95, 0.5);
+  color: rgba(200, 185, 175, 0.3);
   font-size: 0.8rem;
   letter-spacing: 3px;
   text-transform: uppercase;
   font-family: var(--font-heading);
   font-style: italic;
   position: relative;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .placeholder-image::before {
@@ -370,10 +370,10 @@
   padding: var(--section-padding);
   padding-top: 100px;
   padding-bottom: 120px;
-  background: #ddd2ce;
+  background: #3B0C0C;
   background-image:
-    radial-gradient(ellipse at 20% 30%, rgba(95, 87, 138, 0.05) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 70%, rgba(23, 44, 22, 0.04) 0%, transparent 50%);
+    radial-gradient(ellipse at 20% 30%, rgba(144, 136, 192, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(13, 26, 13, 0.15) 0%, transparent 50%);
   text-align: center;
   position: relative;
 }
@@ -452,12 +452,12 @@
   overflow: hidden;
 }
 
-/* Light canvas back — always shows when card faces away in the carousel */
+/* Dark canvas back — always shows when card faces away in the carousel */
 .carousel-face-natural-back {
   transform: rotateY(180deg);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  background: #f5f3f0;
+  background: #2a1210;
 }
 
 /* Front face */
@@ -487,11 +487,11 @@
 .carousel-card-placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(145deg, #ccc3bf 0%, #bdb3ae 100%);
+  background: linear-gradient(145deg, #2a1e1c 0%, #1e1614 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(120, 110, 95, 0.6);
+  color: rgba(200, 185, 175, 0.3);
   font-size: 1rem;
   letter-spacing: 2px;
   font-family: var(--font-heading);
@@ -785,11 +785,11 @@
 
 .gallery-placeholder {
   aspect-ratio: 4 / 5;
-  background: linear-gradient(145deg, #ccc3bf 0%, #bdb3ae 100%);
+  background: linear-gradient(145deg, #2a1e1c 0%, #1e1614 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(120, 110, 95, 0.6);
+  color: rgba(200, 185, 175, 0.3);
   font-size: 1.1rem;
   letter-spacing: 2px;
   font-family: var(--font-heading);
@@ -862,7 +862,7 @@
 }
 
 .modal {
-  background: var(--color-white);
+  background: var(--color-surface);
   max-width: 1200px;
   width: 95%;
   max-height: 92vh;
@@ -1182,21 +1182,21 @@
 
 /* ===== CONTACT FEEDBACK ===== */
 .contact-success {
-  background: #f0f7f0;
-  color: #2d6a2e;
+  background: rgba(13, 60, 13, 0.3);
+  color: #7ec87f;
   padding: 14px 20px;
   margin-bottom: 24px;
   font-size: 0.9rem;
-  border-left: 3px solid #2d6a2e;
+  border-left: 3px solid #7ec87f;
 }
 
 .contact-error {
-  background: #fdf0f0;
-  color: #a33;
+  background: rgba(100, 20, 20, 0.3);
+  color: #e8a0a0;
   padding: 14px 20px;
   margin-bottom: 24px;
   font-size: 0.9rem;
-  border-left: 3px solid #a33;
+  border-left: 3px solid #e8a0a0;
 }
 
 /* ===== ADMIN LOADING ===== */
@@ -1336,12 +1336,12 @@
 }
 
 .admin-error {
-  background: #fdf0f0;
-  color: #a33;
+  background: rgba(100, 20, 20, 0.3);
+  color: #e8a0a0;
   padding: 12px 16px;
   margin-bottom: 20px;
   font-size: 0.85rem;
-  border-left: 3px solid #a33;
+  border-left: 3px solid #e8a0a0;
   text-align: left;
 }
 
@@ -1352,7 +1352,7 @@
   gap: 12px;
   width: 100%;
   padding: 14px 24px;
-  background: var(--color-white);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   font-family: var(--font-body);
   font-size: 0.88rem;
@@ -1364,8 +1364,8 @@
 }
 
 .admin-google-btn:hover {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border-color: var(--color-accent);
   transform: translateY(-1px);
 }
 
@@ -1398,7 +1398,7 @@
 .admin-layout {
   display: flex;
   min-height: 100vh;
-  background: #f4f3f0;
+  background: var(--color-bg);
 }
 
 .admin-sidebar {
@@ -1545,7 +1545,7 @@
 
 /* ===== ADMIN FORM ===== */
 .admin-form-card {
-  background: var(--color-white);
+  background: var(--color-surface);
   padding: 32px;
   margin-bottom: 32px;
   border: 1px solid var(--color-border);
@@ -1644,7 +1644,7 @@
   overflow: hidden;
   break-inside: avoid;
   margin-bottom: 16px;
-  background: var(--color-white);
+  background: var(--color-surface);
   border-radius: 2px;
 }
 
@@ -1922,7 +1922,7 @@
   display: grid;
   grid-template-columns: 360px 1fr;
   gap: 0;
-  background: var(--color-white);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 4px;
   min-height: 600px;
@@ -1934,14 +1934,14 @@
   border-right: 1px solid var(--color-border);
   overflow-y: auto;
   max-height: 78vh;
-  background: #faf9f7;
+  background: var(--color-bg);
 }
 
 .admin-message-item {
   display: flex;
   gap: 12px;
   padding: 16px 18px;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   cursor: pointer;
   transition: background 0.15s;
   position: relative;
@@ -1952,11 +1952,11 @@
 }
 
 .admin-message-item:hover {
-  background: rgba(0, 0, 0, 0.03);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .admin-message-item.selected {
-  background: var(--color-white);
+  background: var(--color-surface);
   box-shadow: inset 3px 0 0 var(--color-accent);
 }
 
@@ -2084,7 +2084,7 @@
   align-items: center;
   justify-content: center;
   border: 1px solid var(--color-border);
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-light);
   border-radius: 4px;
   cursor: pointer;
@@ -2095,13 +2095,13 @@
 .admin-icon-btn:hover {
   border-color: var(--color-dark);
   color: var(--color-dark);
-  background: var(--color-bg);
+  background: var(--color-surface-alt);
 }
 
 .admin-delete-btn:hover {
-  border-color: #b44;
-  color: #b44;
-  background: #fdf0f0;
+  border-color: #e8a0a0;
+  color: #e8a0a0;
+  background: rgba(100, 20, 20, 0.3);
 }
 
 .admin-message-body {
@@ -2119,8 +2119,8 @@
 .admin-delete-confirm {
   margin-top: 20px;
   padding: 20px 24px;
-  background: #fdf0f0;
-  border: 1px solid rgba(180, 68, 68, 0.2);
+  background: rgba(100, 20, 20, 0.25);
+  border: 1px solid rgba(232, 160, 160, 0.2);
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -2130,7 +2130,7 @@
 
 .admin-delete-confirm p {
   font-size: 0.88rem;
-  color: #a33;
+  color: #e8a0a0;
 }
 
 .admin-delete-actions {
