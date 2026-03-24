@@ -5,6 +5,7 @@ import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
 import Gallery from './components/Gallery'
+import GridGallery from "./components/GridGallery";
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import AdminLogin from './pages/AdminLogin'
@@ -19,7 +20,13 @@ function PublicSite() {
       <Navbar />
       <main>
         <Hero />
-        <Gallery />
+
+        {/* Gallery Section */}
+        <div id="gallery">
+          <Gallery />        {/* Shayan’s rotating gallery */}
+          <GridGallery />    {/* Your grid gallery */}
+        </div>
+
         <About />
         <Contact />
       </main>

@@ -13,6 +13,10 @@
   -webkit-backdrop-filter: blur(16px);
   z-index: 100;
   transition: opacity 0.5s var(--transition), transform 0.5s var(--transition);
+  .navbar-links a.active-link {
+  border-bottom: 2px solid currentColor;
+  padding-bottom: 2px;
+}
 }
 
 /* Hide navbar while gallery is filling the screen */
