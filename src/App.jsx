@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
+import RotatingGallery from './components/RotatingGallery'
 import Gallery from './components/Gallery'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
@@ -13,6 +14,7 @@ import AdminArtworks from './pages/AdminArtworks'
 import AdminMessages from './pages/AdminMessages'
 import './App.css'
 
+
 function PublicSite() {
   return (
     <>
@@ -20,7 +22,11 @@ function PublicSite() {
       <main>
         <Hero />
         <About />
-        <Gallery />
+
+        <RotatingGallery />   {/* Shayan */}
+
+        <Gallery />           {/* Yours */}
+
         <Contact />
       </main>
       <Footer />
