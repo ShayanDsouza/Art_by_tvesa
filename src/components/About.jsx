@@ -21,7 +21,7 @@ export default function About() {
           <p>
             If you are curious about my academic work, check out my{' '}
             <a
-              href="https://www.linkedin.com"
+              href="https://www.linkedin.com/in/tvesa-medh/"
               target="_blank"
               rel="noopener noreferrer"
               className="about-inline-link"

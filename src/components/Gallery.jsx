@@ -16,9 +16,12 @@ export default function Gallery() {
   const [selectedArt, setSelectedArt] = useState(null)
   const [isClosing, setIsClosing] = useState(false)
   const [rotation, setRotation] = useState(0)
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [isDragging, setIsDragging] = useState(false)
   const carouselRef = useRef(null)
   const gallerySceneRef = useRef(null)
+  const galleryHeaderRef = useRef(null)
+  const galleryWrapperRef = useRef(null)
   const dragStartRef = useRef(null)
   const rotationRef = useRef(0)
   const velocityRef = useRef(0)
@@ -27,7 +30,9 @@ export default function Gallery() {
   const autoRotateRef = useRef(null)
   const closeTimeoutRef = useRef(null)
   const zoomRafRef = useRef(null)
-  const currentScaleRef = useRef(0.38)
+  const currentScaleRef = useRef(0.22)
+  const currentRadiusRef = useRef(28)
+  const currentOpacityRef = useRef(0.1)
 
   useEffect(() => {
     try {
@@ -47,84 +52,75 @@ export default function Gallery() {
     }
   }, [])
 
-  // ── Scroll-driven zoom effect (LN-style punch-through) ────────────────────
+  // ── Sticky scroll-driven zoom effect ──────────────────────────────────────
   useEffect(() => {
     const scene = gallerySceneRef.current
-    if (!scene) return
-    const section = scene.parentElement
+    const header = galleryHeaderRef.current
+    const wrapper = galleryWrapperRef.current
+    if (!scene || !header || !wrapper) return
 
     const lerp = (a, b, t) => a + (b - a) * t
 
-    // Expo-in easing: stays tiny, then BURSTS to fill (matches LN site feel)
-    const easeOutExpo = t => t === 0 ? 0 : Math.pow(2, 10 * t - 10)
+    // easeOutExpo: slow start, explosive finish — matches LN site feel
+    const easeOutExpo = t => t <= 0 ? 0 : t >= 1 ? 1 : 1 - Math.pow(2, -10 * t)
 
-    let targetScale   = 0.38
+    let targetScale   = 0.22
     let targetRadius  = 28
-    let targetOpacity = 0.40
+    let targetOpacity = 0.10
 
     const tick = () => {
-      const s = currentScaleRef.current
-      currentScaleRef.current = lerp(s, targetScale, 0.16)
+      currentScaleRef.current   = lerp(currentScaleRef.current,   targetScale,   0.14)
+      currentRadiusRef.current  = lerp(currentRadiusRef.current,  targetRadius,  0.14)
+      currentOpacityRef.current = lerp(currentOpacityRef.current, targetOpacity, 0.14)
 
-      const curScale   = currentScaleRef.current
-      const curRadius  = lerp(parseFloat(scene.style.borderRadius) || 28, targetRadius,  0.16)
-      const curOpacity = lerp(parseFloat(scene.style.opacity)      || 0.40, targetOpacity, 0.16)
-
-      scene.style.transform    = `scale(${curScale.toFixed(4)})`
-      scene.style.borderRadius = `${curRadius.toFixed(2)}px`
-      scene.style.opacity      = curOpacity.toFixed(4)
+      scene.style.transform    = `scale(${currentScaleRef.current.toFixed(4)})`
+      scene.style.borderRadius = `${currentRadiusRef.current.toFixed(2)}px`
+      scene.style.opacity      = currentOpacityRef.current.toFixed(4)
 
       const stillMoving =
-        Math.abs(curScale   - targetScale)   > 0.0003 ||
-        Math.abs(curRadius  - targetRadius)  > 0.05   ||
-        Math.abs(curOpacity - targetOpacity) > 0.002
+        Math.abs(currentScaleRef.current   - targetScale)   > 0.0003 ||
+        Math.abs(currentRadiusRef.current  - targetRadius)  > 0.05   ||
+        Math.abs(currentOpacityRef.current - targetOpacity) > 0.002
 
       if (stillMoving) zoomRafRef.current = requestAnimationFrame(tick)
     }
 
     const onScroll = () => {
-      const rect = section.getBoundingClientRect()
-      const vh   = window.innerHeight
+      const rect = wrapper.getBoundingClientRect()
+      const scrollableHeight = wrapper.offsetHeight - window.innerHeight
+      if (scrollableHeight <= 0) return
 
-      let t = 0
+      // progress: 0 when section just enters view, 1 when we've scrolled all the way through
+      const scrolled = Math.max(0, -rect.top)
+      const progress = Math.min(1, scrolled / scrollableHeight)
 
-      if (rect.top >= vh) {
-        // Fully below viewport — closed
-        t = 0
-      } else if (rect.bottom <= 0) {
-        // Fully above viewport — closed
-        t = 0
-      } else if (rect.top > 0) {
-        // Entering from bottom:
-        // rawT = 0 when section top is at viewport bottom (rect.top = vh)
-        // rawT = 1 when section top reaches viewport top  (rect.top = 0)
-        // Apply easeOutExpo so the zoom STARTS slow then RUSHES to fill
-        const rawT = 1 - rect.top / vh
-        t = easeOutExpo(Math.min(1, Math.max(0, rawT)))
-      } else if (rect.bottom < vh) {
-        // Exiting from top:
-        // rawT = 1 when section bottom is at viewport bottom (rect.bottom = vh)
-        // rawT = 0 when section bottom reaches viewport top  (rect.bottom = 0)
-        const rawT = rect.bottom / vh
-        t = easeOutExpo(Math.min(1, Math.max(0, rawT)))
+      // ── Phase 1: progress 0.00 → 0.18 — header fades, carousel stays tiny ──
+      // ── Phase 2: progress 0.18 → 0.60 — carousel zooms IN ──
+      // ── Phase 3: progress 0.60 → 0.72 — hold at full ──
+      // ── Phase 4: progress 0.72 → 1.00 — carousel zooms OUT ──
+      let carouselT
+      if (progress < 0.18) {
+        carouselT = 0  // stay tiny while header fades
+      } else if (progress < 0.60) {
+        carouselT = easeOutExpo((progress - 0.18) / 0.42)
+      } else if (progress < 0.72) {
+        carouselT = 1
       } else {
-        // Section covers full viewport — fully open
-        t = 1
+        carouselT = easeOutExpo(1 - (progress - 0.72) / 0.28)
       }
 
-      // Scale  0.38 → 1.00  |  radius 28px → 0px  |  opacity 0.40 → 1.00
-      targetScale   = 0.38 + t * 0.62
-      targetRadius  = (1 - t) * 28
-      targetOpacity = 0.40 + t * 0.60
+      // Header: fully gone by progress 0.14 — well before carousel starts zooming
+      const headerOpacity = Math.max(0, 1 - progress / 0.14)
+      header.style.opacity = headerOpacity.toFixed(4)
+      header.style.pointerEvents = headerOpacity > 0.01 ? '' : 'none'
 
-      // Fade out all non-carousel text as gallery zooms in
-      // fully gone by t = 0.30
-      const textOpacity = Math.max(0, 1 - t * (1 / 0.30))
-      const textEls = scene.querySelectorAll('.section-overline, h2, .carousel-hint, .gallery-view-all')
-      textEls.forEach(el => { el.style.opacity = textOpacity; el.style.pointerEvents = textOpacity > 0 ? '' : 'none' })
+      // Carousel scene targets
+      targetScale   = 0.22 + carouselT * 0.63   // 0.22 → 0.85
+      targetRadius  = (1 - carouselT) * 28        // 28px → 0px
+      targetOpacity = 0.10 + carouselT * 0.90     // 0.10 → 1.00
 
-      // Hide navbar when gallery is filling the screen
-      if (t > 0.12) {
+      // Navbar: hide while carousel is filling the screen
+      if (carouselT > 0.55) {
         document.body.classList.add('gallery-active')
       } else {
         document.body.classList.remove('gallery-active')
@@ -218,6 +214,13 @@ export default function Gallery() {
     setSelectedArt(art)
   }
 
+  // ── Responsive resize listener ────────────────────────────────────────────
+  useEffect(() => {
+    const onResize = () => setWindowWidth(window.innerWidth)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
   // ── Close timeout cleanup ─────────────────────────────────────────────────
   useEffect(() => {
     return () => {
@@ -254,71 +257,110 @@ export default function Gallery() {
 
   const count = artworks.length
   const angleStep = count > 0 ? 360 / count : 0
-  const radius = Math.max(360, count * 80)
+  const radius = windowWidth <= 480
+    ? Math.max(180, count * 45)
+    : windowWidth <= 900
+      ? Math.max(260, count * 62)
+      : Math.max(360, count * 80)
+
+  // Tall card dimensions matched to carousel-card breakpoints
+  const tallCard = windowWidth <= 480
+    ? { width: '100px', height: '150px', left: '60px' }
+    : windowWidth <= 900
+      ? { width: '130px', height: '185px', left: '70px' }
+      : { width: '210px', height: '290px', left: '115px' }
 
   return (
     <section id="gallery" className="gallery">
 
-      {/* ── Zoom scene — everything inside scales on scroll ── */}
-      <div className="gallery-scene" ref={gallerySceneRef}>
-        <span className="section-overline">Gallery</span>
-        <h2>Selected Works</h2>
-        <p className="carousel-hint">Scroll or drag to explore &middot; Click a piece to see details</p>
+      {/* ── Tall scroll wrapper — provides room for sticky animation ── */}
+      <div className="gallery-scroll-wrapper" ref={galleryWrapperRef}>
 
-        <div
-          className="carousel-viewport"
-          ref={carouselRef}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerUp}
-        >
-          <div
-            className="carousel-ring"
-            style={{ transform: `rotateY(${rotation}deg)` }}
-          >
-            {artworks.map((art, i) => {
-              const angle = i * angleStep
-              return (
-                <div
-                  key={art.id}
-                  className="carousel-card"
-                  style={{ transform: `rotateY(${angle}deg) translateZ(${radius}px)` }}
-                  role="button"
-                  tabIndex={0}
-                  onClick={(e) => handleCardClick(art, e, angle)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      if (e.key !== 'Enter') e.preventDefault()
-                      handleCardClick(art, e, angle)
-                    }
-                  }}
-                >
-                  <div className="carousel-face carousel-face-natural-back" />
-                  <div className="carousel-face carousel-face-front">
-                    {art.imageUrl ? (
-                      <img src={art.imageUrl} alt={art.title} className="carousel-card-image" draggable={false} />
-                    ) : (
-                      <div className="carousel-card-placeholder">{art.title}</div>
-                    )}
-                    {art.status === 'sold' && <span className="carousel-sold-badge">Sold</span>}
-                    <div className="carousel-card-label">
-                      <span className="carousel-card-category">{art.category}</span>
-                      <h3>{art.title}</h3>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
+        {/* ── Sticky stage — stays in viewport while user scrolls through wrapper ── */}
+        <div className="gallery-stage">
+
+          {/* ── Header: title + hint, fades out before carousel fills screen ── */}
+          <div className="gallery-header" ref={galleryHeaderRef}>
+            <span className="section-overline">Gallery</span>
+            <h2>Selected Works</h2>
+            <p className="carousel-hint">Scroll or drag to explore &middot; Click a piece to see details</p>
           </div>
-        </div>
 
-        <div className="gallery-view-all">
-          <a href="#gallery" className="btn btn-outline">View Full Collection</a>
+          {/* ── Carousel scene: scales from small → full viewport ── */}
+          <div className="gallery-carousel-scene" ref={gallerySceneRef}>
+            <div
+              className="carousel-viewport"
+              ref={carouselRef}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={handlePointerUp}
+            >
+              <div
+                className="carousel-ring"
+                style={{ transform: `rotateY(${rotation}deg)` }}
+              >
+                {artworks.map((art, i) => {
+                  const angle = i * angleStep
+                  const isTall = art.height === 'tall'
+                  const cardStyle = isTall
+                    ? {
+                        transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
+                        width: tallCard.width,
+                        height: tallCard.height,
+                        left: tallCard.left,
+                        top: '0',
+                      }
+                    : { transform: `rotateY(${angle}deg) translateZ(${radius}px)` }
+
+                  return (
+                    <div
+                      key={art.id}
+                      className={`carousel-card${isTall ? ' carousel-card-tall' : ''}`}
+                      style={cardStyle}
+                      role="button"
+                      tabIndex={0}
+                      onClick={(e) => handleCardClick(art, e, angle)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          if (e.key !== 'Enter') e.preventDefault()
+                          handleCardClick(art, e, angle)
+                        }
+                      }}
+                    >
+                      <div className="carousel-face carousel-face-natural-back" />
+                      <div className="carousel-face carousel-face-front">
+                        {art.imageUrl ? (
+                          <img src={art.imageUrl} alt={art.title} className="carousel-card-image" draggable={false} />
+                        ) : (
+                          <div className="carousel-card-placeholder">{art.title}</div>
+                        )}
+                        {art.status === 'sold' && <span className="carousel-sold-badge">Sold</span>}
+                        <div className="carousel-card-label">
+                          <span className="carousel-card-category">{art.category}</span>
+                          <h3>{art.title}</h3>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+
+            </div>
+
+          {/* "View Full Collection" sits outside the zooming scene */}
+          <div className="gallery-view-all">
+            <a href="#gallery" className="btn btn-outline btn-glitter">
+              <span className="btn-glitter-shimmer" aria-hidden="true" />
+              View Full Collection
+            </a>
+          </div>
+
         </div>
       </div>
 
-      {/* ── Modal lives OUTSIDE gallery-scene so position:fixed is unaffected by scale ── */}
+      {/* ── Modal lives OUTSIDE all transforms so position:fixed is viewport-relative ── */}
       {selectedArt && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className={`modal-popup${isClosing ? ' is-closing' : ''}`}>
