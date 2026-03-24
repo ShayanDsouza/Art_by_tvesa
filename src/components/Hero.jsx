@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import HeroCanvas from './HeroCanvas'
 
 export default function Hero() {
   const [visible, setVisible] = useState(false)
@@ -9,7 +10,8 @@ export default function Hero() {
   }, [])
 
   return (
-    <section id="home" className="hero">
+    <section id="hero" className="hero">
+      <HeroCanvas />
       <div className="hero-bg-pattern"></div>
       <div className={`hero-content ${visible ? 'hero-visible' : ''}`}>
         <span className="hero-overline">Welcome to the Studio</span>

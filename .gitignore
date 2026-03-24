@@ -6,6 +6,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+firebase-debug.log*
+firestore-debug.log*
+storage-debug.log*
+ui-debug.log*
 
 .env
 .env.local
@@ -25,3 +29,6 @@ dist-ssr
 *.sln
 *.sw?
 .vite/
+
+# Claude Code
+.claude/

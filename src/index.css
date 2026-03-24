@@ -3,15 +3,19 @@
 :root {
   --font-heading: 'Cormorant Garamond', Georgia, serif;
   --font-body: 'Inter', system-ui, sans-serif;
-  --color-bg: #f8f6f1;
-  --color-bg-alt: #f0ece4;
-  --color-text: #3a3a3a;
-  --color-text-light: #7a7a7a;
-  --color-accent: #b08d57;
-  --color-accent-dark: #8c6d3f;
+  --color-bg: #E7DDDA;
+  --color-bg-alt: #ddd2ce;
+  --color-text: #2a2a2a;
+  --color-text-light: #6a6565;
+  --color-accent: #5F578A;
+  --color-accent-dark: #4a4370;
   --color-white: #ffffff;
-  --color-dark: #1a1a1a;
-  --color-border: #e0dbd2;
+  --color-dark: #172C16;
+  --color-border: #ccc3bf;
+  --color-evergreen: #172C16;
+  --color-grape: #5F578A;
+  --color-mahogany: #3B0C0C;
+  --color-dustgrey: #E7DDDA;
   --section-padding: 100px 60px;
   --transition: cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -92,7 +96,7 @@ a {
 .btn:not(.btn-outline):hover {
   background: var(--color-accent-dark);
   transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(176, 141, 87, 0.3);
+  box-shadow: 0 4px 20px rgba(95, 87, 138, 0.3);
 }
 
 .btn-outline {

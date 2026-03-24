@@ -1,280 +1,247 @@
-// src/components/Gallery.jsx
-// ---------------------------------------------------------
-// Features:
-//   1. Masonry CSS grid layout (no JS library needed)
-//   2. Category filter tabs (All + dynamic categories)
-//   3. Search bar filtering by title or tags
-//   4. Click-to-open lightbox with keyboard support (Esc / arrows)
-//   5. Native lazy loading on <img> tags
-//   6. Smooth fade-in entrance animations via IntersectionObserver
-//   7. Fully responsive
-// ---------------------------------------------------------
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore'
+import { db } from '../config/firebase'
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useFetchArtworks } from "../hooks/useFetchArtworks";
-import "./Gallery.css";
+const fallbackArt = [
+  { id: '1', title: 'Artwork 1', description: 'A vibrant expression of color and emotion.', medium: 'Canvas', category: 'Painting', status: 'available' },
+  { id: '2', title: 'Artwork 2', description: 'Delicate lines capturing a fleeting moment.', medium: 'Paper', category: 'Sketch', status: 'available' },
+  { id: '3', title: 'Artwork 3', description: 'Bold strokes on a warm-toned surface.', medium: 'Canvas', category: 'Painting', status: 'available' },
+  { id: '4', title: 'Artwork 4', description: 'A unique design brought to life on fabric.', medium: 'Tote Bag', category: 'Digital', status: 'available' },
+  { id: '5', title: 'Artwork 5', description: 'Intricate details drawn with care.', medium: 'Paper', category: 'Sketch', status: 'available' },
+  { id: '6', title: 'Artwork 6', description: 'Rich textures layered with meaning.', medium: 'Canvas', category: 'Painting', status: 'available' },
+]
 
-// ── Lightbox ──────────────────────────────────────────────
-function Lightbox({ artwork, onClose, onPrev, onNext, hasPrev, hasNext }) {
-  // Close on backdrop click
-  const handleBackdrop = (e) => {
-    if (e.target === e.currentTarget) onClose();
-  };
-
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKey = (e) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowLeft" && hasPrev) onPrev();
-      if (e.key === "ArrowRight" && hasNext) onNext();
-    };
-    window.addEventListener("keydown", handleKey);
-    // Prevent body scroll while lightbox is open
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", handleKey);
-      document.body.style.overflow = "";
-    };
-  }, [onClose, onPrev, onNext, hasPrev, hasNext]);
-
-  if (!artwork) return null;
-
-  return (
-    <div className="lightbox-backdrop" onClick={handleBackdrop} role="dialog" aria-modal="true">
-      <button className="lightbox-close" onClick={onClose} aria-label="Close">
-        ✕
-      </button>
-
-      {hasPrev && (
-        <button className="lightbox-nav lightbox-nav--prev" onClick={onPrev} aria-label="Previous artwork">
-          ‹
-        </button>
-      )}
-
-      <div className="lightbox-content">
-        <img
-          src={artwork.imageUrl}
-          alt={artwork.title}
-          className="lightbox-img"
-        />
-        <div className="lightbox-info">
-          <h2 className="lightbox-title">{artwork.title}</h2>
-          {artwork.category && (
-            <span className="lightbox-category">{artwork.category}</span>
-          )}
-          {artwork.tags?.length > 0 && (
-            <div className="lightbox-tags">
-              {artwork.tags.map((tag) => (
-                <span key={tag} className="lightbox-tag">#{tag}</span>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {hasNext && (
-        <button className="lightbox-nav lightbox-nav--next" onClick={onNext} aria-label="Next artwork">
-          ›
-        </button>
-      )}
-    </div>
-  );
-}
-
-// ── Artwork Card ──────────────────────────────────────────
-function ArtworkCard({ artwork, onClick }) {
-  const cardRef = useRef(null);
-
-  // Fade-in on scroll using IntersectionObserver
-  useEffect(() => {
-    const el = cardRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add("gallery-card--visible");
-          observer.unobserve(el);
-        }
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={cardRef}
-      className="gallery-card"
-      onClick={() => onClick(artwork)}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => e.key === "Enter" && onClick(artwork)}
-      aria-label={`View ${artwork.title}`}
-    >
-      <div className="gallery-card__img-wrap">
-        <img
-          src={artwork.imageUrl}
-          alt={artwork.title}
-          className="gallery-card__img"
-          loading="lazy" // native lazy load
-        />
-        <div className="gallery-card__overlay">
-          <span className="gallery-card__zoom-icon">⤢</span>
-          <p className="gallery-card__title">{artwork.title}</p>
-          {artwork.category && (
-            <p className="gallery-card__category">{artwork.category}</p>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ── Gallery ───────────────────────────────────────────────
 export default function Gallery() {
-  const { artworks, loading, error } = useFetchArtworks();
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [artworks, setArtworks] = useState([])
+  const [selectedArt, setSelectedArt] = useState(null)
+  const [isClosing, setIsClosing] = useState(false)
+  const [rotation, setRotation] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
+  const carouselRef = useRef(null)
+  const dragStartRef = useRef(null)
+  const rotationRef = useRef(0)
+  const velocityRef = useRef(0)
+  const lastXRef = useRef(0)
+  const animFrameRef = useRef(null)
+  const autoRotateRef = useRef(null)
 
-  // Derive unique categories from fetched artworks
-  const categories = [
-    "All",
-    ...Array.from(new Set(artworks.map((a) => a.category).filter(Boolean))),
-  ];
+  useEffect(() => {
+    try {
+      const q = query(collection(db, 'artworks'), orderBy('order', 'asc'))
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        if (snapshot.empty) {
+          setArtworks(fallbackArt)
+        } else {
+          const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
+          docs.sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity))
+          setArtworks(docs)
+        }
+      }, () => {
+        setArtworks(fallbackArt)
+      })
+      return unsubscribe
+    } catch {
+      setArtworks(fallbackArt)
+    }
+  }, [])
 
-  // Filter artworks
-  const filtered = artworks.filter((a) => {
-    const matchesCategory =
-      activeCategory === "All" || a.category === activeCategory;
-    const query = searchQuery.toLowerCase();
-    const matchesSearch =
-      !query ||
-      a.title?.toLowerCase().includes(query) ||
-      a.tags?.some((t) => t.toLowerCase().includes(query));
-    return matchesCategory && matchesSearch;
-  });
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    document.body.style.overflow = selectedArt ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [selectedArt])
 
-  const openLightbox = useCallback(
-    (artwork) => {
-      const idx = filtered.findIndex((a) => a.id === artwork.id);
-      setLightboxIndex(idx);
-    },
-    [filtered]
-  );
+  // Auto-rotate slowly when not dragging and no modal open
+  useEffect(() => {
+    if (isDragging || selectedArt) return
+    let lastTime = performance.now()
+    const autoRotate = () => {
+      const now = performance.now()
+      const dt = now - lastTime
+      lastTime = now
+      rotationRef.current += 0.015 * (dt / 16)
+      setRotation(rotationRef.current)
+      autoRotateRef.current = requestAnimationFrame(autoRotate)
+    }
+    autoRotateRef.current = requestAnimationFrame(autoRotate)
+    return () => cancelAnimationFrame(autoRotateRef.current)
+  }, [isDragging, selectedArt])
 
-  const closeLightbox = () => setLightboxIndex(null);
-  const prevLightbox = () => setLightboxIndex((i) => Math.max(0, i - 1));
-  const nextLightbox = () =>
-    setLightboxIndex((i) => Math.min(filtered.length - 1, i + 1));
+  // Wheel handler
+  useEffect(() => {
+    const el = carouselRef.current
+    if (!el) return
+    const handleWheel = (e) => {
+      e.preventDefault()
+      rotationRef.current += e.deltaY * 0.1
+      setRotation(rotationRef.current)
+    }
+    el.addEventListener('wheel', handleWheel, { passive: false })
+    return () => el.removeEventListener('wheel', handleWheel)
+  }, [])
 
-  // ── Render ──
-  if (error) {
-    return (
-      <section className="gallery-section">
-        <p className="gallery-error">
-          Could not load artworks. Please try again later.
-        </p>
-      </section>
-    );
+  const handlePointerDown = useCallback((e) => {
+    dragStartRef.current = e.clientX
+    if (selectedArt) return
+    setIsDragging(true)
+    lastXRef.current = e.clientX
+    velocityRef.current = 0
+    cancelAnimationFrame(animFrameRef.current)
+  }, [selectedArt])
+
+  const handlePointerMove = useCallback((e) => {
+    if (!isDragging) return
+    const dx = e.clientX - lastXRef.current
+    lastXRef.current = e.clientX
+    velocityRef.current = dx
+    rotationRef.current -= dx * 0.25
+    setRotation(rotationRef.current)
+  }, [isDragging])
+
+  const handlePointerUp = useCallback(() => {
+    setIsDragging(false)
+    const decelerate = () => {
+      velocityRef.current *= 0.94
+      if (Math.abs(velocityRef.current) > 0.1) {
+        rotationRef.current -= velocityRef.current * 0.25
+        setRotation(rotationRef.current)
+        animFrameRef.current = requestAnimationFrame(decelerate)
+      }
+    }
+    animFrameRef.current = requestAnimationFrame(decelerate)
+  }, [])
+
+  const handleCardClick = (art, e, cardAngle) => {
+    const startX = dragStartRef.current
+    if (startX !== null && Math.abs(e.clientX - startX) > 8) return
+    // Only open modal for front-facing cards
+    const totalAngle = ((rotationRef.current + cardAngle) % 360 + 360) % 360
+    const isFrontFacing = totalAngle < 90 || totalAngle > 270
+    if (!isFrontFacing) return
+    setSelectedArt(art)
   }
 
+  const handleClose = () => {
+    setIsClosing(true)
+    setTimeout(() => {
+      setSelectedArt(null)
+      setIsClosing(false)
+    }, 480)
+  }
+
+  const closeModal = (e) => {
+    if (e.target === e.currentTarget) handleClose()
+  }
+
+  const handleInquire = (e) => {
+    e.stopPropagation()
+    const message = `Hi, I'm interested in "${selectedArt.title}". Could you share more details?`
+    window.dispatchEvent(new CustomEvent('artInquiry', { detail: { message } }))
+    handleClose()
+    setTimeout(() => {
+      document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
+    }, 520)
+  }
+
+  const count = artworks.length
+  const angleStep = count > 0 ? 360 / count : 0
+  const radius = Math.max(360, count * 80)
+
   return (
-    <section className="gallery-section" id="gallery">
-      {/* Header */}
-      <div className="gallery-header">
-        <p className="gallery-eyebrow">Portfolio</p>
-        <h1 className="gallery-heading">The Collection</h1>
-        <p className="gallery-subheading">
-          A curated selection of original works — exploring colour, form &amp; emotion.
-        </p>
+    <section id="gallery" className="gallery">
+      <span className="section-overline">Collection</span>
+      <h2>The Gallery</h2>
+      <p className="section-subtitle">Each piece is a window into a world of imagination</p>
+      <p className="carousel-hint">Scroll or drag to explore &middot; Click a piece to see details</p>
+
+      <div
+        className="carousel-viewport"
+        ref={carouselRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+      >
+        <div
+          className="carousel-ring"
+          style={{ transform: `rotateY(${rotation}deg)` }}
+        >
+          {artworks.map((art, i) => {
+            const angle = i * angleStep
+            return (
+              <div
+                key={art.id}
+                className="carousel-card"
+                style={{ transform: `rotateY(${angle}deg) translateZ(${radius}px)` }}
+                onClick={(e) => handleCardClick(art, e, angle)}
+              >
+                {/* White canvas — shows when card faces away */}
+                <div className="carousel-face carousel-face-natural-back" />
+
+                {/* Front face — artwork image */}
+                <div className="carousel-face carousel-face-front">
+                  {art.imageUrl ? (
+                    <img src={art.imageUrl} alt={art.title} className="carousel-card-image" draggable={false} />
+                  ) : (
+                    <div className="carousel-card-placeholder">{art.title}</div>
+                  )}
+                  {art.status === 'sold' && <span className="carousel-sold-badge">Sold</span>}
+                  <div className="carousel-card-label">
+                    <span className="carousel-card-category">{art.category}</span>
+                    <h3>{art.title}</h3>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
       </div>
 
-      {/* Search */}
-      <div className="gallery-search-wrap">
-        <input
-          type="text"
-          className="gallery-search"
-          placeholder="Search by title or tag…"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          aria-label="Search artworks"
-        />
-        {searchQuery && (
-          <button
-            className="gallery-search-clear"
-            onClick={() => setSearchQuery("")}
-            aria-label="Clear search"
-          >
-            ✕
-          </button>
-        )}
-      </div>
+      {/* Large popup modal with flip-in animation */}
+      {selectedArt && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className={`modal-popup${isClosing ? ' is-closing' : ''}`}>
+            <button className="modal-popup-close" onClick={handleClose}>×</button>
 
-      {/* Category Filters */}
-      <div className="gallery-filters" role="tablist" aria-label="Filter by category">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            className={`gallery-filter-btn${activeCategory === cat ? " gallery-filter-btn--active" : ""}`}
-            onClick={() => setActiveCategory(cat)}
-            role="tab"
-            aria-selected={activeCategory === cat}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
+            <div className="modal-popup-image">
+              {selectedArt.imageUrl ? (
+                <img src={selectedArt.imageUrl} alt={selectedArt.title} draggable={false} />
+              ) : (
+                <div className="carousel-card-placeholder">{selectedArt.title}</div>
+              )}
+            </div>
 
-      {/* Results count */}
-      {!loading && (
-        <p className="gallery-count">
-          {filtered.length} {filtered.length === 1 ? "work" : "works"}
-          {activeCategory !== "All" ? ` in ${activeCategory}` : ""}
-          {searchQuery ? ` matching "${searchQuery}"` : ""}
-        </p>
-      )}
-
-      {/* Grid / Loading / Empty */}
-      {loading ? (
-        <div className="gallery-skeleton-grid">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="gallery-skeleton" />
-          ))}
+            <div className="modal-popup-details">
+              <span className="carousel-back-category">{selectedArt.category}</span>
+              <h2 className="modal-popup-title">{selectedArt.title}</h2>
+              {selectedArt.status === 'sold' && <span className="carousel-back-sold">This piece has been sold</span>}
+              <p className="modal-popup-desc">{selectedArt.description}</p>
+              <div className="carousel-back-meta">
+                <div className="carousel-back-meta-row">
+                  <span className="carousel-back-label">Medium</span>
+                  <span className="carousel-back-value">{selectedArt.medium}</span>
+                </div>
+                <div className="carousel-back-meta-row">
+                  <span className="carousel-back-label">Category</span>
+                  <span className="carousel-back-value">{selectedArt.category}</span>
+                </div>
+                <div className="carousel-back-meta-row">
+                  <span className="carousel-back-label">Status</span>
+                  <span className="carousel-back-value">{selectedArt.status === 'sold' ? 'Sold' : 'Available'}</span>
+                </div>
+              </div>
+              {selectedArt.status !== 'sold' && (
+                <button
+                  className="carousel-back-btn modal-popup-btn"
+                  onClick={handleInquire}
+                >
+                  Inquire About This Piece
+                </button>
+              )}
+            </div>
+          </div>
         </div>
-      ) : filtered.length === 0 ? (
-        <div className="gallery-empty">
-          <p>No artworks found.</p>
-          <button
-            className="gallery-filter-btn"
-            onClick={() => {
-              setActiveCategory("All");
-              setSearchQuery("");
-            }}
-          >
-            Clear filters
-          </button>
-        </div>
-      ) : (
-        <div className="gallery-masonry">
-          {filtered.map((artwork) => (
-            <ArtworkCard key={artwork.id} artwork={artwork} onClick={openLightbox} />
-          ))}
-        </div>
-      )}
-
-      {/* Lightbox */}
-      {lightboxIndex !== null && (
-        <Lightbox
-          artwork={filtered[lightboxIndex]}
-          onClose={closeLightbox}
-          onPrev={prevLightbox}
-          onNext={nextLightbox}
-          hasPrev={lightboxIndex > 0}
-          hasNext={lightboxIndex < filtered.length - 1}
-        />
       )}
     </section>
-  );
+  )
 }
