@@ -19,8 +19,8 @@ function PublicSite() {
       <Navbar />
       <main>
         <Hero />
-        <About />
         <Gallery />
+        <About />
         <Contact />
       </main>
       <Footer />

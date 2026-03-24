@@ -16,14 +16,23 @@ export default function Gallery() {
   const [selectedArt, setSelectedArt] = useState(null)
   const [isClosing, setIsClosing] = useState(false)
   const [rotation, setRotation] = useState(0)
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [isDragging, setIsDragging] = useState(false)
   const carouselRef = useRef(null)
+  const gallerySceneRef = useRef(null)
+  const galleryHeaderRef = useRef(null)
+  const galleryWrapperRef = useRef(null)
   const dragStartRef = useRef(null)
   const rotationRef = useRef(0)
   const velocityRef = useRef(0)
   const lastXRef = useRef(0)
   const animFrameRef = useRef(null)
   const autoRotateRef = useRef(null)
+  const closeTimeoutRef = useRef(null)
+  const zoomRafRef = useRef(null)
+  const currentScaleRef = useRef(0.22)
+  const currentRadiusRef = useRef(28)
+  const currentOpacityRef = useRef(0.1)
 
   useEffect(() => {
     try {
@@ -36,22 +45,107 @@ export default function Gallery() {
           docs.sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity))
           setArtworks(docs)
         }
-      }, () => {
-        setArtworks(fallbackArt)
-      })
+      }, () => setArtworks(fallbackArt))
       return unsubscribe
     } catch {
       setArtworks(fallbackArt)
     }
   }, [])
 
-  // Lock body scroll when modal is open
+  // ── Sticky scroll-driven zoom effect ──────────────────────────────────────
+  useEffect(() => {
+    const scene = gallerySceneRef.current
+    const header = galleryHeaderRef.current
+    const wrapper = galleryWrapperRef.current
+    if (!scene || !header || !wrapper) return
+
+    const lerp = (a, b, t) => a + (b - a) * t
+
+    // easeOutExpo: slow start, explosive finish — matches LN site feel
+    const easeOutExpo = t => t <= 0 ? 0 : t >= 1 ? 1 : 1 - Math.pow(2, -10 * t)
+
+    let targetScale   = 0.22
+    let targetRadius  = 28
+    let targetOpacity = 0.10
+
+    const tick = () => {
+      currentScaleRef.current   = lerp(currentScaleRef.current,   targetScale,   0.14)
+      currentRadiusRef.current  = lerp(currentRadiusRef.current,  targetRadius,  0.14)
+      currentOpacityRef.current = lerp(currentOpacityRef.current, targetOpacity, 0.14)
+
+      scene.style.transform    = `scale(${currentScaleRef.current.toFixed(4)})`
+      scene.style.borderRadius = `${currentRadiusRef.current.toFixed(2)}px`
+      scene.style.opacity      = currentOpacityRef.current.toFixed(4)
+
+      const stillMoving =
+        Math.abs(currentScaleRef.current   - targetScale)   > 0.0003 ||
+        Math.abs(currentRadiusRef.current  - targetRadius)  > 0.05   ||
+        Math.abs(currentOpacityRef.current - targetOpacity) > 0.002
+
+      if (stillMoving) zoomRafRef.current = requestAnimationFrame(tick)
+    }
+
+    const onScroll = () => {
+      const rect = wrapper.getBoundingClientRect()
+      const scrollableHeight = wrapper.offsetHeight - window.innerHeight
+      if (scrollableHeight <= 0) return
+
+      // progress: 0 when section just enters view, 1 when we've scrolled all the way through
+      const scrolled = Math.max(0, -rect.top)
+      const progress = Math.min(1, scrolled / scrollableHeight)
+
+      // ── Phase 1: progress 0.00 → 0.18 — header fades, carousel stays tiny ──
+      // ── Phase 2: progress 0.18 → 0.60 — carousel zooms IN ──
+      // ── Phase 3: progress 0.60 → 0.72 — hold at full ──
+      // ── Phase 4: progress 0.72 → 1.00 — carousel zooms OUT ──
+      let carouselT
+      if (progress < 0.18) {
+        carouselT = 0  // stay tiny while header fades
+      } else if (progress < 0.60) {
+        carouselT = easeOutExpo((progress - 0.18) / 0.42)
+      } else if (progress < 0.72) {
+        carouselT = 1
+      } else {
+        carouselT = easeOutExpo(1 - (progress - 0.72) / 0.28)
+      }
+
+      // Header: fully gone by progress 0.14 — well before carousel starts zooming
+      const headerOpacity = Math.max(0, 1 - progress / 0.14)
+      header.style.opacity = headerOpacity.toFixed(4)
+      header.style.pointerEvents = headerOpacity > 0.01 ? '' : 'none'
+
+      // Carousel scene targets
+      targetScale   = 0.22 + carouselT * 0.63   // 0.22 → 0.85
+      targetRadius  = (1 - carouselT) * 28        // 28px → 0px
+      targetOpacity = 0.10 + carouselT * 0.90     // 0.10 → 1.00
+
+      // Navbar: hide while carousel is filling the screen
+      if (carouselT > 0.55) {
+        document.body.classList.add('gallery-active')
+      } else {
+        document.body.classList.remove('gallery-active')
+      }
+
+      cancelAnimationFrame(zoomRafRef.current)
+      zoomRafRef.current = requestAnimationFrame(tick)
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(zoomRafRef.current)
+      document.body.classList.remove('gallery-active')
+    }
+  }, [])
+
+  // ── Body scroll lock when modal open ──────────────────────────────────────
   useEffect(() => {
     document.body.style.overflow = selectedArt ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [selectedArt])
 
-  // Auto-rotate slowly when not dragging and no modal open
+  // ── Auto-rotate carousel ──────────────────────────────────────────────────
   useEffect(() => {
     if (isDragging || selectedArt) return
     let lastTime = performance.now()
@@ -67,7 +161,7 @@ export default function Gallery() {
     return () => cancelAnimationFrame(autoRotateRef.current)
   }, [isDragging, selectedArt])
 
-  // Wheel handler
+  // ── Wheel handler ─────────────────────────────────────────────────────────
   useEffect(() => {
     const el = carouselRef.current
     if (!el) return
@@ -114,18 +208,36 @@ export default function Gallery() {
   const handleCardClick = (art, e, cardAngle) => {
     const startX = dragStartRef.current
     if (startX !== null && Math.abs(e.clientX - startX) > 8) return
-    // Only open modal for front-facing cards
     const totalAngle = ((rotationRef.current + cardAngle) % 360 + 360) % 360
     const isFrontFacing = totalAngle < 90 || totalAngle > 270
     if (!isFrontFacing) return
     setSelectedArt(art)
   }
 
+  // ── Responsive resize listener ────────────────────────────────────────────
+  useEffect(() => {
+    const onResize = () => setWindowWidth(window.innerWidth)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
+  // ── Close timeout cleanup ─────────────────────────────────────────────────
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current !== null) {
+        clearTimeout(closeTimeoutRef.current)
+        closeTimeoutRef.current = null
+      }
+    }
+  }, [])
+
   const handleClose = () => {
     setIsClosing(true)
-    setTimeout(() => {
+    if (closeTimeoutRef.current !== null) clearTimeout(closeTimeoutRef.current)
+    closeTimeoutRef.current = setTimeout(() => {
       setSelectedArt(null)
       setIsClosing(false)
+      closeTimeoutRef.current = null
     }, 480)
   }
 
@@ -145,63 +257,119 @@ export default function Gallery() {
 
   const count = artworks.length
   const angleStep = count > 0 ? 360 / count : 0
-  const radius = Math.max(360, count * 80)
+  const radius = windowWidth <= 480
+    ? Math.max(180, count * 45)
+    : windowWidth <= 900
+      ? Math.max(260, count * 62)
+      : Math.max(360, count * 80)
+
+  // Tall card dimensions matched to carousel-card breakpoints
+  const tallCard = windowWidth <= 480
+    ? { width: '100px', height: '150px', left: '60px' }
+    : windowWidth <= 900
+      ? { width: '130px', height: '185px', left: '70px' }
+      : { width: '210px', height: '290px', left: '115px' }
 
   return (
     <section id="gallery" className="gallery">
-      <span className="section-overline">Collection</span>
-      <h2>The Gallery</h2>
-      <p className="section-subtitle">Each piece is a window into a world of imagination</p>
-      <p className="carousel-hint">Scroll or drag to explore &middot; Click a piece to see details</p>
 
-      <div
-        className="carousel-viewport"
-        ref={carouselRef}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
-      >
-        <div
-          className="carousel-ring"
-          style={{ transform: `rotateY(${rotation}deg)` }}
-        >
-          {artworks.map((art, i) => {
-            const angle = i * angleStep
-            return (
+      {/* ── Tall scroll wrapper — provides room for sticky animation ── */}
+      <div className="gallery-scroll-wrapper" ref={galleryWrapperRef}>
+
+        {/* ── Sticky stage — stays in viewport while user scrolls through wrapper ── */}
+        <div className="gallery-stage">
+
+          {/* ── Header: title + hint, fades out before carousel fills screen ── */}
+          <div className="gallery-header" ref={galleryHeaderRef}>
+            <span className="section-overline">Gallery</span>
+            <h2>Selected Works</h2>
+            <p className="carousel-hint">Scroll or drag to explore &middot; Click a piece to see details</p>
+          </div>
+
+          {/* ── Carousel scene: scales from small → full viewport ── */}
+          <div className="gallery-carousel-scene" ref={gallerySceneRef}>
+            <div
+              className="carousel-viewport"
+              ref={carouselRef}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={handlePointerUp}
+            >
               <div
-                key={art.id}
-                className="carousel-card"
-                style={{ transform: `rotateY(${angle}deg) translateZ(${radius}px)` }}
-                onClick={(e) => handleCardClick(art, e, angle)}
+                className="carousel-ring"
+                style={{ transform: `rotateY(${rotation}deg)` }}
               >
-                {/* White canvas — shows when card faces away */}
-                <div className="carousel-face carousel-face-natural-back" />
+                {artworks.map((art, i) => {
+                  const angle = i * angleStep
+                  const isTall = art.height === 'tall'
+                  const cardStyle = isTall
+                    ? {
+                        transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
+                        width: tallCard.width,
+                        height: tallCard.height,
+                        left: tallCard.left,
+                        top: '0',
+                      }
+                    : { transform: `rotateY(${angle}deg) translateZ(${radius}px)` }
 
-                {/* Front face — artwork image */}
-                <div className="carousel-face carousel-face-front">
-                  {art.imageUrl ? (
-                    <img src={art.imageUrl} alt={art.title} className="carousel-card-image" draggable={false} />
-                  ) : (
-                    <div className="carousel-card-placeholder">{art.title}</div>
-                  )}
-                  {art.status === 'sold' && <span className="carousel-sold-badge">Sold</span>}
-                  <div className="carousel-card-label">
-                    <span className="carousel-card-category">{art.category}</span>
-                    <h3>{art.title}</h3>
-                  </div>
-                </div>
+                  return (
+                    <div
+                      key={art.id}
+                      className={`carousel-card${isTall ? ' carousel-card-tall' : ''}`}
+                      style={cardStyle}
+                      role="button"
+                      tabIndex={0}
+                      onClick={(e) => handleCardClick(art, e, angle)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          if (e.key !== 'Enter') e.preventDefault()
+                          handleCardClick(art, e, angle)
+                        }
+                      }}
+                    >
+                      <div className="carousel-face carousel-face-natural-back" />
+                      <div className="carousel-face carousel-face-front">
+                        {art.imageUrl ? (
+                          <img src={art.imageUrl} alt={art.title} className="carousel-card-image" draggable={false} />
+                        ) : (
+                          <div className="carousel-card-placeholder">{art.title}</div>
+                        )}
+                        {art.status === 'sold' && <span className="carousel-sold-badge">Sold</span>}
+                        <div className="carousel-card-label">
+                          <span className="carousel-card-category">{art.category}</span>
+                          <h3>{art.title}</h3>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
-            )
-          })}
+            </div>
+
+            </div>
+
+          {/* "View Full Collection" sits outside the zooming scene */}
+          <div className="gallery-view-all">
+            <a href="#gallery" className="btn btn-outline btn-glitter">
+              <span className="btn-glitter-shimmer" aria-hidden="true" />
+              View Full Collection
+            </a>
+          </div>
+
         </div>
       </div>
 
-      {/* Large popup modal with flip-in animation */}
+      {/* ── Modal lives OUTSIDE all transforms so position:fixed is viewport-relative ── */}
       {selectedArt && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className={`modal-popup${isClosing ? ' is-closing' : ''}`}>
-            <button className="modal-popup-close" onClick={handleClose}>×</button>
+            <button
+              type="button"
+              aria-label="Close"
+              className="modal-popup-close"
+              onClick={handleClose}
+            >×</button>
 
             <div className="modal-popup-image">
               {selectedArt.imageUrl ? (

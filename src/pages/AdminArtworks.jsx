@@ -307,10 +307,10 @@ export default function AdminArtworks() {
                     <input type="text" value={form.medium} onChange={e => setForm({...form, medium: e.target.value})} placeholder="e.g. Canvas, Tote Bag, Paper" required />
                   </div>
                   <div className="admin-form-group">
-                    <label>Layout Height</label>
+                    <label>Orientation</label>
                     <select value={form.height} onChange={e => setForm({...form, height: e.target.value})}>
-                      <option value="normal">Normal</option>
-                      <option value="tall">Tall</option>
+                      <option value="normal">Horizontal</option>
+                      <option value="tall">Vertical</option>
                     </select>
                   </div>
                   <div className="admin-form-group">

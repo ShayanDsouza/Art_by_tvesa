@@ -7,11 +7,66 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 48px;
-  background: transparent;
-  backdrop-filter: blur(12px);
+  padding: 20px 48px;
+  background: #2d2845;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   z-index: 100;
-  transition: all 0.4s var(--transition);
+  transition: opacity 0.5s var(--transition), transform 0.5s var(--transition);
+}
+
+/* ── Full Collection navbar button ── */
+.navbar-collection-btn {
+  position: relative;
+  overflow: hidden;
+  padding: 7px 16px !important;
+  border: 1px solid rgba(144, 136, 192, 0.45);
+  border-radius: 2px;
+  color: var(--color-text-light) !important;
+  background: rgba(144, 136, 192, 0.06);
+  letter-spacing: 2px !important;
+  transition: color 0.3s, border-color 0.3s, box-shadow 0.3s, background 0.3s !important;
+}
+
+.navbar-collection-btn::after {
+  display: none !important; /* suppress the underline pseudo-element */
+}
+
+.navbar-collection-btn:hover {
+  color: #fff !important;
+  border-color: rgba(200, 190, 255, 0.7);
+  background: rgba(144, 136, 192, 0.14);
+  box-shadow:
+    0 0 10px rgba(144, 136, 192, 0.45),
+    0 0 22px rgba(144, 136, 192, 0.25),
+    0 0 40px rgba(144, 136, 192, 0.12);
+}
+
+.navbar-collection-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-sweep 2.6s ease-in-out infinite;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+@keyframes shimmer-sweep {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Hide navbar while gallery is filling the screen */
+body.gallery-active .navbar {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
 }
 
 .navbar::after {
@@ -21,15 +76,20 @@
   left: 48px;
   right: 48px;
   height: 1px;
-  background: rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .navbar-logo {
-  font-family: var(--font-heading);
-  font-size: 1.6rem;
-  font-weight: 400;
-  color: var(--color-dark);
-  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo-img {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  border-radius: 3px;
 }
 
 .navbar-links {
@@ -66,6 +126,7 @@
 .navbar-links a:hover::after {
   width: 100%;
 }
+
 
 .hamburger {
   display: none;
@@ -113,20 +174,26 @@
 
   .navbar-links {
     position: fixed;
-    top: 0;
+    top: 84px;
     right: -100%;
-    height: 100vh;
+    height: calc(100vh - 84px);
     width: 280px;
     flex-direction: column;
-    background: var(--color-bg);
-    padding: 100px 48px;
+    background: #112211;
+    padding: 40px 48px;
     gap: 28px;
     transition: right 0.4s var(--transition);
-    box-shadow: -8px 0 40px rgba(0, 0, 0, 0.08);
+    box-shadow: -8px 0 40px rgba(0, 0, 0, 0.4);
   }
 
   .navbar-links.active {
     right: 0;
+  }
+
+  /* Hamburger floats above the open drawer so it's always tappable */
+  .hamburger {
+    position: relative;
+    z-index: 101;
   }
 }
 
@@ -155,9 +222,9 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 20% 50%, rgba(95, 87, 138, 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(23, 44, 22, 0.04) 0%, transparent 40%),
-    radial-gradient(circle at 50% 80%, rgba(59, 12, 12, 0.03) 0%, transparent 60%);
+    radial-gradient(circle at 20% 50%, rgba(144, 136, 192, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(13, 26, 13, 0.3) 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(59, 12, 12, 0.2) 0%, transparent 60%);
   pointer-events: none;
 }
 
@@ -197,18 +264,7 @@
   width: 60px;
   height: 1px;
   background: var(--color-accent);
-  margin: 28px auto;
-}
-
-.hero-subtitle {
-  font-size: 1.1rem;
-  color: var(--color-text-light);
-  font-weight: 300;
-  margin-bottom: 48px;
-  letter-spacing: 0.5px;
-  font-style: italic;
-  font-family: var(--font-heading);
-  font-size: 1.4rem;
+  margin: 28px auto 48px;
 }
 
 .hero-scroll-hint {
@@ -248,10 +304,6 @@
     letter-spacing: -1px;
   }
 
-  .hero-subtitle {
-    font-size: 1.1rem;
-  }
-
   .hero-scroll-hint {
     bottom: 24px;
   }
@@ -260,7 +312,7 @@
 /* ===== ABOUT ===== */
 .about {
   padding: 120px 60px;
-  background: var(--color-white);
+  background: var(--color-surface);
   position: relative;
 }
 
@@ -290,18 +342,18 @@
 .placeholder-image {
   width: 320px;
   height: 420px;
-  background: linear-gradient(145deg, #ddd2ce 0%, #ccc3bf 100%);
+  background: linear-gradient(145deg, #1c2a1c 0%, #152015 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(120, 110, 95, 0.5);
+  color: rgba(200, 185, 175, 0.3);
   font-size: 0.8rem;
   letter-spacing: 3px;
   text-transform: uppercase;
   font-family: var(--font-heading);
   font-style: italic;
   position: relative;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .placeholder-image::before {
@@ -339,6 +391,17 @@
   margin-top: 16px;
 }
 
+.about-inline-link {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s;
+}
+
+.about-inline-link:hover {
+  text-decoration-color: var(--color-accent);
+}
+
 @media (max-width: 768px) {
   .about {
     padding: 80px 24px;
@@ -367,15 +430,59 @@
 
 /* ===== GALLERY ===== */
 .gallery {
-  padding: var(--section-padding);
-  padding-top: 100px;
-  padding-bottom: 120px;
-  background: #ddd2ce;
-  background-image:
-    radial-gradient(ellipse at 20% 30%, rgba(95, 87, 138, 0.05) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 70%, rgba(23, 44, 22, 0.04) 0%, transparent 50%);
-  text-align: center;
+  padding: 0;
+  background: #3B0C0C;
   position: relative;
+}
+
+/* ── Tall wrapper: provides scroll room for sticky animation ── */
+.gallery-scroll-wrapper {
+  height: 280vh;
+  position: relative;
+}
+
+/* ── Sticky stage: stays in viewport while scrolling through the wrapper ── */
+.gallery-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #3B0C0C;
+  background-image:
+    radial-gradient(ellipse at 20% 30%, rgba(144, 136, 192, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(13, 26, 13, 0.15) 0%, transparent 50%);
+}
+
+/* ── Header: sits at the top of the stage, above the carousel ── */
+.gallery-header {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 2;
+  pointer-events: none;
+  width: 100%;
+  will-change: opacity;
+}
+
+/* ── Carousel scene: fills the stage, scaled by scroll progress ── */
+.gallery-carousel-scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;          /* anchor to bottom — grows upward */
+  padding-bottom: 96px;
+  transform-origin: center center;
+  will-change: transform, opacity;
+  transform: scale(0.22);
+  border-radius: 28px;
+  opacity: 0.1;
 }
 
 .gallery::before {
@@ -385,17 +492,73 @@
   left: 0;
   right: 0;
   height: 1px;
+  z-index: 3;
   background: linear-gradient(to right, transparent, var(--color-border), transparent);
 }
 
-.gallery h2 {
+.gallery-header h2 {
   font-size: 3.2rem;
   font-weight: 300;
   margin-bottom: 12px;
   letter-spacing: -0.5px;
 }
 
+/* ===== GLITTER BUTTON ===== */
+.btn-glitter {
+  position: relative;
+  overflow: hidden;
+  /* layered glitter particle bg */
+  background:
+    radial-gradient(circle at 20% 40%, rgba(200, 190, 255, 0.18) 0%, transparent 50%),
+    radial-gradient(circle at 75% 65%, rgba(255, 210, 240, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 50% 10%, rgba(180, 170, 255, 0.10) 0%, transparent 40%),
+    transparent;
+  border-color: rgba(180, 170, 255, 0.5) !important;
+  transition: box-shadow 0.4s, border-color 0.4s, color 0.3s !important;
+}
+
+.btn-glitter:hover {
+  color: #fff !important;
+  border-color: rgba(220, 210, 255, 0.85) !important;
+  box-shadow:
+    0 0 12px rgba(160, 140, 255, 0.55),
+    0 0 28px rgba(160, 140, 255, 0.30),
+    0 0 55px rgba(160, 140, 255, 0.15),
+    inset 0 0 18px rgba(160, 140, 255, 0.08);
+}
+
+.btn-glitter-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.60) 48%,
+    rgba(220, 210, 255, 0.40) 52%,
+    transparent 75%
+  );
+  background-size: 220% 100%;
+  animation: glitter-sweep 3s ease-in-out infinite;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+@keyframes glitter-sweep {
+  0%   { background-position: 220% 0; opacity: 0.7; }
+  50%  { opacity: 1; }
+  100% { background-position: -220% 0; opacity: 0.7; }
+}
+
 /* ===== 3D CAROUSEL ===== */
+.gallery-view-all {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 3;
+}
+
 .carousel-hint {
   font-size: 0.7rem;
   color: var(--color-text-light);
@@ -407,7 +570,7 @@
 
 .carousel-viewport {
   width: 100%;
-  height: 520px;
+  height: clamp(540px, 86vh, 800px);
   perspective: 1400px;
   overflow: hidden;
   cursor: grab;
@@ -416,6 +579,7 @@
   justify-content: center;
   user-select: none;
   -webkit-user-select: none;
+  touch-action: pan-y;
 }
 
 .carousel-viewport:active {
@@ -437,6 +601,11 @@
   cursor: pointer;
 }
 
+/* Portrait/tall card — width and height are set inline in JSX; backface must match */
+.carousel-card-tall .carousel-face-natural-back {
+  background: #1c2a1c;
+}
+
 
 /* ===== FLIP CARD ===== */
 .carousel-face {
@@ -446,12 +615,12 @@
   overflow: hidden;
 }
 
-/* Plain black canvas back — always shows when card faces away in the carousel */
+/* Dark canvas back — always shows when card faces away in the carousel */
 .carousel-face-natural-back {
   transform: rotateY(180deg);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  background: #f5f3f0;
+  background: #1c2a1c;
 }
 
 /* Front face */
@@ -481,11 +650,11 @@
 .carousel-card-placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(145deg, #ccc3bf 0%, #bdb3ae 100%);
+  background: linear-gradient(145deg, #1c2a1c 0%, #152015 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(120, 110, 95, 0.6);
+  color: rgba(200, 185, 175, 0.3);
   font-size: 1rem;
   letter-spacing: 2px;
   font-family: var(--font-heading);
@@ -517,7 +686,7 @@
   transition: opacity 0.4s var(--transition);
 }
 
-.carousel-card:not(.carousel-card-flipped):hover .carousel-card-label {
+.carousel-card:hover .carousel-card-label {
   opacity: 1;
 }
 
@@ -657,7 +826,7 @@
 
 .modal-popup-title {
   font-family: var(--font-heading);
-  font-size: 2rem;
+  font-size: 2.8rem;
   font-weight: 400;
   color: var(--color-white);
   margin: 8px 0 6px;
@@ -665,7 +834,7 @@
 }
 
 .modal-popup-desc {
-  font-size: 0.85rem;
+  font-size: 1.2rem;
   font-weight: 300;
   line-height: 1.75;
   color: rgba(255, 255, 255, 0.6);
@@ -676,7 +845,7 @@
 .modal-popup-btn {
   margin-top: 4px;
   padding: 12px 20px;
-  font-size: 0.65rem;
+  font-size: 1.1rem;
   letter-spacing: 2.5px;
   border: none;
   cursor: pointer;
@@ -687,7 +856,7 @@
 }
 
 .carousel-back-category {
-  font-size: 0.5rem;
+  font-size: 1rem;
   font-weight: 500;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -706,7 +875,7 @@
 
 .carousel-back-sold {
   display: inline-block;
-  font-size: 0.65rem;
+  font-size: 1.2rem;
   font-weight: 500;
   color: #e8a0a0;
   font-style: italic;
@@ -736,7 +905,7 @@
 }
 
 .carousel-back-label {
-  font-size: 0.6rem;
+  font-size: 1rem;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -744,7 +913,7 @@
 }
 
 .carousel-back-value {
-  font-size: 0.8rem;
+  font-size: 1.15rem;
   color: rgba(255, 255, 255, 0.8);
 }
 
@@ -753,7 +922,7 @@
   text-align: center;
   padding: 10px 20px;
   font-family: var(--font-body);
-  font-size: 0.65rem;
+  font-size: 1.1rem;
   font-weight: 500;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -779,11 +948,11 @@
 
 .gallery-placeholder {
   aspect-ratio: 4 / 5;
-  background: linear-gradient(145deg, #ccc3bf 0%, #bdb3ae 100%);
+  background: linear-gradient(145deg, #1c2a1c 0%, #152015 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(120, 110, 95, 0.6);
+  color: rgba(200, 185, 175, 0.3);
   font-size: 1.1rem;
   letter-spacing: 2px;
   font-family: var(--font-heading);
@@ -856,7 +1025,7 @@
 }
 
 .modal {
-  background: var(--color-white);
+  background: var(--color-surface);
   max-width: 1200px;
   width: 95%;
   max-height: 92vh;
@@ -921,7 +1090,7 @@
 
 .modal-category-tag {
   display: inline-block;
-  font-size: 0.65rem;
+  font-size: 1.2rem;
   font-weight: 500;
   letter-spacing: 2.5px;
   text-transform: uppercase;
@@ -933,7 +1102,7 @@
 }
 
 .modal-details h2 {
-  font-size: 2.4rem;
+  font-size: 3rem;
   font-weight: 300;
   margin-bottom: 20px;
   letter-spacing: -0.5px;
@@ -944,7 +1113,7 @@
   font-weight: 300;
   line-height: 1.9;
   margin-bottom: 32px;
-  font-size: 0.95rem;
+  font-size: 1.5rem;
 }
 
 .modal-meta-group {
@@ -959,7 +1128,7 @@
 }
 
 .modal-label {
-  font-size: 0.7rem;
+  font-size: 1.1rem;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -969,7 +1138,7 @@
 .modal-value {
   font-weight: 400;
   color: var(--color-dark);
-  font-size: 0.9rem;
+  font-size: 1.35rem;
 }
 
 .modal-inquiry-btn {
@@ -992,7 +1161,7 @@
   }
 
   .modal-details h2 {
-    font-size: 1.6rem;
+    font-size: 2rem;
   }
 }
 
@@ -1093,7 +1262,7 @@
 .footer {
   padding: 48px 60px;
   text-align: center;
-  background: var(--color-evergreen);
+  background: #2d2845;
   color: rgba(255, 255, 255, 0.5);
 }
 
@@ -1165,32 +1334,31 @@
 
 .modal-sold-tag {
   display: inline-block;
-  font-size: 0.75rem;
   font-weight: 500;
   color: #b44;
   margin-bottom: 16px;
   font-style: italic;
   font-family: var(--font-heading);
-  font-size: 1rem;
+  font-size: 1.4rem;
 }
 
 /* ===== CONTACT FEEDBACK ===== */
 .contact-success {
-  background: #f0f7f0;
-  color: #2d6a2e;
+  background: rgba(13, 60, 13, 0.3);
+  color: #7ec87f;
   padding: 14px 20px;
   margin-bottom: 24px;
   font-size: 0.9rem;
-  border-left: 3px solid #2d6a2e;
+  border-left: 3px solid #7ec87f;
 }
 
 .contact-error {
-  background: #fdf0f0;
-  color: #a33;
+  background: rgba(100, 20, 20, 0.3);
+  color: #e8a0a0;
   padding: 14px 20px;
   margin-bottom: 24px;
   font-size: 0.9rem;
-  border-left: 3px solid #a33;
+  border-left: 3px solid #e8a0a0;
 }
 
 /* ===== ADMIN LOADING ===== */
@@ -1213,6 +1381,25 @@
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* ===== ADMIN LIGHT MODE OVERRIDE ===== */
+/* Resets CSS variables to light mode for all admin pages */
+.admin-login,
+.admin-layout {
+  --color-bg: #E7DDDA;
+  --color-bg-alt: #ddd2ce;
+  --color-text: #2a2a2a;
+  --color-text-light: #6a6565;
+  --color-accent: #5F578A;
+  --color-accent-dark: #4a4370;
+  --color-dark: #172C16;
+  --color-border: #ccc3bf;
+  --color-evergreen: #172C16;
+  --color-grape: #5F578A;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f0ece9;
+  color: #2a2a2a;
 }
 
 /* ===== ADMIN LOGIN ===== */
@@ -1346,7 +1533,7 @@
   gap: 12px;
   width: 100%;
   padding: 14px 24px;
-  background: var(--color-white);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   font-family: var(--font-body);
   font-size: 0.88rem;
@@ -1358,8 +1545,8 @@
 }
 
 .admin-google-btn:hover {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border-color: var(--color-accent);
   transform: translateY(-1px);
 }
 
@@ -1539,7 +1726,7 @@
 
 /* ===== ADMIN FORM ===== */
 .admin-form-card {
-  background: var(--color-white);
+  background: var(--color-surface);
   padding: 32px;
   margin-bottom: 32px;
   border: 1px solid var(--color-border);
@@ -1638,7 +1825,7 @@
   overflow: hidden;
   break-inside: avoid;
   margin-bottom: 16px;
-  background: var(--color-white);
+  background: var(--color-surface);
   border-radius: 2px;
 }
 
@@ -1683,16 +1870,41 @@
 }
 
 .admin-masonry {
-  columns: 3;
-  column-gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-/* Override gallery scroll-reveal animation for admin items */
+/* All admin items: square aspect ratio, always-visible overlay */
 .admin-masonry .gallery-item {
   opacity: 1;
   transform: none;
+  margin-bottom: 0;
+  height: auto;
+  aspect-ratio: 1 / 1;
+}
+
+.admin-masonry .gallery-item-normal,
+.admin-masonry .gallery-item-tall {
+  min-height: unset;
+  height: auto;
+  aspect-ratio: 1 / 1;
+}
+
+.admin-masonry .gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+}
+
+/* Always show overlay in admin — lighter gradient so image stays clear */
+.admin-masonry .gallery-overlay {
+  opacity: 1;
+  background: linear-gradient(to top, rgba(10, 15, 10, 0.82) 0%, rgba(10, 15, 10, 0.18) 55%, transparent 100%);
 }
 
 /* Add New tile */
@@ -1916,7 +2128,7 @@
   display: grid;
   grid-template-columns: 360px 1fr;
   gap: 0;
-  background: var(--color-white);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 4px;
   min-height: 600px;
@@ -1928,14 +2140,14 @@
   border-right: 1px solid var(--color-border);
   overflow-y: auto;
   max-height: 78vh;
-  background: #faf9f7;
+  background: var(--color-bg);
 }
 
 .admin-message-item {
   display: flex;
   gap: 12px;
   padding: 16px 18px;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   cursor: pointer;
   transition: background 0.15s;
   position: relative;
@@ -1946,11 +2158,11 @@
 }
 
 .admin-message-item:hover {
-  background: rgba(0, 0, 0, 0.03);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .admin-message-item.selected {
-  background: var(--color-white);
+  background: var(--color-surface);
   box-shadow: inset 3px 0 0 var(--color-accent);
 }
 
@@ -2078,7 +2290,7 @@
   align-items: center;
   justify-content: center;
   border: 1px solid var(--color-border);
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-light);
   border-radius: 4px;
   cursor: pointer;
@@ -2152,7 +2364,7 @@
   }
 
   .admin-masonry {
-    columns: 2;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .admin-messages-layout {
@@ -2171,19 +2383,12 @@
 }
 
 @media (max-width: 600px) {
-  .admin-sidebar {
-    width: 100%;
-    position: relative;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
   .admin-main {
     margin-left: 0;
   }
 
   .admin-masonry {
-    columns: 1;
+    grid-template-columns: 1fr;
   }
 
   .admin-page-header {
@@ -2194,5 +2399,98 @@
 
   .admin-form-modal-content {
     padding: 20px;
+  }
+
+  .admin-sidebar {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .admin-sidebar-header,
+  .admin-sidebar-footer {
+    display: none;
+  }
+
+  .admin-nav {
+    flex-direction: row;
+    padding: 6px 16px;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .admin-nav-link {
+    flex-direction: column;
+    gap: 3px;
+    padding: 8px 24px;
+    font-size: 0.65rem;
+  }
+
+  .admin-main {
+    margin-left: 0;
+    padding: 20px 16px 90px;
+  }
+}
+
+/* ===== GALLERY MOBILE ===== */
+@media (max-width: 768px) {
+  .gallery-scroll-wrapper { height: 260vh; }
+  .gallery-header { top: 55px; }
+  .gallery-header h2 { font-size: 2rem; }
+  .gallery-carousel-scene { padding-bottom: 72px; justify-content: center; }
+  .gallery-view-all { bottom: 18px; }
+}
+
+@media (max-width: 480px) {
+  .gallery-scroll-wrapper { height: 220vh; }
+  .gallery-header { top: 46px; }
+  .gallery-header h2 { font-size: 1.5rem; }
+  .gallery-carousel-scene { padding-bottom: 64px; justify-content: center; }
+}
+
+/* ===== MODAL POPUP MOBILE ===== */
+@media (max-width: 640px) {
+  .modal-popup {
+    flex-direction: column;
+    width: min(420px, 96vw);
+    height: min(86vh, 620px);
+  }
+
+  .modal-popup-image {
+    width: 100%;
+    height: 45%;
+    flex-shrink: 0;
+  }
+
+  .modal-popup-details {
+    padding: 24px 20px 20px;
+    overflow-y: auto;
+  }
+
+  .modal-popup-title { font-size: 1.8rem; }
+  .modal-popup-desc { font-size: 1rem; }
+}
+
+/* ===== CONTACT MOBILE ===== */
+@media (max-width: 768px) {
+  .contact {
+    padding: 80px 28px;
+    max-width: 100%;
+  }
+
+  .contact h2 { font-size: 2rem; }
+}
+
+/* ===== SECTION PADDING MOBILE ===== */
+@media (max-width: 768px) {
+  :root {
+    --section-padding: 80px 28px;
   }
 }
