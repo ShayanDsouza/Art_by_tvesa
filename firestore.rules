@@ -27,12 +27,14 @@ service cloud.firestore {
                     && request.resource.data.imageUrl is string;
 
       allow update: if isAdmin()
+                    && request.resource.data.keys().hasOnly(['title', 'description', 'status', 'imageUrl', 'medium', 'category', 'order'])
                     && request.resource.data.title is string
                     && request.resource.data.title.size() >= 1
                     && request.resource.data.title.size() <= 200
                     && request.resource.data.description is string
                     && request.resource.data.description.size() <= 2000
-                    && request.resource.data.status in ['available', 'sold'];
+                    && request.resource.data.status in ['available', 'sold']
+                    && request.resource.data.imageUrl is string;
 
       allow delete: if isAdmin();
     }
@@ -40,7 +42,7 @@ service cloud.firestore {
     // ── Messages ─────────────────────────────────────────────────────────────
     // Anyone can submit the contact form; only admins can read/manage messages.
     match /messages/{messageId} {
-      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'message', 'read', 'createdAt'])
+      allow create: if request.resource.data.keys().hasOnly(['name', 'email', 'message', 'read', 'createdAt'])
                     && request.resource.data.name is string
                     && request.resource.data.name.size() >= 1
                     && request.resource.data.name.size() <= 100

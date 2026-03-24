@@ -7,12 +7,25 @@ export default function Contact() {
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
 
   useEffect(() => {
+    let timeoutId
+
     const handler = (e) => {
-      setForm(prev => ({ ...prev, message: e.detail.message }))
-      setTimeout(() => document.querySelector('#contact textarea')?.focus(), 100)
+      const message = e?.detail && typeof e.detail === 'object' ? e.detail.message : undefined
+      if (typeof message !== 'string') return
+      setForm(prev => ({ ...prev, message }))
+      timeoutId = window.setTimeout(() => {
+        document.querySelector('#contact textarea')?.focus()
+      }, 100)
     }
+
     window.addEventListener('artInquiry', handler)
-    return () => window.removeEventListener('artInquiry', handler)
+
+    return () => {
+      window.removeEventListener('artInquiry', handler)
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId)
+      }
+    }
   }, [])
 
   const handleSubmit = async (e) => {
