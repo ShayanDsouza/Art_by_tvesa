@@ -18,11 +18,10 @@ export default function HeroCanvas() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     container.appendChild(renderer.domElement)
 
-    // Colors matching the new palette
-    const grape = new THREE.Color(0x5F578A)
+    // Colors
+    const frameColor = new THREE.Color(0x0A1309)
     const dustGrey = new THREE.Color(0xE7DDDA)
-    const evergreen = new THREE.Color(0x172C16)
-    const mahogany = new THREE.Color(0x3B0C0C)
+    const grape = new THREE.Color(0x5F578A)
 
     // Create floating picture frames
     const frames = []
@@ -34,13 +33,12 @@ export default function HeroCanvas() {
         1.6 + Math.random() * 2,
         0.08
       )
-      const colors = [grape, evergreen, mahogany]
       const frameMat = new THREE.MeshStandardMaterial({
-        color: colors[i % 3],
-        metalness: 0.5,
-        roughness: 0.4,
+        color: frameColor,
+        metalness: 0.3,
+        roughness: 0.5,
         transparent: true,
-        opacity: 0.15 + Math.random() * 0.2,
+        opacity: 0.55 + Math.random() * 0.3,
       })
       const frame = new THREE.Mesh(frameGeo, frameMat)
       frame.position.set(
@@ -110,11 +108,10 @@ export default function HeroCanvas() {
 
       const curve = new THREE.CatmullRomCurve3(points)
       const lineGeo = new THREE.TubeGeometry(curve, 40, 0.02, 4, false)
-      const lineColors = [grape, evergreen, mahogany]
       const lineMat = new THREE.MeshBasicMaterial({
-        color: lineColors[i % 3],
+        color: frameColor,
         transparent: true,
-        opacity: 0.08 + Math.random() * 0.06,
+        opacity: 0.12 + Math.random() * 0.08,
       })
       const line = new THREE.Mesh(lineGeo, lineMat)
       scene.add(line)

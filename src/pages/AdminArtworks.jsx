@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp, writeBatch } from 'firebase/firestore'
 import { db } from '../config/firebase'
-import { HiOutlinePlus, HiOutlinePencil, HiOutlineTrash, HiOutlineX, HiOutlinePhotograph } from 'react-icons/hi'
+import { HiOutlinePlus, HiOutlinePencil, HiOutlineTrash, HiOutlineX, HiOutlinePhotograph, HiStar } from 'react-icons/hi'
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, useSortable, arrayMove, rectSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-const EMPTY_FORM = { title: '', description: '', medium: '', category: '', height: 'normal', status: 'available', imageUrl: '' }
+const EMPTY_FORM = { title: '', description: '', medium: '', category: '', height: 'normal', status: 'available', images: [] }
 
 // Compress and convert image file to base64 data URL
 function compressImage(file, maxWidth = 1200, quality = 0.8) {
@@ -17,20 +17,15 @@ function compressImage(file, maxWidth = 1200, quality = 0.8) {
       img.onload = () => {
         const canvas = document.createElement('canvas')
         let { width, height } = img
-
-        // Scale down if wider than maxWidth
         if (width > maxWidth) {
           height = (height * maxWidth) / width
           width = maxWidth
         }
-
         canvas.width = width
         canvas.height = height
         const ctx = canvas.getContext('2d')
         ctx.drawImage(img, 0, 0, width, height)
-
-        const dataUrl = canvas.toDataURL('image/jpeg', quality)
-        resolve(dataUrl)
+        resolve(canvas.toDataURL('image/jpeg', quality))
       }
       img.onerror = reject
       img.src = e.target.result
@@ -38,6 +33,15 @@ function compressImage(file, maxWidth = 1200, quality = 0.8) {
     reader.onerror = reject
     reader.readAsDataURL(file)
   })
+}
+
+// Get the thumbnail URL from an artwork (star or first image, fallback to legacy imageUrl)
+function getThumbnailUrl(artwork) {
+  const imgs = artwork.images
+  if (imgs && imgs.length > 0) {
+    return (imgs.find(img => img.isThumbnail) || imgs[0]).url
+  }
+  return artwork.imageUrl || ''
 }
 
 function SortableAdminItem({ artwork, onEdit, onDelete, onToggleStatus }) {
@@ -50,6 +54,9 @@ function SortableAdminItem({ artwork, onEdit, onDelete, onToggleStatus }) {
     zIndex: isDragging ? 100 : 'auto',
   }
 
+  const thumbUrl = getThumbnailUrl(artwork)
+  const extraCount = (artwork.images?.length || 0) - 1
+
   return (
     <div
       ref={setNodeRef}
@@ -58,12 +65,15 @@ function SortableAdminItem({ artwork, onEdit, onDelete, onToggleStatus }) {
       {...attributes}
       {...listeners}
     >
-      {artwork.imageUrl ? (
-        <img src={artwork.imageUrl} alt={artwork.title} className="gallery-image" />
+      {thumbUrl ? (
+        <img src={thumbUrl} alt={artwork.title} className="gallery-image" />
       ) : (
         <div className="gallery-placeholder">{artwork.title}</div>
       )}
       {artwork.status === 'sold' && <span className="gallery-sold-badge">Sold</span>}
+      {extraCount > 0 && (
+        <span className="admin-extra-images-badge">+{extraCount}</span>
+      )}
       <div className="gallery-overlay admin-overlay">
         <span className="gallery-overlay-category">{artwork.category}</span>
         <h3>{artwork.title}</h3>
@@ -148,27 +158,55 @@ export default function AdminArtworks() {
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
+  // Handle multiple image uploads
   const handleImageUpload = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-
+    const files = Array.from(e.target.files)
+    if (!files.length) return
     setCompressing(true)
     try {
-      const dataUrl = await compressImage(file, 1200, 0.8)
-      setForm(prev => ({ ...prev, imageUrl: dataUrl }))
+      const newUrls = await Promise.all(files.map(f => compressImage(f, 1200, 0.8)))
+      setForm(prev => {
+        const existing = prev.images || []
+        const newImages = newUrls.map(url => ({ url, isThumbnail: false }))
+        const combined = [...existing, ...newImages]
+        // If no thumbnail yet, star the first image
+        if (!combined.some(img => img.isThumbnail) && combined.length > 0) {
+          combined[0] = { ...combined[0], isThumbnail: true }
+        }
+        return { ...prev, images: combined }
+      })
     } catch (err) {
       console.error('Error compressing image:', err)
       alert('Failed to process image. Please try again.')
     } finally {
       setCompressing(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
     }
+  }
+
+  const setThumbnail = (index) => {
+    setForm(prev => ({
+      ...prev,
+      images: prev.images.map((img, i) => ({ ...img, isThumbnail: i === index }))
+    }))
+  }
+
+  const removeImage = (index) => {
+    setForm(prev => {
+      const wasThumb = prev.images[index].isThumbnail
+      const newImages = prev.images.filter((_, i) => i !== index)
+      if (wasThumb && newImages.length > 0) {
+        newImages[0] = { ...newImages[0], isThumbnail: true }
+      }
+      return { ...prev, images: newImages }
+    })
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
-
     try {
+      const thumbUrl = (form.images.find(img => img.isThumbnail) || form.images[0])?.url || ''
       const artworkData = {
         title: form.title,
         description: form.description,
@@ -176,20 +214,19 @@ export default function AdminArtworks() {
         category: form.category,
         height: form.height,
         status: form.status,
-        imageUrl: form.imageUrl,
+        images: form.images,
+        imageUrl: thumbUrl, // backward-compat for carousel thumbnail
       }
 
       if (editingId) {
         await updateDoc(doc(db, 'artworks', editingId), artworkData)
       } else {
-        // Add new artwork at the end
         await addDoc(collection(db, 'artworks'), {
           ...artworkData,
           order: artworks.length,
           createdAt: serverTimestamp(),
         })
       }
-
       resetForm()
     } catch (err) {
       console.error('Error saving artwork:', err)
@@ -200,7 +237,12 @@ export default function AdminArtworks() {
   }
 
   const handleEdit = (artwork) => {
-    setForm(artwork)
+    // Normalise: convert legacy imageUrl to images array
+    let images = artwork.images || []
+    if (images.length === 0 && artwork.imageUrl) {
+      images = [{ url: artwork.imageUrl, isThumbnail: true }]
+    }
+    setForm({ ...artwork, images })
     setEditingId(artwork.id)
     setShowForm(true)
   }
@@ -223,16 +265,11 @@ export default function AdminArtworks() {
   const handleDragEnd = async (event) => {
     const { active, over } = event
     if (!over || active.id === over.id) return
-
     const oldIndex = artworks.findIndex(a => a.id === active.id)
     const newIndex = artworks.findIndex(a => a.id === over.id)
     const reordered = arrayMove(artworks, oldIndex, newIndex)
-
-    // Optimistic update
     isReorderingRef.current = true
     setArtworks(reordered)
-
-    // Persist to Firestore
     const batch = writeBatch(db)
     reordered.forEach((artwork, index) => {
       batch.update(doc(db, 'artworks', artwork.id), { order: index })
@@ -265,7 +302,6 @@ export default function AdminArtworks() {
               </div>
             </div>
 
-            {/* Sortable artwork tiles */}
             {artworks.map(artwork => (
               <SortableAdminItem
                 key={artwork.id}
@@ -325,40 +361,83 @@ export default function AdminArtworks() {
                   <label>Description</label>
                   <textarea value={form.description} onChange={e => setForm({...form, description: e.target.value})} rows={3} required />
                 </div>
+
+                {/* ── Multi-image upload ── */}
                 <div className="admin-form-group">
-                  <label>Image</label>
-                  <div className="admin-upload-area" onClick={() => fileInputRef.current?.click()}>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      style={{ display: 'none' }}
-                    />
-                    {compressing ? (
-                      <div className="admin-upload-placeholder">
-                        <span>Compressing image...</span>
-                      </div>
-                    ) : form.imageUrl ? (
-                      <div className="admin-upload-preview-wrap">
-                        <img src={form.imageUrl} alt="Preview" className="admin-upload-preview" />
-                        <div className="admin-upload-change-overlay">
-                          <HiOutlinePhotograph />
-                          <span>Change Image</span>
+                  <label>Images <span className="admin-label-hint">— star to set thumbnail</span></label>
+
+                  {/* Uploaded images row */}
+                  {form.images.length > 0 && (
+                    <div className="admin-image-grid">
+                      {form.images.map((img, i) => (
+                        <div key={i} className={`admin-image-thumb${img.isThumbnail ? ' is-thumb' : ''}`}>
+                          <img src={img.url} alt={`Image ${i + 1}`} />
+                          {/* Star / thumbnail button */}
+                          <button
+                            type="button"
+                            className={`admin-thumb-star${img.isThumbnail ? ' starred' : ''}`}
+                            title={img.isThumbnail ? 'Thumbnail' : 'Set as thumbnail'}
+                            onClick={() => setThumbnail(i)}
+                          >
+                            <HiStar />
+                          </button>
+                          {/* Remove button */}
+                          <button
+                            type="button"
+                            className="admin-thumb-remove"
+                            title="Remove image"
+                            onClick={() => removeImage(i)}
+                          >
+                            <HiOutlineX />
+                          </button>
+                          {img.isThumbnail && <span className="admin-thumb-label">Thumbnail</span>}
                         </div>
+                      ))}
+
+                      {/* Add more images button */}
+                      <div
+                        className="admin-image-thumb admin-image-add-more"
+                        onClick={() => fileInputRef.current?.click()}
+                        title="Add more images"
+                      >
+                        <HiOutlinePlus />
+                        <span>Add more</span>
                       </div>
-                    ) : (
-                      <div className="admin-upload-placeholder">
-                        <HiOutlinePhotograph />
-                        <span>Click to upload image</span>
-                        <span className="admin-upload-hint">JPG, PNG — will be compressed automatically</span>
-                      </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
+
+                  {/* Initial upload area (shown when no images yet) */}
+                  {form.images.length === 0 && (
+                    <div className="admin-upload-area" onClick={() => fileInputRef.current?.click()}>
+                      {compressing ? (
+                        <div className="admin-upload-placeholder"><span>Compressing...</span></div>
+                      ) : (
+                        <div className="admin-upload-placeholder">
+                          <HiOutlinePhotograph />
+                          <span>Click to upload images</span>
+                          <span className="admin-upload-hint">Select one or multiple — JPG, PNG</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {compressing && form.images.length > 0 && (
+                    <p className="admin-upload-hint" style={{ marginTop: 8 }}>Compressing...</p>
+                  )}
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageUpload}
+                    style={{ display: 'none' }}
+                  />
                 </div>
+
                 <div className="admin-form-actions">
                   <button type="button" className="btn btn-outline" onClick={resetForm}>Cancel</button>
-                  <button type="submit" className="btn" disabled={loading || compressing || !form.imageUrl}>
+                  <button type="submit" className="btn" disabled={loading || compressing || form.images.length === 0}>
                     {loading ? 'Saving...' : (editingId ? 'Update Artwork' : 'Add Artwork')}
                   </button>
                 </div>
