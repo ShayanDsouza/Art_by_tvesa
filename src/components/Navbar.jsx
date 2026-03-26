@@ -22,11 +22,8 @@ export default function Navbar() {
     // If on homepage, scroll to hash
     if (location.pathname === '/') {
       const element = document.querySelector(hash)
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' })
-      }
+      if (element) element.scrollIntoView({ behavior: 'smooth' })
     } else {
-      // Navigate to homepage with hash
       window.location.href = `/${hash}`
     }
   }

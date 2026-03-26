@@ -470,6 +470,12 @@ export default function Gallery() {
                   <span className="carousel-back-label">Category</span>
                   <span className="carousel-back-value">{selectedArt.category}</span>
                 </div>
+                {selectedArt.size && (
+                  <div className="carousel-back-meta-row">
+                    <span className="carousel-back-label">Size</span>
+                    <span className="carousel-back-value">{selectedArt.size}</span>
+                  </div>
+                )}
                 <div className="carousel-back-meta-row">
                   <span className="carousel-back-label">Status</span>
                   <span className="carousel-back-value">{selectedArt.status === 'sold' ? 'Sold' : 'Available'}</span>

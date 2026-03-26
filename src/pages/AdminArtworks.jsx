@@ -6,7 +6,7 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from 
 import { SortableContext, useSortable, arrayMove, rectSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-const EMPTY_FORM = { title: '', description: '', medium: '', category: '', height: 'normal', status: 'available', images: [] }
+const EMPTY_FORM = { title: '', description: '', medium: '', category: '', height: 'normal', status: 'available', size: '', images: [] }
 
 // Compress and convert image file to base64 data URL
 function compressImage(file, maxWidth = 1200, quality = 0.8) {
@@ -214,6 +214,7 @@ export default function AdminArtworks() {
         category: form.category,
         height: form.height,
         status: form.status,
+        ...(form.size.trim() && { size: form.size.trim() }),
         images: form.images,
         imageUrl: thumbUrl, // backward-compat for carousel thumbnail
       }
@@ -242,7 +243,7 @@ export default function AdminArtworks() {
     if (images.length === 0 && artwork.imageUrl) {
       images = [{ url: artwork.imageUrl, isThumbnail: true }]
     }
-    setForm({ ...artwork, images })
+    setForm({ ...EMPTY_FORM, ...artwork, images, size: artwork.size || '' })
     setEditingId(artwork.id)
     setShowForm(true)
   }
@@ -355,6 +356,10 @@ export default function AdminArtworks() {
                       <option value="available">Available</option>
                       <option value="sold">Sold</option>
                     </select>
+                  </div>
+                  <div className="admin-form-group">
+                    <label>Size <span className="admin-label-hint">— optional</span></label>
+                    <input type="text" value={form.size} onChange={e => setForm({...form, size: e.target.value})} placeholder="e.g. 30 × 40 cm" />
                   </div>
                 </div>
                 <div className="admin-form-group">
