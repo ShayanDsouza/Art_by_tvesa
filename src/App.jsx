@@ -12,6 +12,7 @@ import AdminDashboard from './pages/AdminDashboard'
 import AdminArtworks from './pages/AdminArtworks'
 import AdminMessages from './pages/AdminMessages'
 import './App.css'
+import CollectionPage from "./pages/CollectionPage";
 
 function PublicSite() {
   return (
@@ -19,7 +20,9 @@ function PublicSite() {
       <Navbar />
       <main>
         <Hero />
-        <Gallery />
+        <div id ="gallery">
+          <Gallery />
+        </div>
         <About />
         <Contact />
       </main>
@@ -34,6 +37,7 @@ export default function App() {
       <Router>
         <Routes>
           <Route path="/" element={<PublicSite />} />
+          <Route path="/collection" element={<CollectionPage />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}>
             <Route index element={<AdminArtworks />} />
