@@ -30,7 +30,6 @@ export default function About() {
             </a>{' '}
             and/or my publication(s).
           </p>
-          <a href="#gallery" className="btn btn-outline about-cta">Explore My Work</a>
         </div>
       </div>
     </section>
