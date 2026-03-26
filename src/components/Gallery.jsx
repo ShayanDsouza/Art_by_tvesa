@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore'
 import { db } from '../config/firebase'
+import { Link } from "react-router-dom";
 
 const fallbackArt = [
   { id: '1', title: 'Artwork 1', description: 'A vibrant expression of color and emotion.', medium: 'Canvas', category: 'Painting', status: 'available' },
@@ -389,10 +390,10 @@ export default function Gallery() {
 
           {/* "View Full Collection" sits outside the zooming scene */}
           <div className="gallery-view-all">
-            <a href="#gallery" className="btn btn-outline btn-glitter">
+            <Link to="/collection" className="btn btn-outline btn-glitter">
               <span className="btn-glitter-shimmer" aria-hidden="true" />
               View Full Collection
-            </a>
+            </Link>
           </div>
 
         </div>
