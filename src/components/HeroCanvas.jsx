@@ -19,7 +19,7 @@ export default function HeroCanvas() {
     container.appendChild(renderer.domElement)
 
     // Colors
-    const frameColor = new THREE.Color(0x0A1309)
+    const frameColor = new THREE.Color(0x182e17)
     const dustGrey = new THREE.Color(0xE7DDDA)
     const grape = new THREE.Color(0x5F578A)
 

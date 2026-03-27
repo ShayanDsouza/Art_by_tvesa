@@ -44,7 +44,7 @@ function getThumbnailUrl(artwork) {
   return artwork.imageUrl || ''
 }
 
-function SortableAdminItem({ artwork, onEdit, onDelete, onToggleStatus }) {
+function SortableAdminItem({ artwork, onEdit, onDelete, onToggleStatus, onToggleFeatured, featuredCount }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: artwork.id })
 
   const style = {
@@ -74,6 +74,14 @@ function SortableAdminItem({ artwork, onEdit, onDelete, onToggleStatus }) {
       {extraCount > 0 && (
         <span className="admin-extra-images-badge">+{extraCount}</span>
       )}
+      {/* Star button — top right corner */}
+      <button
+        className={`admin-star-btn${artwork.featured ? ' admin-star-btn--active' : ''}`}
+        onPointerDown={e => e.stopPropagation()}
+        onClick={e => { e.stopPropagation(); onToggleFeatured(artwork) }}
+        title={artwork.featured ? 'Remove from carousel' : featuredCount >= 8 ? 'Max 8 in carousel' : 'Add to carousel'}
+        disabled={!artwork.featured && featuredCount >= 8}
+      >★</button>
       <div className="gallery-overlay admin-overlay">
         <span className="gallery-overlay-category">{artwork.category}</span>
         <h3>{artwork.title}</h3>
@@ -263,6 +271,13 @@ export default function AdminArtworks() {
     await updateDoc(doc(db, 'artworks', artwork.id), { status: newStatus })
   }
 
+  const featuredCount = artworks.filter(a => a.featured).length
+
+  const toggleFeatured = async (artwork) => {
+    if (!artwork.featured && featuredCount >= 8) return
+    await updateDoc(doc(db, 'artworks', artwork.id), { featured: !artwork.featured })
+  }
+
   const handleDragEnd = async (event) => {
     const { active, over } = event
     if (!over || active.id === over.id) return
@@ -285,7 +300,7 @@ export default function AdminArtworks() {
       <div className="admin-page-header">
         <div>
           <h1>Artworks</h1>
-          <p>{artworks.length} piece{artworks.length !== 1 ? 's' : ''} in gallery</p>
+          <p>{artworks.length} piece{artworks.length !== 1 ? 's' : ''} · <span className="admin-featured-count">★ {featuredCount}/8 in carousel</span></p>
         </div>
       </div>
 
@@ -310,6 +325,8 @@ export default function AdminArtworks() {
                 onEdit={handleEdit}
                 onDelete={setDeleteConfirm}
                 onToggleStatus={toggleStatus}
+                onToggleFeatured={toggleFeatured}
+                featuredCount={featuredCount}
               />
             ))}
           </div>

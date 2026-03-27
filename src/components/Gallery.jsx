@@ -64,7 +64,9 @@ export default function Gallery() {
         } else {
           const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
           docs.sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity))
-          setArtworks(docs)
+          // Only show featured artworks in carousel; fallback to all if none starred
+          const featured = docs.filter(a => a.featured)
+          setArtworks(featured.length > 0 ? featured : docs)
         }
       }, () => setArtworks(fallbackArt))
       return unsubscribe
@@ -392,7 +394,7 @@ export default function Gallery() {
           <div className="gallery-view-all">
             <Link to="/collection" className="btn btn-outline btn-glitter">
               <span className="btn-glitter-shimmer" aria-hidden="true" />
-              View Full Collection
+              <span className="btn-glitter-label">View Full Collection</span>
             </Link>
           </div>
 

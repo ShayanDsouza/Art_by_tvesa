@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useFetchArtworks } from "../hooks/useFetchArtworks";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../config/firebase";
 import "./Gallery.css";
 
 // ── Lightbox ──────────────────────────────────────────────
@@ -125,6 +127,17 @@ export default function GridGallery() {
   const { artworks, loading, error } = useFetchArtworks();
 
   const [activeCategory, setActiveCategory] = useState("All");
+  const [collectionText, setCollectionText] = useState({
+    eyebrow: "The Gallery of Trying",
+    heading: "The Collection",
+    subheading: "A curated selection of original works — exploring colour, form & emotion.",
+  });
+
+  useEffect(() => {
+    getDoc(doc(db, "siteContent", "collection"))
+      .then(snap => { if (snap.exists()) setCollectionText(t => ({ ...t, ...snap.data() })) })
+      .catch(() => {});
+  }, []);
   const [searchQuery, setSearchQuery] = useState("");
   const [lightboxIndex, setLightboxIndex] = useState(null);
 
@@ -175,11 +188,9 @@ export default function GridGallery() {
 
       {/* Header */}
       <div className="gallery-header">
-        <p className="gallery-eyebrow">Portfolio</p>
-        <h1 className="gallery-heading">The Collection</h1>
-        <p className="gallery-subheading">
-          A curated selection of original works — exploring colour, form & emotion.
-        </p>
+        <p className="gallery-eyebrow">{collectionText.eyebrow}</p>
+        <h1 className="gallery-heading">{collectionText.heading}</h1>
+        <p className="gallery-subheading">{collectionText.subheading}</p>
       </div>
 
       {/* Controls (FIXED STRUCTURE) */}

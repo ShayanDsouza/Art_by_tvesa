@@ -1,6 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { HiOutlinePhotograph, HiOutlineMail, HiOutlineLogout } from 'react-icons/hi'
+import { HiOutlinePhotograph, HiOutlineMail, HiOutlineLogout, HiOutlinePencilAlt } from 'react-icons/hi'
 
 export default function AdminDashboard() {
   const { user, signOut } = useAuth()
@@ -24,6 +24,9 @@ export default function AdminDashboard() {
           </NavLink>
           <NavLink to="/admin/messages" className={({ isActive }) => isActive ? 'admin-nav-link active' : 'admin-nav-link'}>
             <HiOutlineMail /> Messages
+          </NavLink>
+          <NavLink to="/admin/content" className={({ isActive }) => isActive ? 'admin-nav-link active' : 'admin-nav-link'}>
+            <HiOutlinePencilAlt /> Content
           </NavLink>
         </nav>
         <div className="admin-sidebar-footer">

@@ -1,4 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500&family=Josefin+Sans:wght@100;200;300;400&display=swap');
+
+@font-face {
+  font-family: 'Kenao';
+  src: url('/fonts/Kenao.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   --font-heading: 'Cormorant Garamond', Georgia, serif;
@@ -16,7 +24,7 @@
   --color-evergreen: #0d1a0d;
   --color-grape: #9088c0;
   --color-mahogany: #3B0C0C;
-  --color-dustgrey: #152015;
+  --color-dustgrey: #1e1e1e;
   --color-surface: #152015;
   --color-surface-alt: #1c2a1c;
   --section-padding: 100px 60px;

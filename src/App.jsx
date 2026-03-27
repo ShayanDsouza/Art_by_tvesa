@@ -11,6 +11,7 @@ import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminArtworks from './pages/AdminArtworks'
 import AdminMessages from './pages/AdminMessages'
+import AdminContent from './pages/AdminContent'
 import './App.css'
 import CollectionPage from "./pages/CollectionPage";
 
@@ -43,6 +44,7 @@ export default function App() {
             <Route index element={<AdminArtworks />} />
             <Route path="artworks" element={<AdminArtworks />} />
             <Route path="messages" element={<AdminMessages />} />
+            <Route path="content" element={<AdminContent />} />
           </Route>
         </Routes>
       </Router>

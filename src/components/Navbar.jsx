@@ -59,7 +59,7 @@ export default function Navbar() {
         <li>
           <Link to="/collection" className="navbar-collection-btn" onClick={() => setMenuOpen(false)}>
             <span className="navbar-collection-shimmer" aria-hidden="true" />
-            Full Collection
+            <span className="navbar-collection-label">Full Collection</span>
           </Link>
         </li>
       </ul>
