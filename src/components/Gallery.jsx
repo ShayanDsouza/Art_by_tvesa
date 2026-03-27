@@ -106,7 +106,10 @@ export default function Gallery() {
       if (stillMoving) zoomRafRef.current = requestAnimationFrame(tick)
     }
 
-    const onScroll = () => {
+    let scrollRafPending = false
+
+    const processScroll = () => {
+      scrollRafPending = false
       const rect = wrapper.getBoundingClientRect()
       const scrollableHeight = wrapper.offsetHeight - window.innerHeight
       if (scrollableHeight <= 0) return
@@ -147,8 +150,15 @@ export default function Gallery() {
       zoomRafRef.current = requestAnimationFrame(tick)
     }
 
+    const onScroll = () => {
+      if (!scrollRafPending) {
+        scrollRafPending = true
+        requestAnimationFrame(processScroll)
+      }
+    }
+
     window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
+    processScroll()
     return () => {
       window.removeEventListener('scroll', onScroll)
       cancelAnimationFrame(zoomRafRef.current)
