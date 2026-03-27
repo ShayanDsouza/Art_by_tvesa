@@ -64,9 +64,9 @@ export default function Gallery() {
         } else {
           const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
           docs.sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity))
-          // Only show featured artworks in carousel; fallback to all if none starred
-          const featured = docs.filter(a => a.featured)
-          setArtworks(featured.length > 0 ? featured : docs)
+          // Show up to 8 featured; if none starred fall back to first 8 by order
+          const featured = docs.filter(a => a.featured).slice(0, 8)
+          setArtworks(featured.length > 0 ? featured : docs.slice(0, 8))
         }
       }, () => setArtworks(fallbackArt))
       return unsubscribe
