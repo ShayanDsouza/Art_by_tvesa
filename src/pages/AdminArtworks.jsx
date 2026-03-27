@@ -6,7 +6,7 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from 
 import { SortableContext, useSortable, arrayMove, rectSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-const EMPTY_FORM = { title: '', description: '', medium: '', category: '', height: 'normal', status: 'available', images: [] }
+const EMPTY_FORM = { title: '', description: '', medium: '', category: '', height: 'normal', status: 'available', size: '', images: [] }
 
 // Compress and convert image file to base64 data URL
 function compressImage(file, maxWidth = 1200, quality = 0.8) {
@@ -44,7 +44,7 @@ function getThumbnailUrl(artwork) {
   return artwork.imageUrl || ''
 }
 
-function SortableAdminItem({ artwork, onEdit, onDelete, onToggleStatus }) {
+function SortableAdminItem({ artwork, onEdit, onDelete, onToggleStatus, onToggleFeatured, featuredCount }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: artwork.id })
 
   const style = {
@@ -74,6 +74,14 @@ function SortableAdminItem({ artwork, onEdit, onDelete, onToggleStatus }) {
       {extraCount > 0 && (
         <span className="admin-extra-images-badge">+{extraCount}</span>
       )}
+      {/* Star button — top right corner */}
+      <button
+        className={`admin-star-btn${artwork.featured ? ' admin-star-btn--active' : ''}`}
+        onPointerDown={e => e.stopPropagation()}
+        onClick={e => { e.stopPropagation(); onToggleFeatured(artwork) }}
+        title={artwork.featured ? 'Remove from carousel' : featuredCount >= 8 ? 'Max 8 in carousel' : 'Add to carousel'}
+        disabled={!artwork.featured && featuredCount >= 8}
+      >★</button>
       <div className="gallery-overlay admin-overlay">
         <span className="gallery-overlay-category">{artwork.category}</span>
         <h3>{artwork.title}</h3>
@@ -214,6 +222,7 @@ export default function AdminArtworks() {
         category: form.category,
         height: form.height,
         status: form.status,
+        ...(form.size.trim() && { size: form.size.trim() }),
         images: form.images,
         imageUrl: thumbUrl, // backward-compat for carousel thumbnail
       }
@@ -242,7 +251,7 @@ export default function AdminArtworks() {
     if (images.length === 0 && artwork.imageUrl) {
       images = [{ url: artwork.imageUrl, isThumbnail: true }]
     }
-    setForm({ ...artwork, images })
+    setForm({ ...EMPTY_FORM, ...artwork, images, size: artwork.size || '' })
     setEditingId(artwork.id)
     setShowForm(true)
   }
@@ -260,6 +269,13 @@ export default function AdminArtworks() {
   const toggleStatus = async (artwork) => {
     const newStatus = artwork.status === 'sold' ? 'available' : 'sold'
     await updateDoc(doc(db, 'artworks', artwork.id), { status: newStatus })
+  }
+
+  const featuredCount = artworks.filter(a => a.featured).length
+
+  const toggleFeatured = async (artwork) => {
+    if (!artwork.featured && featuredCount >= 8) return
+    await updateDoc(doc(db, 'artworks', artwork.id), { featured: !artwork.featured })
   }
 
   const handleDragEnd = async (event) => {
@@ -284,7 +300,7 @@ export default function AdminArtworks() {
       <div className="admin-page-header">
         <div>
           <h1>Artworks</h1>
-          <p>{artworks.length} piece{artworks.length !== 1 ? 's' : ''} in gallery</p>
+          <p>{artworks.length} piece{artworks.length !== 1 ? 's' : ''} · <span className="admin-featured-count">★ {featuredCount}/8 in carousel</span></p>
         </div>
       </div>
 
@@ -309,6 +325,8 @@ export default function AdminArtworks() {
                 onEdit={handleEdit}
                 onDelete={setDeleteConfirm}
                 onToggleStatus={toggleStatus}
+                onToggleFeatured={toggleFeatured}
+                featuredCount={featuredCount}
               />
             ))}
           </div>
@@ -355,6 +373,10 @@ export default function AdminArtworks() {
                       <option value="available">Available</option>
                       <option value="sold">Sold</option>
                     </select>
+                  </div>
+                  <div className="admin-form-group">
+                    <label>Size <span className="admin-label-hint">— optional</span></label>
+                    <input type="text" value={form.size} onChange={e => setForm({...form, size: e.target.value})} placeholder="e.g. 30 × 40 cm" />
                   </div>
                 </div>
                 <div className="admin-form-group">

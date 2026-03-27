@@ -64,7 +64,9 @@ export default function Gallery() {
         } else {
           const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
           docs.sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity))
-          setArtworks(docs)
+          // Show up to 8 featured; if none starred fall back to first 8 by order
+          const featured = docs.filter(a => a.featured).slice(0, 8)
+          setArtworks(featured.length > 0 ? featured : docs.slice(0, 8))
         }
       }, () => setArtworks(fallbackArt))
       return unsubscribe
@@ -104,7 +106,10 @@ export default function Gallery() {
       if (stillMoving) zoomRafRef.current = requestAnimationFrame(tick)
     }
 
-    const onScroll = () => {
+    let scrollRafPending = false
+
+    const processScroll = () => {
+      scrollRafPending = false
       const rect = wrapper.getBoundingClientRect()
       const scrollableHeight = wrapper.offsetHeight - window.innerHeight
       if (scrollableHeight <= 0) return
@@ -145,8 +150,15 @@ export default function Gallery() {
       zoomRafRef.current = requestAnimationFrame(tick)
     }
 
+    const onScroll = () => {
+      if (!scrollRafPending) {
+        scrollRafPending = true
+        requestAnimationFrame(processScroll)
+      }
+    }
+
     window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
+    processScroll()
     return () => {
       window.removeEventListener('scroll', onScroll)
       cancelAnimationFrame(zoomRafRef.current)
@@ -392,7 +404,7 @@ export default function Gallery() {
           <div className="gallery-view-all">
             <Link to="/collection" className="btn btn-outline btn-glitter">
               <span className="btn-glitter-shimmer" aria-hidden="true" />
-              View Full Collection
+              <span className="btn-glitter-label">View Full Collection</span>
             </Link>
           </div>
 
@@ -470,6 +482,12 @@ export default function Gallery() {
                   <span className="carousel-back-label">Category</span>
                   <span className="carousel-back-value">{selectedArt.category}</span>
                 </div>
+                {selectedArt.size && (
+                  <div className="carousel-back-meta-row">
+                    <span className="carousel-back-label">Size</span>
+                    <span className="carousel-back-value">{selectedArt.size}</span>
+                  </div>
+                )}
                 <div className="carousel-back-meta-row">
                   <span className="carousel-back-label">Status</span>
                   <span className="carousel-back-value">{selectedArt.status === 'sold' ? 'Sold' : 'Available'}</span>

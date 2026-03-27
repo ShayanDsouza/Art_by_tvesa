@@ -12,7 +12,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      if (firebaseUser && ADMIN_EMAILS.includes(firebaseUser.email.toLowerCase())) {
+      if (firebaseUser && firebaseUser.email && ADMIN_EMAILS.includes(firebaseUser.email.toLowerCase())) {
         setUser(firebaseUser)
       } else {
         setUser(null)
@@ -27,7 +27,7 @@ export function AuthProvider({ children }) {
       // Force account picker every time — prevents auto-login with last account
       googleProvider.setCustomParameters({ prompt: 'select_account' })
       const result = await signInWithPopup(auth, googleProvider)
-      if (!ADMIN_EMAILS.includes(result.user.email.toLowerCase())) {
+      if (!result.user.email || !ADMIN_EMAILS.includes(result.user.email.toLowerCase())) {
         await firebaseSignOut(auth)
         throw new Error('Unauthorized. This account does not have admin access.')
       }

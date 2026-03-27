@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 // Scroll to the fully-zoomed-in state (middle of the hold phase, progress ~0.64)
 function scrollToGalleryZoomed(e) {
@@ -15,31 +15,31 @@ function scrollToGalleryZoomed(e) {
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
-  const navigate = useNavigate()
 
   const handleHashLink = (hash) => {
     setMenuOpen(false)
-    
-    // If on homepage, scroll to hash directly
+
+    // If on homepage, scroll to hash
     if (location.pathname === '/') {
       const element = document.querySelector(hash)
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' })
-      }
+      if (element) element.scrollIntoView({ behavior: 'smooth' })
     } else {
-      // Navigate to homepage with hash via React Router (no full reload)
-      navigate(`/${hash}`)
+      window.location.href = `/${hash}`
     }
   }
 
   const handleGallery = (e) => {
-    scrollToGalleryZoomed(e)
+    e.preventDefault()
     setMenuOpen(false)
+    if (location.pathname === '/') {
+      scrollToGalleryZoomed(e)
+    } else {
+      window.location.href = '/#gallery'
+    }
   }
 
   return (
     <nav className="navbar">
-      {/*My version*/}
       <Link to="/" className="navbar-logo" onClick={() => setMenuOpen(false)}>
         <img src="/logo.png" alt="Art by Tvesa" className="navbar-logo-img" />
       </Link>
@@ -53,13 +53,13 @@ export default function Navbar() {
         <span></span>
       </button>
       <ul className={`navbar-links ${menuOpen ? 'active' : ''}`}>
-        <li><a href="#gallery" onClick={(e) => { e.preventDefault(); handleHashLink('#gallery') }}>Gallery</a></li>
+        <li><a href="#gallery" onClick={handleGallery}>Gallery</a></li>
         <li><a href="#about" onClick={(e) => { e.preventDefault(); handleHashLink('#about') }}>About</a></li>
         <li><a href="#contact" onClick={(e) => { e.preventDefault(); handleHashLink('#contact') }}>Contact</a></li>
         <li>
           <Link to="/collection" className="navbar-collection-btn" onClick={() => setMenuOpen(false)}>
             <span className="navbar-collection-shimmer" aria-hidden="true" />
-            Full Collection
+            <span className="navbar-collection-label">Full Collection</span>
           </Link>
         </li>
       </ul>
