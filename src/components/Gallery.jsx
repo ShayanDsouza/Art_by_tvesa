@@ -12,9 +12,27 @@ const fallbackArt = [
   { id: '6', title: 'Artwork 6', description: 'Rich textures layered with meaning.', medium: 'Canvas', category: 'Painting', status: 'available' },
 ]
 
+// Returns the thumbnail URL for a given artwork (starred, or first, or legacy imageUrl)
+function getThumbnailUrl(art) {
+  const imgs = art.images
+  if (imgs && imgs.length > 0) {
+    return (imgs.find(img => img.isThumbnail) || imgs[0]).url
+  }
+  return art.imageUrl || ''
+}
+
+// Returns ordered images array for modal (thumbnail first, then rest)
+function getModalImages(art) {
+  const imgs = art.images
+  if (imgs && imgs.length > 0) return imgs
+  if (art.imageUrl) return [{ url: art.imageUrl, isThumbnail: true }]
+  return []
+}
+
 export default function Gallery() {
   const [artworks, setArtworks] = useState([])
   const [selectedArt, setSelectedArt] = useState(null)
+  const [modalImageIndex, setModalImageIndex] = useState(0)
   const [isClosing, setIsClosing] = useState(false)
   const [rotation, setRotation] = useState(0)
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
@@ -31,9 +49,11 @@ export default function Gallery() {
   const autoRotateRef = useRef(null)
   const closeTimeoutRef = useRef(null)
   const zoomRafRef = useRef(null)
-  const currentScaleRef = useRef(0.22)
+  const currentScaleRef = useRef(0.35)
   const currentRadiusRef = useRef(28)
   const currentOpacityRef = useRef(0.1)
+  // Touch swipe for modal
+  const modalTouchStartX = useRef(null)
 
   useEffect(() => {
     try {
@@ -61,11 +81,9 @@ export default function Gallery() {
     if (!scene || !header || !wrapper) return
 
     const lerp = (a, b, t) => a + (b - a) * t
-
-    // easeOutExpo: slow start, explosive finish — matches LN site feel
     const easeOutExpo = t => t <= 0 ? 0 : t >= 1 ? 1 : 1 - Math.pow(2, -10 * t)
 
-    let targetScale   = 0.22
+    let targetScale   = 0.35
     let targetRadius  = 28
     let targetOpacity = 0.10
 
@@ -91,17 +109,16 @@ export default function Gallery() {
       const scrollableHeight = wrapper.offsetHeight - window.innerHeight
       if (scrollableHeight <= 0) return
 
-      // progress: 0 when section just enters view, 1 when we've scrolled all the way through
       const scrolled = Math.max(0, -rect.top)
       const progress = Math.min(1, scrolled / scrollableHeight)
 
-      // ── Phase 1: progress 0.00 → 0.18 — header fades, carousel stays tiny ──
-      // ── Phase 2: progress 0.18 → 0.60 — carousel zooms IN ──
-      // ── Phase 3: progress 0.60 → 0.72 — hold at full ──
-      // ── Phase 4: progress 0.72 → 1.00 — carousel zooms OUT ──
+      // Phase 1: 0.00 → 0.18 — header fades, carousel stays tiny
+      // Phase 2: 0.18 → 0.60 — carousel zooms IN
+      // Phase 3: 0.60 → 0.72 — hold at full
+      // Phase 4: 0.72 → 1.00 — carousel zooms OUT
       let carouselT
       if (progress < 0.18) {
-        carouselT = 0  // stay tiny while header fades
+        carouselT = 0
       } else if (progress < 0.60) {
         carouselT = easeOutExpo((progress - 0.18) / 0.42)
       } else if (progress < 0.72) {
@@ -110,17 +127,14 @@ export default function Gallery() {
         carouselT = easeOutExpo(1 - (progress - 0.72) / 0.28)
       }
 
-      // Header: fully gone by progress 0.14 — well before carousel starts zooming
       const headerOpacity = Math.max(0, 1 - progress / 0.14)
       header.style.opacity = headerOpacity.toFixed(4)
       header.style.pointerEvents = headerOpacity > 0.01 ? '' : 'none'
 
-      // Carousel scene targets
-      targetScale   = 0.22 + carouselT * 0.63   // 0.22 → 0.85
-      targetRadius  = (1 - carouselT) * 28        // 28px → 0px
-      targetOpacity = 0.10 + carouselT * 0.90     // 0.10 → 1.00
+      targetScale   = 0.35 + carouselT * 0.50   // 0.35 → 0.85
+      targetRadius  = (1 - carouselT) * 28
+      targetOpacity = 0.10 + carouselT * 0.90
 
-      // Navbar: hide while carousel is filling the screen
       if (carouselT > 0.55) {
         document.body.classList.add('gallery-active')
       } else {
@@ -213,6 +227,7 @@ export default function Gallery() {
     const isFrontFacing = totalAngle < 90 || totalAngle > 270
     if (!isFrontFacing) return
     setSelectedArt(art)
+    setModalImageIndex(0)
   }
 
   // ── Responsive resize listener ────────────────────────────────────────────
@@ -237,6 +252,7 @@ export default function Gallery() {
     if (closeTimeoutRef.current !== null) clearTimeout(closeTimeoutRef.current)
     closeTimeoutRef.current = setTimeout(() => {
       setSelectedArt(null)
+      setModalImageIndex(0)
       setIsClosing(false)
       closeTimeoutRef.current = null
     }, 480)
@@ -256,6 +272,31 @@ export default function Gallery() {
     }, 520)
   }
 
+  // ── Modal image navigation ────────────────────────────────────────────────
+  const modalImages = selectedArt ? getModalImages(selectedArt) : []
+  const modalImgCount = modalImages.length
+
+  const prevModalImage = (e) => {
+    e.stopPropagation()
+    setModalImageIndex(i => (i - 1 + modalImgCount) % modalImgCount)
+  }
+  const nextModalImage = (e) => {
+    e.stopPropagation()
+    setModalImageIndex(i => (i + 1) % modalImgCount)
+  }
+
+  // Touch swipe support for modal images
+  const handleModalTouchStart = (e) => { modalTouchStartX.current = e.touches[0].clientX }
+  const handleModalTouchEnd = (e) => {
+    if (modalTouchStartX.current === null) return
+    const dx = e.changedTouches[0].clientX - modalTouchStartX.current
+    if (Math.abs(dx) > 40) {
+      if (dx < 0) setModalImageIndex(i => (i + 1) % modalImgCount)
+      else setModalImageIndex(i => (i - 1 + modalImgCount) % modalImgCount)
+    }
+    modalTouchStartX.current = null
+  }
+
   const count = artworks.length
   const angleStep = count > 0 ? 360 / count : 0
   const radius = windowWidth <= 480
@@ -264,30 +305,26 @@ export default function Gallery() {
       ? Math.max(260, count * 62)
       : Math.max(360, count * 80)
 
-  // Tall card dimensions matched to carousel-card breakpoints
   const tallCard = windowWidth <= 480
     ? { width: '100px', height: '150px', left: '60px' }
     : windowWidth <= 900
       ? { width: '130px', height: '185px', left: '70px' }
       : { width: '210px', height: '290px', left: '115px' }
 
+  const currentModalUrl = modalImages[modalImageIndex]?.url
+
   return (
     <section id="gallery" className="gallery">
 
-      {/* ── Tall scroll wrapper — provides room for sticky animation ── */}
       <div className="gallery-scroll-wrapper" ref={galleryWrapperRef}>
-
-        {/* ── Sticky stage — stays in viewport while user scrolls through wrapper ── */}
         <div className="gallery-stage">
 
-          {/* ── Header: title + hint, fades out before carousel fills screen ── */}
           <div className="gallery-header" ref={galleryHeaderRef}>
             <span className="section-overline">Gallery</span>
             <h2>Selected Works</h2>
             <p className="carousel-hint">Scroll or drag to explore &middot; Click a piece to see details</p>
           </div>
 
-          {/* ── Carousel scene: scales from small → full viewport ── */}
           <div className="gallery-carousel-scene" ref={gallerySceneRef}>
             <div
               className="carousel-viewport"
@@ -314,6 +351,8 @@ export default function Gallery() {
                       }
                     : { transform: `rotateY(${angle}deg) translateZ(${radius}px)` }
 
+                  const thumbUrl = getThumbnailUrl(art)
+
                   return (
                     <div
                       key={art.id}
@@ -331,8 +370,8 @@ export default function Gallery() {
                     >
                       <div className="carousel-face carousel-face-natural-back" />
                       <div className="carousel-face carousel-face-front">
-                        {art.imageUrl ? (
-                          <img src={art.imageUrl} alt={art.title} className="carousel-card-image" draggable={false} />
+                        {thumbUrl ? (
+                          <img src={thumbUrl} alt={art.title} className="carousel-card-image" draggable={false} />
                         ) : (
                           <div className="carousel-card-placeholder">{art.title}</div>
                         )}
@@ -347,8 +386,7 @@ export default function Gallery() {
                 })}
               </div>
             </div>
-
-            </div>
+          </div>
 
           {/* "View Full Collection" sits outside the zooming scene */}
           <div className="gallery-view-all">
@@ -361,7 +399,7 @@ export default function Gallery() {
         </div>
       </div>
 
-      {/* ── Modal lives OUTSIDE all transforms so position:fixed is viewport-relative ── */}
+      {/* ── Modal lives OUTSIDE all transforms ── */}
       {selectedArt && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className={`modal-popup${isClosing ? ' is-closing' : ''}`}>
@@ -372,11 +410,49 @@ export default function Gallery() {
               onClick={handleClose}
             >×</button>
 
-            <div className="modal-popup-image">
-              {selectedArt.imageUrl ? (
-                <img src={selectedArt.imageUrl} alt={selectedArt.title} draggable={false} />
+            {/* Image panel with arrows */}
+            <div
+              className="modal-popup-image"
+              onTouchStart={handleModalTouchStart}
+              onTouchEnd={handleModalTouchEnd}
+            >
+              {currentModalUrl ? (
+                <img
+                  src={currentModalUrl}
+                  alt={`${selectedArt.title} — image ${modalImageIndex + 1}`}
+                  draggable={false}
+                  key={currentModalUrl}
+                />
               ) : (
                 <div className="carousel-card-placeholder">{selectedArt.title}</div>
+              )}
+
+              {/* Left / right arrows — only shown when multiple images */}
+              {modalImgCount > 1 && (
+                <>
+                  <button
+                    className="modal-img-arrow modal-img-arrow-left"
+                    onClick={prevModalImage}
+                    aria-label="Previous image"
+                  >&#8249;</button>
+                  <button
+                    className="modal-img-arrow modal-img-arrow-right"
+                    onClick={nextModalImage}
+                    aria-label="Next image"
+                  >&#8250;</button>
+
+                  {/* Dot indicators */}
+                  <div className="modal-img-dots">
+                    {modalImages.map((_, i) => (
+                      <button
+                        key={i}
+                        className={`modal-img-dot${i === modalImageIndex ? ' active' : ''}`}
+                        onClick={(e) => { e.stopPropagation(); setModalImageIndex(i) }}
+                        aria-label={`Image ${i + 1}`}
+                      />
+                    ))}
+                  </div>
+                </>
               )}
             </div>
 
@@ -404,7 +480,7 @@ export default function Gallery() {
                   className="carousel-back-btn modal-popup-btn"
                   onClick={handleInquire}
                 >
-                  Inquire About This Piece
+                  Contact for Availability
                 </button>
               )}
             </div>

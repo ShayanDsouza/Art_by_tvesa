@@ -7,8 +7,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 48px;
-  background: #2d2845;
+  padding: 8px 48px;
+  background: #E7DDDA;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   z-index: 100;
@@ -20,10 +20,10 @@
   position: relative;
   overflow: hidden;
   padding: 7px 16px !important;
-  border: 1px solid rgba(144, 136, 192, 0.45);
+  border: 1px solid rgba(95, 87, 138, 0.5);
   border-radius: 2px;
-  color: var(--color-text-light) !important;
-  background: rgba(144, 136, 192, 0.06);
+  color: #172C16 !important;
+  background: rgba(95, 87, 138, 0.08);
   letter-spacing: 2px !important;
   transition: color 0.3s, border-color 0.3s, box-shadow 0.3s, background 0.3s !important;
 }
@@ -87,7 +87,7 @@ body.gallery-active .navbar {
 }
 
 .navbar-logo-img {
-  height: 44px;
+  height: 68px;
   width: auto;
   object-fit: contain;
   display: block;
@@ -105,7 +105,7 @@ body.gallery-active .navbar {
   font-weight: 400;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: var(--color-text-light);
+  color: #172C16;
   transition: color 0.3s;
   position: relative;
 }
@@ -117,12 +117,12 @@ body.gallery-active .navbar {
   left: 0;
   width: 0;
   height: 1px;
-  background: var(--color-accent);
+  background: #5F578A;
   transition: width 0.3s var(--transition);
 }
 
 .navbar-links a:hover {
-  color: var(--color-dark);
+  color: #5F578A;
 }
 
 .navbar-links a:hover::after {
@@ -144,7 +144,7 @@ body.gallery-active .navbar {
   display: block;
   width: 26px;
   height: 1.5px;
-  background: var(--color-dark);
+  background: #172C16;
   transition: all 0.3s var(--transition);
 }
 
@@ -192,6 +192,19 @@ body.gallery-active .navbar {
     right: 0;
   }
 
+  /* Sidebar links: light text on dark green background */
+  .navbar-links a {
+    color: #e2d9d4;
+  }
+  .navbar-links a:hover {
+    color: #9088c0;
+  }
+  .navbar-collection-btn {
+    color: #e2d9d4 !important;
+    border-color: rgba(144, 136, 192, 0.45) !important;
+    background: rgba(144, 136, 192, 0.08) !important;
+  }
+
   /* Hamburger floats above the open drawer so it's always tappable */
   .hamburger {
     position: relative;
@@ -204,12 +217,13 @@ body.gallery-active .navbar {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
+  justify-content: space-between;
+  text-align: left;
   background: var(--color-bg);
-  padding: var(--section-padding);
+  padding: 0 80px;
   position: relative;
   overflow: hidden;
+  gap: 40px;
 }
 
 /* Three.js hero canvas */
@@ -236,11 +250,51 @@ body.gallery-active .navbar {
   opacity: 0;
   transform: translateY(30px);
   transition: all 1.2s var(--transition);
+  flex: 0 0 auto;
+  max-width: 480px;
 }
 
 .hero-content.hero-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ── Icarus image — right side ── */
+.hero-image-wrap {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  opacity: 0;
+  /* Start above — descends slowly into place on load */
+  transform: translateY(-140px);
+  transition:
+    opacity 3.2s cubic-bezier(0.23, 1, 0.32, 1) 0.6s,
+    transform 4s cubic-bezier(0.16, 1, 0.3, 1) 0.6s;
+  max-width: 540px;
+}
+
+.hero-image-wrap.hero-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero-icarus {
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  /* subtle float animation */
+  animation: icarusFloat 6s ease-in-out infinite;
+  filter: drop-shadow(0 20px 60px rgba(0,0,0,0.35));
+}
+
+@keyframes icarusFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-14px); }
 }
 
 .hero-overline {
@@ -265,8 +319,8 @@ body.gallery-active .navbar {
 .hero-divider {
   width: 60px;
   height: 1px;
-  background: var(--color-accent);
-  margin: 28px auto 48px;
+  background: var(--color-dark);
+  margin: 28px 0 48px;
 }
 
 .hero-scroll-hint {
@@ -301,9 +355,32 @@ body.gallery-active .navbar {
 }
 
 @media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 120px 32px 80px;
+    text-align: left;
+    gap: 24px;
+  }
+
+  .hero-content {
+    max-width: 100%;
+  }
+
   .hero h1 {
     font-size: 3rem;
     letter-spacing: -1px;
+  }
+
+  .hero-image-wrap {
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+  }
+
+  .hero-icarus {
+    max-width: 280px;
   }
 
   .hero-scroll-hint {
@@ -483,7 +560,7 @@ body.gallery-active .navbar {
   padding-bottom: 96px;
   transform-origin: center center;
   will-change: transform, opacity;
-  transform: scale(0.22);
+  transform: scale(0.35);
   border-radius: 28px;
   opacity: 0.1;
 }
@@ -606,7 +683,7 @@ body.gallery-active .navbar {
 
 /* Portrait/tall card — width and height are set inline in JSX; backface must match */
 .carousel-card-tall .carousel-face-natural-back {
-  background: #1c2a1c;
+  background: #300808;
 }
 
 
@@ -623,7 +700,7 @@ body.gallery-active .navbar {
   transform: rotateY(180deg);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  background: #1c2a1c;
+  background: #300808;
 }
 
 /* Front face */
@@ -852,6 +929,11 @@ body.gallery-active .navbar {
   letter-spacing: 2.5px;
   border: none;
   cursor: pointer;
+  background: #3B0C0C !important;
+}
+
+.modal-popup-btn:hover {
+  background: #5a1212 !important;
   font-family: var(--font-body);
   text-decoration: none;
   display: block;
@@ -1265,8 +1347,8 @@ body.gallery-active .navbar {
 .footer {
   padding: 48px 60px;
   text-align: center;
-  background: #2d2845;
-  color: rgba(255, 255, 255, 0.5);
+  background: #E7DDDA;
+  color: rgba(23, 44, 22, 0.55);
 }
 
 .footer-content {
@@ -1280,7 +1362,7 @@ body.gallery-active .navbar {
   font-family: var(--font-heading);
   font-size: 1.4rem;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(23, 44, 22, 0.85);
   letter-spacing: 1px;
 }
 
@@ -1291,13 +1373,13 @@ body.gallery-active .navbar {
 
 .footer-links a {
   font-size: 1.6rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(23, 44, 22, 0.5);
   transition: color 0.3s, transform 0.3s;
   display: flex;
 }
 
 .footer-links a:hover {
-  color: rgba(255, 255, 255, 0.9);
+  color: #5F578A;
   transform: translateY(-2px);
 }
 
@@ -2114,6 +2196,212 @@ body.gallery-active .navbar {
   font-size: 0.7rem;
   color: var(--color-text-light);
   opacity: 0.7;
+}
+
+/* ── Admin label hint ── */
+.admin-label-hint {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--color-text-light);
+  opacity: 0.7;
+  margin-left: 4px;
+}
+
+/* ── Admin multi-image grid ── */
+.admin-image-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.admin-image-thumb {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid var(--color-border);
+  flex-shrink: 0;
+  transition: border-color 0.2s;
+}
+
+.admin-image-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.admin-image-thumb.is-thumb {
+  border-color: #c9a227;
+  box-shadow: 0 0 0 1px #c9a227;
+}
+
+/* Star button — top-left */
+.admin-thumb-star {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.55);
+  color: rgba(255,255,255,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s, color 0.2s;
+  z-index: 2;
+}
+
+.admin-thumb-star:hover,
+.admin-thumb-star.starred {
+  background: #c9a227;
+  color: #fff;
+}
+
+/* Remove button — top-right */
+.admin-thumb-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.55);
+  color: rgba(255,255,255,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: background 0.2s;
+  z-index: 2;
+}
+
+.admin-thumb-remove:hover {
+  background: #c0392b;
+  color: #fff;
+}
+
+/* Thumbnail label — bottom */
+.admin-thumb-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(201, 162, 39, 0.85);
+  color: #fff;
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 3px 0;
+  font-weight: 600;
+}
+
+/* Add more tile */
+.admin-image-add-more {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: var(--color-surface-alt);
+  border: 2px dashed var(--color-border);
+  cursor: pointer;
+  color: var(--color-text-light);
+  font-size: 0.7rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.admin-image-add-more:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.admin-image-add-more svg {
+  font-size: 1.4rem;
+}
+
+/* Badge on admin tile showing extra image count */
+.admin-extra-images-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.65);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 3px 7px;
+  border-radius: 20px;
+  z-index: 3;
+}
+
+/* ── Modal image arrows ── */
+.modal-popup-image {
+  position: relative;
+}
+
+.modal-img-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.45);
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  line-height: 1;
+  width: 40px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+  z-index: 4;
+  user-select: none;
+}
+
+.modal-img-arrow:hover {
+  background: rgba(0,0,0,0.72);
+}
+
+.modal-img-arrow-left  { left: 8px; }
+.modal-img-arrow-right { right: 8px; }
+
+/* Dot indicators */
+.modal-img-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 4;
+}
+
+.modal-img-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.4);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.modal-img-dot.active {
+  background: #fff;
+  transform: scale(1.3);
 }
 
 .admin-btn-danger {

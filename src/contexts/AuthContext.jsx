@@ -24,6 +24,8 @@ export function AuthProvider({ children }) {
 
   const signInWithGoogle = async () => {
     try {
+      // Force account picker every time — prevents auto-login with last account
+      googleProvider.setCustomParameters({ prompt: 'select_account' })
       const result = await signInWithPopup(auth, googleProvider)
       if (!ADMIN_EMAILS.includes(result.user.email.toLowerCase())) {
         await firebaseSignOut(auth)
