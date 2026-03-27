@@ -71,7 +71,7 @@ export default function Hero() {
         className={`hero-image-wrap ${visible ? 'hero-visible' : ''}`}
       >
         <img
-          src="/icarus.png"
+          src="/icarus.PNG"
           alt="Icarus — Art by Tvesa"
           className="hero-icarus"
           draggable={false}
