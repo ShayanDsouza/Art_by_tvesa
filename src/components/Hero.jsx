@@ -65,7 +65,7 @@ export default function Hero() {
 
         {/* Icarus drops first */}
         <img
-          src="/icarus.png"
+          src="/icarus.PNG"
           alt="Icarus"
           className={`hc-icarus${phase >= 1 ? ' visible' : ''}`}
           draggable={false}
