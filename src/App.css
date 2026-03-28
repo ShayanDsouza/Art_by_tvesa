@@ -354,6 +354,16 @@ body.gallery-active .navbar {
 .hc-word.visible {
   opacity: 1;
   transform: translateY(0);
+  animation: wordFloat 6s ease-in-out infinite;
+}
+.hc-a.visible       { animation-delay: 0.4s; animation-duration: 5.5s; }
+.hc-gallery.visible { animation-delay: 0.9s; animation-duration: 6.5s; }
+.hc-of.visible      { animation-delay: 0.2s; animation-duration: 5.8s; }
+.hc-trying.visible  { animation-delay: 1.1s; animation-duration: 7s; }
+
+@keyframes wordFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
 }
 
 .hero-overline {
