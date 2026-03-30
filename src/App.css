@@ -1491,6 +1491,19 @@ body.gallery-active .navbar {
   font-style: italic;
 }
 
+.footer-credit-link {
+  color: rgba(23, 44, 22, 0.65);
+  font-style: italic;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(23, 44, 22, 0.25);
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.footer-credit-link:hover {
+  color: #5F578A;
+  border-color: #5F578A;
+}
+
 /* ===== GALLERY EXTRAS ===== */
 .gallery-image {
   width: 100%;

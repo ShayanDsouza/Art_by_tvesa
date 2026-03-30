@@ -15,7 +15,10 @@ export default function Footer() {
         <p className="footer-credits">
           Artwork &amp; creative direction — <span>Tvesa Medh</span> &amp; <span>Yana Shah</span>
           &ensp;·&ensp;
-          Developed by <span>Shayan Dsouza</span> &amp; <span>Arav Pradosh</span>
+          Developed by{' '}
+          <a href="https://github.com/ShayanDsouza" target="_blank" rel="noopener noreferrer" className="footer-credit-link">Shayan Dsouza</a>
+          {' '}&amp;{' '}
+          <a href="https://github.com/aravpradosh" target="_blank" rel="noopener noreferrer" className="footer-credit-link">Arav Pradosh</a>
         </p>
       </div>
     </footer>
