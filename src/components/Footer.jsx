@@ -9,16 +9,16 @@ export default function Footer() {
         <div className="footer-links">
           <a href="https://www.instagram.com/artbytvesa/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><FaInstagram /></a>
           <a href="https://in.pinterest.com/artbytvesa/my-art/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><FaPinterest /></a>
-          <a href="mailto:dsouza.shayan@gmail.com" aria-label="Email"><HiOutlineMail /></a>
+          <a href="mailto:artbytvesa@gmail.com" aria-label="Email"><HiOutlineMail /></a>
         </div>
         <p>&copy; {new Date().getFullYear()} Art by Tvesa. All rights reserved.</p>
         <p className="footer-credits">
           Artwork &amp; creative direction — <span>Tvesa Medh</span> &amp; <span>Yana Shah</span>
           &ensp;·&ensp;
-          Developed by{' '}
-          <a href="https://github.com/ShayanDsouza" target="_blank" rel="noopener noreferrer" className="footer-credit-link">Shayan Dsouza</a>
+          Website Developed by{' '}
+          <a href="mailto:dsouza.shayan@gmail.com" className="footer-credit-link">Shayan Dsouza</a>
           {' '}&amp;{' '}
-          <a href="https://github.com/aravpradosh" target="_blank" rel="noopener noreferrer" className="footer-credit-link">Arav Pradosh</a>
+          <a href="mailto:aravpradosh06427@gmail.com" className="footer-credit-link">Arav Pradosh</a>
         </p>
       </div>
     </footer>
