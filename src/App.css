@@ -1479,6 +1479,18 @@ body.gallery-active .navbar {
   margin-top: 8px;
 }
 
+.footer-credits {
+  font-size: 0.68rem;
+  letter-spacing: 0.5px;
+  color: rgba(23, 44, 22, 0.45);
+  margin-top: 6px;
+}
+
+.footer-credits span {
+  color: rgba(23, 44, 22, 0.65);
+  font-style: italic;
+}
+
 /* ===== GALLERY EXTRAS ===== */
 .gallery-image {
   width: 100%;

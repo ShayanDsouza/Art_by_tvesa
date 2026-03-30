@@ -12,6 +12,11 @@ export default function Footer() {
           <a href="mailto:dsouza.shayan@gmail.com" aria-label="Email"><HiOutlineMail /></a>
         </div>
         <p>&copy; {new Date().getFullYear()} Art by Tvesa. All rights reserved.</p>
+        <p className="footer-credits">
+          Artwork &amp; creative direction — <span>Tvesa Medh</span> &amp; <span>Yana Shah</span>
+          &ensp;·&ensp;
+          Developed by <span>Shayan Dsouza</span> &amp; <span>Arav Pradosh</span>
+        </p>
       </div>
     </footer>
   )
