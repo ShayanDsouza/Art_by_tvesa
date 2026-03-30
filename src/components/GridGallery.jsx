@@ -6,66 +6,126 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 import "./Gallery.css";
 
-// ── Lightbox ──────────────────────────────────────────────
-function Lightbox({ artwork, onClose, onPrev, onNext, hasPrev, hasNext }) {
-  const handleBackdrop = (e) => {
-    if (e.target === e.currentTarget) onClose();
+// ── helpers (mirrors Gallery.jsx) ────────────────────────
+function getModalImages(art) {
+  const imgs = art.images;
+  if (imgs && imgs.length > 0) return imgs;
+  if (art.imageUrl) return [{ url: art.imageUrl, isThumbnail: true }];
+  return [];
+}
+
+// ── Rich Modal (matches Gallery.jsx modal-popup) ──────────
+function ArtworkModal({ artwork, onClose, onInquire }) {
+  const [modalImageIndex, setModalImageIndex] = useState(0);
+  const [isClosing, setIsClosing] = useState(false);
+  const modalImages = getModalImages(artwork);
+  const modalImgCount = modalImages.length;
+  const currentModalUrl = modalImages[modalImageIndex]?.url;
+
+  // Touch swipe support
+  const touchStartX = useRef(null);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(onClose, 280);
+  };
+
+  const prevImage = (e) => { e.stopPropagation(); setModalImageIndex(i => Math.max(0, i - 1)); };
+  const nextImage = (e) => { e.stopPropagation(); setModalImageIndex(i => Math.min(modalImgCount - 1, i + 1)); };
+
+  const handleTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(dx) > 40) dx < 0 ? setModalImageIndex(i => Math.min(modalImgCount - 1, i + 1)) : setModalImageIndex(i => Math.max(0, i - 1));
+    touchStartX.current = null;
   };
 
   useEffect(() => {
     const handleKey = (e) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowLeft" && hasPrev) onPrev();
-      if (e.key === "ArrowRight" && hasNext) onNext();
+      if (e.key === "Escape") handleClose();
+      if (e.key === "ArrowLeft") setModalImageIndex(i => Math.max(0, i - 1));
+      if (e.key === "ArrowRight") setModalImageIndex(i => Math.min(modalImgCount - 1, i + 1));
     };
     window.addEventListener("keydown", handleKey);
     document.body.style.overflow = "hidden";
-    document.body.classList.add("gallery-active");
-
     return () => {
       window.removeEventListener("keydown", handleKey);
       document.body.style.overflow = "";
-      document.body.classList.remove("gallery-active");
     };
-  }, [onClose, onPrev, onNext, hasPrev, hasNext]);
+  }, [modalImgCount]);
 
   if (!artwork) return null;
 
   return (
-    <div className="lightbox-backdrop" onClick={handleBackdrop}>
-      <button className="lightbox-close" onClick={onClose}>✕</button>
+    <div className="modal-overlay" onClick={handleClose}>
+      <div
+        className={`modal-popup${isClosing ? " is-closing" : ""}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button type="button" aria-label="Close" className="modal-popup-close" onClick={handleClose}>×</button>
 
-      {hasPrev && (
-        <button className="lightbox-nav lightbox-nav--prev" onClick={onPrev}>
-          ‹
-        </button>
-      )}
-
-      <div className="lightbox-content">
-        <img src={artwork.imageUrl} alt={artwork.title} className="lightbox-img" />
-
-        <div className="lightbox-info">
-          <h2 className="lightbox-title">{artwork.title}</h2>
-
-          {artwork.category && (
-            <span className="lightbox-category">{artwork.category}</span>
+        {/* Image panel */}
+        <div className="modal-popup-image" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+          {currentModalUrl ? (
+            <img src={currentModalUrl} alt={`${artwork.title} — image ${modalImageIndex + 1}`} draggable={false} key={currentModalUrl} />
+          ) : (
+            <div className="carousel-card-placeholder">{artwork.title}</div>
           )}
 
-          {artwork.tags?.length > 0 && (
-            <div className="lightbox-tags">
-              {artwork.tags.map((tag) => (
-                <span key={tag} className="lightbox-tag">#{tag}</span>
-              ))}
+          {modalImgCount > 1 && (
+            <>
+              <button className="modal-img-arrow modal-img-arrow-left" onClick={prevImage} aria-label="Previous image">&#8249;</button>
+              <button className="modal-img-arrow modal-img-arrow-right" onClick={nextImage} aria-label="Next image">&#8250;</button>
+              <div className="modal-img-dots">
+                {modalImages.map((_, i) => (
+                  <button
+                    key={i}
+                    className={`modal-img-dot${i === modalImageIndex ? " active" : ""}`}
+                    onClick={(e) => { e.stopPropagation(); setModalImageIndex(i); }}
+                    aria-label={`Image ${i + 1}`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Details panel */}
+        <div className="modal-popup-details">
+          <span className="carousel-back-category">{artwork.category}</span>
+          <h2 className="modal-popup-title">{artwork.title}</h2>
+          {artwork.status === "sold" && <span className="carousel-back-sold">This piece has been sold</span>}
+          {artwork.description && <p className="modal-popup-desc">{artwork.description}</p>}
+          <div className="carousel-back-meta">
+            {artwork.medium && (
+              <div className="carousel-back-meta-row">
+                <span className="carousel-back-label">Medium</span>
+                <span className="carousel-back-value">{artwork.medium}</span>
+              </div>
+            )}
+            <div className="carousel-back-meta-row">
+              <span className="carousel-back-label">Category</span>
+              <span className="carousel-back-value">{artwork.category}</span>
             </div>
+            {artwork.size && (
+              <div className="carousel-back-meta-row">
+                <span className="carousel-back-label">Size</span>
+                <span className="carousel-back-value">{artwork.size}</span>
+              </div>
+            )}
+            <div className="carousel-back-meta-row">
+              <span className="carousel-back-label">Status</span>
+              <span className="carousel-back-value">{artwork.status === "sold" ? "Sold" : "Available"}</span>
+            </div>
+          </div>
+          {artwork.status !== "sold" && (
+            <button className="carousel-back-btn modal-popup-btn" onClick={onInquire}>
+              Contact for Availability
+            </button>
           )}
         </div>
       </div>
-
-      {hasNext && (
-        <button className="lightbox-nav lightbox-nav--next" onClick={onNext}>
-          ›
-        </button>
-      )}
     </div>
   );
 }
@@ -139,7 +199,7 @@ export default function GridGallery() {
       .catch(() => {});
   }, []);
   const [searchQuery, setSearchQuery] = useState("");
-  const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [selectedArt, setSelectedArt] = useState(null);
 
   const categories = [
     "All",
@@ -160,18 +220,15 @@ export default function GridGallery() {
     return matchesCategory && matchesSearch;
   });
 
-  const openLightbox = useCallback(
-    (artwork) => {
-      const idx = filtered.findIndex((a) => a.id === artwork.id);
-      setLightboxIndex(idx);
-    },
-    [filtered]
-  );
-
-  const closeLightbox = () => setLightboxIndex(null);
-  const prevLightbox = () => setLightboxIndex((i) => Math.max(0, i - 1));
-  const nextLightbox = () =>
-    setLightboxIndex((i) => Math.min(filtered.length - 1, i + 1));
+  const openModal = useCallback((artwork) => setSelectedArt(artwork), []);
+  const closeModal = () => setSelectedArt(null);
+  const handleInquire = () => {
+    closeModal();
+    // Navigate to contact section
+    const el = document.querySelector("#contact");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+    else window.location.href = "/#contact";
+  };
 
   if (error) {
     return (
@@ -271,21 +328,18 @@ export default function GridGallery() {
             <ArtworkCard
               key={artwork.id}
               artwork={artwork}
-              onClick={openLightbox}
+              onClick={openModal}
             />
           ))}
         </div>
       )}
 
-      {/* Lightbox */}
-      {lightboxIndex !== null && (
-        <Lightbox
-          artwork={filtered[lightboxIndex]}
-          onClose={closeLightbox}
-          onPrev={prevLightbox}
-          onNext={nextLightbox}
-          hasPrev={lightboxIndex > 0}
-          hasNext={lightboxIndex < filtered.length - 1}
+      {/* Modal */}
+      {selectedArt && (
+        <ArtworkModal
+          artwork={selectedArt}
+          onClose={closeModal}
+          onInquire={handleInquire}
         />
       )}
     </section>
