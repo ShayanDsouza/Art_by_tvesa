@@ -73,7 +73,7 @@ export default function Hero() {
 
         {/* A — top left */}
         <img
-          src="/a-removebg-preview.png"
+          src="/a.png"
           alt="A"
           className={`hc-word hc-a${phase >= 2 ? ' visible' : ''}`}
           draggable={false}
@@ -81,7 +81,7 @@ export default function Hero() {
 
         {/* Gallery — centre right */}
         <img
-          src="/gallery-removebg-preview.png"
+          src="/gallery.png"
           alt="Gallery"
           className={`hc-word hc-gallery${phase >= 3 ? ' visible' : ''}`}
           draggable={false}
@@ -89,7 +89,7 @@ export default function Hero() {
 
         {/* of — right */}
         <img
-          src="/of-removebg-preview.png"
+          src="/of.png"
           alt="of"
           className={`hc-word hc-of${phase >= 4 ? ' visible' : ''}`}
           draggable={false}
@@ -97,7 +97,7 @@ export default function Hero() {
 
         {/* Trying — bottom left */}
         <img
-          src="/trying-removebg-preview.png"
+          src="/trying.png"
           alt="Trying"
           className={`hc-word hc-trying${phase >= 5 ? ' visible' : ''}`}
           draggable={false}
