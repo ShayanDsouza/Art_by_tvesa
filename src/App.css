@@ -430,7 +430,7 @@ body.gallery-active .navbar {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 100px 28px 80px;
+    padding: 100px 28px 120px;
     text-align: center;
     gap: 0;
   }
@@ -459,7 +459,7 @@ body.gallery-active .navbar {
 
 @media (max-width: 480px) {
   .hero {
-    padding: 90px 20px 70px;
+    padding: 90px 20px 110px;
   }
 
   .hero-overline {
