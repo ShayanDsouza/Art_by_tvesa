@@ -296,7 +296,6 @@ body.gallery-active .navbar {
 .hero-content h1 {
   font-family: 'Kenao', 'Josefin Sans', 'Inter', system-ui, sans-serif;
   font-weight: normal;
-  text-transform: uppercase;
 }
 
 /* ── Hero composition: Icarus + floating word images ── */
