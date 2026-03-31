@@ -6,6 +6,15 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 import "./Gallery.css";
 
+// add this helper near the top of GridGallery.jsx (it's already in AdminArtworks.jsx)
+function getThumbnailUrl(artwork) {
+  const imgs = artwork.images
+  if (imgs && imgs.length > 0) {
+    return (imgs.find(img => img.isThumbnail) || imgs[0]).url
+  }
+  return artwork.imageUrl || ''
+}
+
 // ── helpers (mirrors Gallery.jsx) ────────────────────────
 function getModalImages(art) {
   const imgs = art.images;
