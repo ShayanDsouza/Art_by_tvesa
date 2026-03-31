@@ -296,7 +296,6 @@ body.gallery-active .navbar {
 .hero-content h1 {
   font-family: 'Kenao', 'Josefin Sans', 'Inter', system-ui, sans-serif;
   font-weight: normal;
-  text-transform: uppercase;
 }
 
 /* ── Hero composition: Icarus + floating word images ── */
@@ -368,7 +367,7 @@ body.gallery-active .navbar {
 
 .hero-overline {
   display: block;
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   font-weight: 500;
   letter-spacing: 4px;
   text-transform: uppercase;
@@ -377,7 +376,7 @@ body.gallery-active .navbar {
 }
 
 .hero h1 {
-  font-size: clamp(1.4rem, 8vw, 3.2rem);
+  font-size: clamp(2.8rem, 13vw, 3.8rem);
   font-weight: 300;
   color: var(--color-dark);
   margin-bottom: 0;
@@ -430,7 +429,7 @@ body.gallery-active .navbar {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 100px 28px 80px;
+    padding: 100px 28px 120px;
     text-align: center;
     gap: 0;
   }
@@ -459,7 +458,7 @@ body.gallery-active .navbar {
 
 @media (max-width: 480px) {
   .hero {
-    padding: 90px 20px 70px;
+    padding: 90px 20px 110px;
   }
 
   .hero-overline {
@@ -1478,6 +1477,31 @@ body.gallery-active .navbar {
   font-size: 0.75rem;
   letter-spacing: 1px;
   margin-top: 8px;
+}
+
+.footer-credits {
+  font-size: 0.68rem;
+  letter-spacing: 0.5px;
+  color: rgba(23, 44, 22, 0.45);
+  margin-top: 6px;
+}
+
+.footer-credits span {
+  color: rgba(23, 44, 22, 0.65);
+  font-style: italic;
+}
+
+.footer-credit-link {
+  color: rgba(23, 44, 22, 0.65);
+  font-style: italic;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(23, 44, 22, 0.25);
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.footer-credit-link:hover {
+  color: #5F578A;
+  border-color: #5F578A;
 }
 
 /* ===== GALLERY EXTRAS ===== */
