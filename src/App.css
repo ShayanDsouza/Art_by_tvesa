@@ -2896,16 +2896,11 @@ body.gallery-active .navbar {
     margin: 3px 0 4px;
   }
 
-  /* Clamp long descriptions to 3 lines so meta + button always fit */
   .modal-popup-desc {
     font-size: 0.82rem;
     line-height: 1.5;
     margin-bottom: 8px;
     flex: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
   .carousel-back-category {
