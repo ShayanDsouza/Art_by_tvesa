@@ -331,7 +331,7 @@
 }
 
 
-/* ── Watercolour Circle Loader ────────────────────────── */
+/* ── Brush Stroke Circle Loader ───────────────────────── */
 .gallery-loader {
   display: flex;
   flex-direction: column;
@@ -342,49 +342,28 @@
 }
 
 .gallery-loader-brush {
-  width: 96px;
-  height: 96px;
-  /* start drawing from the top of the circle */
-  transform: rotate(-90deg);
+  width: 88px;
+  height: 88px;
+  transform: rotate(-90deg); /* start drawing from top */
   overflow: visible;
-  /* outer purple haze — like paint soaking into paper */
-  filter: drop-shadow(0 0 10px rgba(95, 87, 138, 0.55));
 }
 
-.gallery-loader-spread,
 .gallery-loader-stroke {
   fill: none;
   stroke: #5F578A;
+  stroke-width: 12;
   stroke-linecap: round;
-  /* pathLength="100" lets us treat dasharray in % units */
   stroke-dasharray: 100;
-  stroke-dashoffset: 100; /* start fully hidden */
-  opacity: 0;
-}
-
-/* Blurry wide layer — the watercolour wet bleed around the stroke */
-.gallery-loader-spread {
-  stroke-width: 26;
-  animation: wc-draw 2.8s ease-in-out infinite;
-}
-
-/* Crisp thick stroke on top — the actual brush line */
-.gallery-loader-stroke {
-  stroke-width: 11;
-  animation: wc-draw 2.8s ease-in-out infinite;
+  stroke-dashoffset: 100;
+  animation: wc-draw 2.4s ease-in-out infinite;
 }
 
 @keyframes wc-draw {
-  /* brush touches canvas */
   0%   { stroke-dashoffset: 100; opacity: 0; }
-  /* ink blooms */
   10%  { opacity: 1; }
-  /* circle fully painted */
-  62%  { stroke-dashoffset: 0; opacity: 1; }
-  /* hold — let it breathe */
-  76%  { stroke-dashoffset: 0; opacity: 0.7; }
-  /* brush lifts off */
-  93%  { stroke-dashoffset: 0; opacity: 0; }
+  60%  { stroke-dashoffset: 0; opacity: 1; }
+  78%  { stroke-dashoffset: 0; opacity: 0.6; }
+  95%  { stroke-dashoffset: 0; opacity: 0; }
   100% { stroke-dashoffset: 0; opacity: 0; }
 }
 
@@ -394,7 +373,7 @@
   text-transform: uppercase;
   color: rgba(23, 44, 22, 0.35);
   font-family: var(--font-body);
-  animation: loader-pulse 2.8s ease-in-out infinite;
+  animation: loader-pulse 2.4s ease-in-out infinite;
 }
 
 @keyframes loader-pulse {
