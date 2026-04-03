@@ -6,7 +6,6 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 import "./Gallery.css";
 
-// add this helper near the top of GridGallery.jsx (it's already in AdminArtworks.jsx)
 function getThumbnailUrl(artwork) {
   const imgs = artwork.images
   if (imgs && imgs.length > 0) {
@@ -172,7 +171,7 @@ function ArtworkCard({ artwork, onClick }) {
     >
       <div className="gallery-card__img-wrap">
         <img
-          src={artwork.imageUrl}
+          src={getThumbnailUrl(artwork)}
           alt={artwork.title}
           className="gallery-card__img"
           loading="lazy"
