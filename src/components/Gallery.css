@@ -331,58 +331,65 @@
 }
 
 
-/* ── Artsy Loader ─────────────────────────────────────── */
+/* ── Artsy Brush Stroke Loader ────────────────────────── */
 .gallery-loader {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 80px 0 100px;
-  gap: 28px;
+  gap: 24px;
 }
 
-.gallery-loader-rings {
-  position: relative;
-  width: 68px;
-  height: 68px;
+.gallery-loader-brush {
+  width: 160px;
+  height: 72px;
+  overflow: visible;
+  /* soft paint glow around the stroke */
+  filter: drop-shadow(0 0 7px rgba(95, 87, 138, 0.45));
 }
 
-.gallery-loader-arc {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transform-origin: center;
-}
-
-.gallery-loader-arc circle {
+.gallery-loader-brush-glow,
+.gallery-loader-brush-path {
   fill: none;
-  stroke-linecap: round;
-}
-
-/* Outer arc: grape, clockwise, slow */
-.gallery-loader-arc--outer {
-  animation: loader-spin 2.2s linear infinite;
-}
-.gallery-loader-arc--outer circle {
   stroke: #5F578A;
-  stroke-width: 1.5;
-  stroke-dasharray: 105 151;
+  stroke-linecap: round; /* tapered ends — real brush feel */
 }
 
-/* Inner arc: evergreen, counter-clockwise, faster */
-.gallery-loader-arc--inner {
-  animation: loader-spin 1.5s linear infinite reverse;
-}
-.gallery-loader-arc--inner circle {
-  stroke: #172C16;
-  stroke-width: 1.5;
-  stroke-dasharray: 52 82;
+/* Wide, translucent underlayer — mimics wet paint spread */
+.gallery-loader-brush-glow {
+  stroke-width: 16;
+  stroke-dasharray: 115;
+  opacity: 0;
+  animation: brush-stroke 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-@keyframes loader-spin {
-  to { transform: rotate(360deg); }
+/* Crisp top stroke — the actual brush line */
+.gallery-loader-brush-path {
+  stroke-width: 7;
+  stroke-dasharray: 115;
+  opacity: 0;
+  animation: brush-stroke 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Glow layer is more transparent */
+.gallery-loader-brush-glow {
+  opacity: 0;
+  filter: blur(2px);
+}
+
+@keyframes brush-stroke {
+  /* stroke starts invisible at full dashoffset (not drawn) */
+  0%   { stroke-dashoffset: 115; opacity: 0; }
+  /* brush touches canvas — appear */
+  10%  { opacity: 1; }
+  /* stroke fully drawn */
+  55%  { stroke-dashoffset: 0; opacity: 1; }
+  /* hold a beat */
+  72%  { stroke-dashoffset: 0; opacity: 0.7; }
+  /* lift brush — fade out */
+  88%  { stroke-dashoffset: 0; opacity: 0; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
 }
 
 .gallery-loader-text {
@@ -391,12 +398,12 @@
   text-transform: uppercase;
   color: rgba(23, 44, 22, 0.35);
   font-family: var(--font-body);
-  animation: loader-pulse 2s ease-in-out infinite;
+  animation: loader-pulse 2.4s ease-in-out infinite;
 }
 
 @keyframes loader-pulse {
-  0%, 100% { opacity: 0.5; }
-  50%       { opacity: 1; }
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.9; }
 }
 
 /* ── Empty / Error ────────────────────���──────────────── */
