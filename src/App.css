@@ -2869,12 +2869,18 @@ body.gallery-active .navbar {
 
 /* ===== MODAL POPUP MOBILE ===== */
 @media (max-width: 640px) {
+  /* Push overlay centre-point below the navbar so gap above = gap below */
+  .modal-overlay {
+    padding-top: 92px;  /* navbar (68px) + bottom padding (24px) */
+    padding-bottom: 24px;
+    align-items: center;
+  }
+
   .modal-popup {
     flex-direction: column;
     width: min(420px, 96vw);
-    /* auto height so there's no empty gap at the bottom */
     height: auto;
-    max-height: 92svh;
+    max-height: calc(100svh - 116px); /* 100svh - top(92) - bottom(24) */
   }
 
   .modal-popup-image {
