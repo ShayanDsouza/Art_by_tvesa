@@ -195,16 +195,20 @@ export default function GridGallery() {
   const { artworks, loading, error } = useFetchArtworks();
 
   const [activeCategory, setActiveCategory] = useState("All");
-  const [collectionText, setCollectionText] = useState({
-    eyebrow: "The Gallery of Trying",
-    heading: "The Collection",
-    subheading: "A curated selection of original works — exploring colour, form & emotion.",
-  });
+  const [collectionText, setCollectionText] = useState(null);
 
   useEffect(() => {
     getDoc(doc(db, "siteContent", "collection"))
-      .then(snap => { if (snap.exists()) setCollectionText(t => ({ ...t, ...snap.data() })) })
-      .catch(() => {});
+      .then(snap => {
+        setCollectionText(snap.exists() ? snap.data() : {
+          eyebrow: "The Gallery of Trying",
+          heading: "The Collection",
+          subheading: "",
+        })
+      })
+      .catch(() => {
+        setCollectionText({ eyebrow: "The Gallery of Trying", heading: "The Collection", subheading: "" })
+      });
   }, []);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedArt, setSelectedArt] = useState(null);
@@ -253,9 +257,11 @@ export default function GridGallery() {
 
       {/* Header */}
       <div className="gallery-header">
-        <p className="gallery-eyebrow">{collectionText.eyebrow}</p>
-        <h1 className="gallery-heading">{collectionText.heading}</h1>
-        <p className="gallery-subheading">{collectionText.subheading}</p>
+        {collectionText && <>
+          <p className="gallery-eyebrow">{collectionText.eyebrow}</p>
+          <h1 className="gallery-heading">{collectionText.heading}</h1>
+          {collectionText.subheading && <p className="gallery-subheading">{collectionText.subheading}</p>}
+        </>}
       </div>
 
       {/* Controls (FIXED STRUCTURE) */}
