@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useFetchArtworks } from "../hooks/useFetchArtworks";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
+import GalleryLoader from "./GalleryLoader";
 import "./Gallery.css";
 
 function getThumbnailUrl(artwork) {
@@ -318,11 +319,7 @@ export default function GridGallery() {
 
       {/* Content */}
       {loading ? (
-        <div className="gallery-skeleton-grid">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="gallery-skeleton" />
-          ))}
-        </div>
+        <GalleryLoader />
       ) : filtered.length === 0 ? (
         <div className="gallery-empty">
           <p>No artworks found.</p>
