@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp, writeBatch } from 'firebase/firestore'
-import { db } from '../config/firebase'
+import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage'
+import { db, storage } from '../config/firebase'
 import { HiOutlinePlus, HiOutlinePencil, HiOutlineTrash, HiOutlineX, HiOutlinePhotograph, HiStar } from 'react-icons/hi'
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, useSortable, arrayMove, rectSortingStrategy } from '@dnd-kit/sortable'
@@ -8,8 +9,8 @@ import { CSS } from '@dnd-kit/utilities'
 
 const EMPTY_FORM = { title: '', description: '', medium: '', category: '', height: 'normal', status: 'available', size: '', images: [] }
 
-// Compress and convert image file to base64 data URL
-function compressImage(file, maxWidth = 1200, quality = 0.8) {
+// Resize image and return a Blob ready for Storage upload
+function compressImageToBlob(file, maxWidth = 1200, quality = 0.8) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = (e) => {
@@ -23,9 +24,8 @@ function compressImage(file, maxWidth = 1200, quality = 0.8) {
         }
         canvas.width = width
         canvas.height = height
-        const ctx = canvas.getContext('2d')
-        ctx.drawImage(img, 0, 0, width, height)
-        resolve(canvas.toDataURL('image/jpeg', quality))
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height)
+        canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Canvas toBlob failed')), 'image/jpeg', quality)
       }
       img.onerror = reject
       img.src = e.target.result
@@ -166,26 +166,32 @@ export default function AdminArtworks() {
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
-  // Handle multiple image uploads
+  // Handle multiple image uploads — compress then upload to Firebase Storage
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files)
     if (!files.length) return
     setCompressing(true)
     try {
-      const newUrls = await Promise.all(files.map(f => compressImage(f, 1200, 0.8)))
+      const uploaded = await Promise.all(files.map(async (file) => {
+        const blob = await compressImageToBlob(file, 1200, 0.8)
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
+        const path = `artworks/${Date.now()}_${safeName}`
+        const sRef = storageRef(storage, path)
+        await uploadBytes(sRef, blob)
+        const url = await getDownloadURL(sRef)
+        return { url, isThumbnail: false, storagePath: path }
+      }))
       setForm(prev => {
         const existing = prev.images || []
-        const newImages = newUrls.map(url => ({ url, isThumbnail: false }))
-        const combined = [...existing, ...newImages]
-        // If no thumbnail yet, star the first image
+        const combined = [...existing, ...uploaded]
         if (!combined.some(img => img.isThumbnail) && combined.length > 0) {
           combined[0] = { ...combined[0], isThumbnail: true }
         }
         return { ...prev, images: combined }
       })
     } catch (err) {
-      console.error('Error compressing image:', err)
-      alert('Failed to process image. Please try again.')
+      console.error('Error uploading image:', err)
+      alert('Failed to upload image. Please try again.')
     } finally {
       setCompressing(false)
       if (fileInputRef.current) fileInputRef.current.value = ''
@@ -201,7 +207,12 @@ export default function AdminArtworks() {
 
   const removeImage = (index) => {
     setForm(prev => {
-      const wasThumb = prev.images[index].isThumbnail
+      const img = prev.images[index]
+      // Delete from Storage if it has a storage path
+      if (img.storagePath) {
+        deleteObject(storageRef(storage, img.storagePath)).catch(err => console.warn('Storage delete failed:', err))
+      }
+      const wasThumb = img.isThumbnail
       const newImages = prev.images.filter((_, i) => i !== index)
       if (wasThumb && newImages.length > 0) {
         newImages[0] = { ...newImages[0], isThumbnail: true }
@@ -258,6 +269,15 @@ export default function AdminArtworks() {
 
   const handleDelete = async (id) => {
     try {
+      const artwork = artworks.find(a => a.id === id)
+      // Delete all Storage files for this artwork
+      if (artwork?.images) {
+        await Promise.allSettled(
+          artwork.images
+            .filter(img => img.storagePath)
+            .map(img => deleteObject(storageRef(storage, img.storagePath)))
+        )
+      }
       await deleteDoc(doc(db, 'artworks', id))
       setDeleteConfirm(null)
     } catch (err) {
