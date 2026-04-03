@@ -14,7 +14,7 @@ export default function Footer() {
         <p>&copy; {new Date().getFullYear()} Art by Tvesa. All rights reserved.</p>
         <p className="footer-credits">
           Artwork &amp; creative direction — <span>Tvesa Medh</span> &amp; <span>Yana Shah</span>
-          &ensp;·&ensp;
+          <br />
           Website Developed by{' '}
           <a href="mailto:dsouza.shayan@gmail.com" className="footer-credit-link">Shayan Dsouza</a>
           {' '}&amp;{' '}
