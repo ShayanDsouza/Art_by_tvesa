@@ -1,11 +1,28 @@
 export default function GalleryLoader() {
   return (
     <div className="gallery-loader">
-      <svg className="gallery-loader-brush" viewBox="0 0 120 54" xmlns="http://www.w3.org/2000/svg">
-        {/* Soft wide glow layer behind the main stroke */}
-        <path className="gallery-loader-brush-glow" d="M 14,40 Q 60,6 106,40" />
-        {/* Main brush stroke — draws itself left to right */}
-        <path className="gallery-loader-brush-path" d="M 14,40 Q 60,6 106,40" />
+      <svg className="gallery-loader-brush" viewBox="0 0 80 80">
+        <defs>
+          {/* Blurry filter for the watercolour bleed layer */}
+          <filter id="wc-bleed" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="4.5" />
+          </filter>
+        </defs>
+
+        {/* Wide, blurry spread — the watercolour wet-edge glow */}
+        <circle
+          className="gallery-loader-spread"
+          cx="40" cy="40" r="28"
+          pathLength="100"
+          filter="url(#wc-bleed)"
+        />
+
+        {/* Main thick brush stroke on top */}
+        <circle
+          className="gallery-loader-stroke"
+          cx="40" cy="40" r="28"
+          pathLength="100"
+        />
       </svg>
       <p className="gallery-loader-text">gathering works</p>
     </div>

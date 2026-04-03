@@ -331,64 +331,60 @@
 }
 
 
-/* ── Artsy Brush Stroke Loader ────────────────────────── */
+/* ── Watercolour Circle Loader ────────────────────────── */
 .gallery-loader {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 80px 0 100px;
-  gap: 24px;
+  gap: 28px;
 }
 
 .gallery-loader-brush {
-  width: 160px;
-  height: 72px;
+  width: 96px;
+  height: 96px;
+  /* start drawing from the top of the circle */
+  transform: rotate(-90deg);
   overflow: visible;
-  /* soft paint glow around the stroke */
-  filter: drop-shadow(0 0 7px rgba(95, 87, 138, 0.45));
+  /* outer purple haze — like paint soaking into paper */
+  filter: drop-shadow(0 0 10px rgba(95, 87, 138, 0.55));
 }
 
-.gallery-loader-brush-glow,
-.gallery-loader-brush-path {
+.gallery-loader-spread,
+.gallery-loader-stroke {
   fill: none;
   stroke: #5F578A;
-  stroke-linecap: round; /* tapered ends — real brush feel */
-}
-
-/* Wide, translucent underlayer — mimics wet paint spread */
-.gallery-loader-brush-glow {
-  stroke-width: 16;
-  stroke-dasharray: 115;
+  stroke-linecap: round;
+  /* pathLength="100" lets us treat dasharray in % units */
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100; /* start fully hidden */
   opacity: 0;
-  animation: brush-stroke 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-/* Crisp top stroke — the actual brush line */
-.gallery-loader-brush-path {
-  stroke-width: 7;
-  stroke-dasharray: 115;
-  opacity: 0;
-  animation: brush-stroke 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+/* Blurry wide layer — the watercolour wet bleed around the stroke */
+.gallery-loader-spread {
+  stroke-width: 26;
+  animation: wc-draw 2.8s ease-in-out infinite;
 }
 
-/* Glow layer is more transparent */
-.gallery-loader-brush-glow {
-  opacity: 0;
-  filter: blur(2px);
+/* Crisp thick stroke on top — the actual brush line */
+.gallery-loader-stroke {
+  stroke-width: 11;
+  animation: wc-draw 2.8s ease-in-out infinite;
 }
 
-@keyframes brush-stroke {
-  /* stroke starts invisible at full dashoffset (not drawn) */
-  0%   { stroke-dashoffset: 115; opacity: 0; }
-  /* brush touches canvas — appear */
+@keyframes wc-draw {
+  /* brush touches canvas */
+  0%   { stroke-dashoffset: 100; opacity: 0; }
+  /* ink blooms */
   10%  { opacity: 1; }
-  /* stroke fully drawn */
-  55%  { stroke-dashoffset: 0; opacity: 1; }
-  /* hold a beat */
-  72%  { stroke-dashoffset: 0; opacity: 0.7; }
-  /* lift brush — fade out */
-  88%  { stroke-dashoffset: 0; opacity: 0; }
+  /* circle fully painted */
+  62%  { stroke-dashoffset: 0; opacity: 1; }
+  /* hold — let it breathe */
+  76%  { stroke-dashoffset: 0; opacity: 0.7; }
+  /* brush lifts off */
+  93%  { stroke-dashoffset: 0; opacity: 0; }
   100% { stroke-dashoffset: 0; opacity: 0; }
 }
 
@@ -398,12 +394,12 @@
   text-transform: uppercase;
   color: rgba(23, 44, 22, 0.35);
   font-family: var(--font-body);
-  animation: loader-pulse 2.4s ease-in-out infinite;
+  animation: loader-pulse 2.8s ease-in-out infinite;
 }
 
 @keyframes loader-pulse {
   0%, 100% { opacity: 0.4; }
-  50%       { opacity: 0.9; }
+  55%       { opacity: 0.9; }
 }
 
 /* ── Empty / Error ────────────────────���──────────────── */
