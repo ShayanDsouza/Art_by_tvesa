@@ -123,6 +123,8 @@ export default function AdminArtworks() {
   const [deleteConfirm, setDeleteConfirm] = useState(null)
   const isReorderingRef = useRef(false)
   const fileInputRef = useRef(null)
+  // Track storage paths uploaded this session so we can delete them if the user cancels
+  const pendingUploadsRef = useRef([])
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
@@ -159,6 +161,11 @@ export default function AdminArtworks() {
   }, [artworks])
 
   const resetForm = () => {
+    // Delete any files uploaded this session that weren't saved
+    pendingUploadsRef.current.forEach(path =>
+      deleteObject(storageRef(storage, path)).catch(() => {})
+    )
+    pendingUploadsRef.current = []
     setForm(EMPTY_FORM)
     setEditingId(null)
     setShowForm(false)
@@ -175,10 +182,12 @@ export default function AdminArtworks() {
       const uploaded = await Promise.all(files.map(async (file) => {
         const blob = await compressImageToBlob(file, 1200, 0.8)
         const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
-        const path = `artworks/${Date.now()}_${safeName}`
+        const uniqueId = crypto.randomUUID()
+        const path = `artworks/${uniqueId}_${safeName}`
         const sRef = storageRef(storage, path)
         await uploadBytes(sRef, blob)
         const url = await getDownloadURL(sRef)
+        pendingUploadsRef.current.push(path)
         return { url, isThumbnail: false, storagePath: path }
       }))
       setForm(prev => {
@@ -206,13 +215,14 @@ export default function AdminArtworks() {
   }
 
   const removeImage = (index) => {
+    const img = form.images[index]
+    // Delete from Storage outside the state updater to avoid double-invocation in StrictMode
+    if (img.storagePath) {
+      deleteObject(storageRef(storage, img.storagePath)).catch(err => console.warn('Storage delete failed:', err))
+      pendingUploadsRef.current = pendingUploadsRef.current.filter(p => p !== img.storagePath)
+    }
     setForm(prev => {
-      const img = prev.images[index]
-      // Delete from Storage if it has a storage path
-      if (img.storagePath) {
-        deleteObject(storageRef(storage, img.storagePath)).catch(err => console.warn('Storage delete failed:', err))
-      }
-      const wasThumb = img.isThumbnail
+      const wasThumb = prev.images[index]?.isThumbnail
       const newImages = prev.images.filter((_, i) => i !== index)
       if (wasThumb && newImages.length > 0) {
         newImages[0] = { ...newImages[0], isThumbnail: true }
@@ -247,6 +257,8 @@ export default function AdminArtworks() {
           createdAt: serverTimestamp(),
         })
       }
+      // Uploads are saved — clear the pending list so resetForm doesn't delete them
+      pendingUploadsRef.current = []
       resetForm()
     } catch (err) {
       console.error('Error saving artwork:', err)

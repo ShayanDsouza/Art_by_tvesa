@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import { Link } from "react-router-dom";
+import GalleryLoader from './GalleryLoader'
 
 const fallbackArt = [
   { id: '1', title: 'Artwork 1', description: 'A vibrant expression of color and emotion.', medium: 'Canvas', category: 'Painting', status: 'available' },
@@ -31,6 +32,7 @@ function getModalImages(art) {
 
 export default function Gallery() {
   const [artworks, setArtworks] = useState([])
+  const [loading, setLoading] = useState(true)
   const [selectedArt, setSelectedArt] = useState(null)
   const [modalImageIndex, setModalImageIndex] = useState(0)
   const [isClosing, setIsClosing] = useState(false)
@@ -68,7 +70,8 @@ export default function Gallery() {
           const featured = docs.filter(a => a.featured).slice(0, 8)
           setArtworks(featured.length > 0 ? featured : docs.slice(0, 8))
         }
-      }, () => setArtworks(fallbackArt))
+        setLoading(false)
+      }, () => { setArtworks(fallbackArt); setLoading(false) })
       return unsubscribe
     } catch {
       setArtworks(fallbackArt)
@@ -336,6 +339,8 @@ export default function Gallery() {
             <h2>Selected Works</h2>
             <p className="carousel-hint">Scroll or drag to explore &middot; Click a piece to see details</p>
           </div>
+
+          {loading && <GalleryLoader />}
 
           <div className="gallery-carousel-scene" ref={gallerySceneRef}>
             <div

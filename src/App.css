@@ -1491,6 +1491,12 @@ body.gallery-active .navbar {
   font-style: italic;
 }
 
+.footer-credits-line {
+  white-space: nowrap;
+  font-style: normal;
+  color: rgba(23, 44, 22, 0.45);
+}
+
 .footer-credit-link {
   color: rgba(23, 44, 22, 0.65);
   font-style: italic;
@@ -2863,25 +2869,80 @@ body.gallery-active .navbar {
 
 /* ===== MODAL POPUP MOBILE ===== */
 @media (max-width: 640px) {
+  /* Push overlay centre-point below the navbar so gap above = gap below */
+  .modal-overlay {
+    padding-top: 92px;  /* navbar (68px) + bottom padding (24px) */
+    padding-bottom: 24px;
+    align-items: center;
+  }
+
   .modal-popup {
     flex-direction: column;
     width: min(420px, 96vw);
-    height: min(86vh, 620px);
+    height: auto;
+    max-height: calc(100svh - 116px); /* 100svh - top(92) - bottom(24) */
   }
 
   .modal-popup-image {
     width: 100%;
-    height: 45%;
+    /* fixed px so it works with auto-height parent */
+    height: 210px;
     flex-shrink: 0;
   }
 
   .modal-popup-details {
-    padding: 24px 20px 20px;
+    /* extra top padding for breathing room below image */
+    padding: 18px 16px 16px;
     overflow-y: auto;
+    flex: 1;
   }
 
-  .modal-popup-title { font-size: 1.8rem; }
-  .modal-popup-desc { font-size: 1rem; }
+  .modal-popup-title {
+    font-size: 1.4rem;
+    margin: 3px 0 4px;
+  }
+
+  .modal-popup-desc {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    margin-bottom: 8px;
+    flex: 0;
+  }
+
+  .carousel-back-category {
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    margin-bottom: 3px;
+  }
+
+  .carousel-back-sold {
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+  }
+
+  .carousel-back-meta {
+    margin-bottom: 8px;
+  }
+
+  .carousel-back-meta-row {
+    padding: 5px 0;
+  }
+
+  .carousel-back-label {
+    font-size: 0.72rem;
+  }
+
+  .carousel-back-value {
+    font-size: 0.85rem;
+  }
+
+  .carousel-back-btn,
+  .modal-popup-btn {
+    font-size: 0.85rem;
+    padding: 8px 16px;
+    margin-bottom: 6px;
+    letter-spacing: 1.5px;
+  }
 }
 
 /* ===== CONTACT MOBILE ===== */
