@@ -318,7 +318,7 @@ export default function Gallery() {
     ? Math.max(180, count * 45)
     : windowWidth <= 900
       ? Math.max(260, count * 62)
-      : Math.max(360, count * 80)
+      : Math.max(360, Math.min(count * 80, 560))
 
   const tallCard = windowWidth <= 480
     ? { width: '100px', height: '150px', left: '60px' }
