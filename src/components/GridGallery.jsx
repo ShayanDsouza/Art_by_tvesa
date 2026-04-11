@@ -15,7 +15,6 @@ function getThumbnailUrl(artwork) {
   return artwork.imageUrl || ''
 }
 
-// ── helpers (mirrors Gallery.jsx) ────────────────────────
 function getModalImages(art) {
   const imgs = art.images;
   if (imgs && imgs.length > 0) return imgs;
@@ -23,7 +22,7 @@ function getModalImages(art) {
   return [];
 }
 
-// ── Rich Modal (matches Gallery.jsx modal-popup) ──────────
+// ── Rich Modal ────────────────────────────────────────────
 function ArtworkModal({ artwork, onClose, onInquire }) {
   const [modalImageIndex, setModalImageIndex] = useState(0);
   const [isClosing, setIsClosing] = useState(false);
@@ -31,7 +30,6 @@ function ArtworkModal({ artwork, onClose, onInquire }) {
   const modalImgCount = modalImages.length;
   const currentModalUrl = modalImages[modalImageIndex]?.url;
 
-  // Touch swipe support
   const touchStartX = useRef(null);
 
   const handleClose = () => {
@@ -211,6 +209,7 @@ export default function GridGallery() {
         setCollectionText({ eyebrow: "The Gallery of Trying", heading: "The Collection", subheading: "" })
       });
   }, []);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedArt, setSelectedArt] = useState(null);
 
@@ -235,13 +234,26 @@ export default function GridGallery() {
 
   const openModal = useCallback((artwork) => setSelectedArt(artwork), []);
   const closeModal = () => setSelectedArt(null);
-  const handleInquire = () => {
+
+  const handleInquire = useCallback((artwork) => {
     closeModal();
-    // Navigate to contact section
+
+    // Dispatch the artInquiry event so Contact pre-fills the message
+    if (artwork) {
+      window.dispatchEvent(new CustomEvent('artInquiry', {
+        detail: { message: `Hi! I'm interested in "${artwork.title}". Could you please provide more information about availability and pricing?` }
+      }));
+    }
+
+    // Always scroll to #contact on the current page
     const el = document.querySelector("#contact");
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-    else window.location.href = "/#contact";
-  };
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    } else {
+      // Fallback: not on a page with #contact (shouldn't happen now)
+      window.location.href = "/#contact";
+    }
+  }, []);
 
   if (error) {
     return (
@@ -265,7 +277,7 @@ export default function GridGallery() {
         </>}
       </div>
 
-      {/* Controls (FIXED STRUCTURE) */}
+      {/* Controls */}
       <div className="gallery-controls">
 
         {/* Search */}
@@ -293,13 +305,13 @@ export default function GridGallery() {
         <div className="gallery-filters" role="tablist" aria-label="Filter by category">
           {categories.map((cat) => (
             <button
-            key={cat}
-                className={`gallery-filter-btn${
-                    activeCategory === cat ? " gallery-filter-btn--active" : ""
-                }`}
-                onClick={() => setActiveCategory(cat)}
-                role="tab"                          // ADD BACK
-                aria-selected={activeCategory === cat}  // ADD BACK
+              key={cat}
+              className={`gallery-filter-btn${
+                activeCategory === cat ? " gallery-filter-btn--active" : ""
+              }`}
+              onClick={() => setActiveCategory(cat)}
+              role="tab"
+              aria-selected={activeCategory === cat}
             >
               {cat}
             </button>
@@ -311,9 +323,9 @@ export default function GridGallery() {
       {/* Count */}
       {!loading && (
         <p className="gallery-count">
-            {filtered.length} {filtered.length === 1 ? "work" : "works"}
-            {activeCategory !== "All" ? ` in ${activeCategory}` : ""}
-            {searchQuery ? ` matching "${searchQuery}"` : ""}
+          {filtered.length} {filtered.length === 1 ? "work" : "works"}
+          {activeCategory !== "All" ? ` in ${activeCategory}` : ""}
+          {searchQuery ? ` matching "${searchQuery}"` : ""}
         </p>
       )}
 
@@ -350,7 +362,7 @@ export default function GridGallery() {
         <ArtworkModal
           artwork={selectedArt}
           onClose={closeModal}
-          onInquire={handleInquire}
+          onInquire={() => handleInquire(selectedArt)}
         />
       )}
     </section>

@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-// Scroll to the fully-zoomed-in state (middle of the hold phase, progress ~0.64)
 function scrollToGalleryZoomed(e) {
   e.preventDefault()
   const gallery = document.querySelector('#gallery')
@@ -15,16 +14,21 @@ function scrollToGalleryZoomed(e) {
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
+  const isCollection = location.pathname === '/collection'
 
   const handleHashLink = (hash) => {
     setMenuOpen(false)
-
-    // If on homepage, scroll to hash
-    if (location.pathname === '/') {
-      const element = document.querySelector(hash)
-      if (element) element.scrollIntoView({ behavior: 'smooth' })
+    const element = document.querySelector(hash)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
     } else {
-      window.location.href = `/${hash}`
+      // Not on a page that has this section — go home first
+      navigate('/')
+      // After navigation, scroll on next tick
+      setTimeout(() => {
+        document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth' })
+      }, 100)
     }
   }
 
@@ -34,8 +38,30 @@ export default function Navbar() {
     if (location.pathname === '/') {
       scrollToGalleryZoomed(e)
     } else {
+      // Navigate home, then scroll to gallery
       window.location.href = '/#gallery'
     }
+  }
+
+  const handleContact = (e) => {
+    e.preventDefault()
+    setMenuOpen(false)
+    const el = document.querySelector('#contact')
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      window.location.href = '/#contact'
+    }
+  }
+
+  const handleCollectionClick = (e) => {
+    setMenuOpen(false)
+    // If already on collection page, just scroll to top
+    if (isCollection) {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+    // Otherwise let the <Link> navigate normally — CollectionPage will scrollTo(0) on mount
   }
 
   return (
@@ -43,6 +69,7 @@ export default function Navbar() {
       <Link to="/" className="navbar-logo" onClick={() => setMenuOpen(false)}>
         <img src="/logo.png" alt="Art by Tvesa" className="navbar-logo-img" />
       </Link>
+
       <button
         className={`hamburger ${menuOpen ? 'open' : ''}`}
         onClick={() => setMenuOpen(!menuOpen)}
@@ -52,12 +79,23 @@ export default function Navbar() {
         <span></span>
         <span></span>
       </button>
+
       <ul className={`navbar-links ${menuOpen ? 'active' : ''}`}>
-        <li><a href="#gallery" onClick={handleGallery}>Gallery</a></li>
-        <li><a href="#about" onClick={(e) => { e.preventDefault(); handleHashLink('#about') }}>About</a></li>
-        <li><a href="#contact" onClick={(e) => { e.preventDefault(); handleHashLink('#contact') }}>Contact</a></li>
         <li>
-          <Link to="/collection" className="navbar-collection-btn" onClick={() => setMenuOpen(false)}>
+          <a href="#gallery" onClick={handleGallery}>Gallery</a>
+        </li>
+        <li>
+          <a href="#about" onClick={(e) => { e.preventDefault(); handleHashLink('#about') }}>About</a>
+        </li>
+        <li>
+          <a href="#contact" onClick={handleContact}>Contact</a>
+        </li>
+        <li>
+          <Link
+            to="/collection"
+            className="navbar-collection-btn"
+            onClick={handleCollectionClick}
+          >
             <span className="navbar-collection-shimmer" aria-hidden="true" />
             <span className="navbar-collection-label">Full Collection</span>
           </Link>
