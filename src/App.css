@@ -37,19 +37,19 @@
   border-color: rgba(23, 44, 22, 0.8);
   background: #172C16 !important;
   box-shadow:
-    0 0 10px rgba(23, 44, 22, 0.45),
-    0 0 22px rgba(23, 44, 22, 0.25),
-    0 0 40px rgba(23, 44, 22, 0.12);
+          0 0 10px rgba(23, 44, 22, 0.45),
+          0 0 22px rgba(23, 44, 22, 0.25),
+          0 0 40px rgba(23, 44, 22, 0.12);
 }
 
 .navbar-collection-shimmer {
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    105deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.55) 50%,
-    transparent 70%
+          105deg,
+          transparent 30%,
+          rgba(255, 255, 255, 0.55) 50%,
+          transparent 70%
   );
   background-size: 200% 100%;
   animation: shimmer-sweep 2.6s ease-in-out infinite;
@@ -271,9 +271,9 @@ body.gallery-active .navbar {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 20% 50%, rgba(144, 136, 192, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(13, 26, 13, 0.3) 0%, transparent 40%),
-    radial-gradient(circle at 50% 80%, rgba(59, 12, 12, 0.2) 0%, transparent 60%);
+          radial-gradient(circle at 20% 50%, rgba(144, 136, 192, 0.08) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(13, 26, 13, 0.3) 0%, transparent 40%),
+          radial-gradient(circle at 50% 80%, rgba(59, 12, 12, 0.2) 0%, transparent 60%);
   pointer-events: none;
 }
 
@@ -327,8 +327,8 @@ body.gallery-active .navbar {
   opacity: 0;
   transform: translateY(-120px);
   transition:
-    opacity 3s cubic-bezier(0.23, 1, 0.32, 1) 0s,
-    transform 4s cubic-bezier(0.16, 1, 0.3, 1) 0s;
+          opacity 3s cubic-bezier(0.23, 1, 0.32, 1) 0s,
+          transform 4s cubic-bezier(0.16, 1, 0.3, 1) 0s;
   filter: drop-shadow(0 16px 48px rgba(0,0,0,0.38));
 }
 .hc-icarus.visible {
@@ -347,8 +347,8 @@ body.gallery-active .navbar {
   opacity: 0;
   transform: translateY(-10px);
   transition:
-    opacity 0.9s ease,
-    transform 0.9s cubic-bezier(0.34, 1.4, 0.64, 1);
+          opacity 0.9s ease,
+          transform 0.9s cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 .hc-word.visible {
   opacity: 1;
@@ -616,8 +616,8 @@ body.gallery-active .navbar {
   justify-content: flex-start;
   background: #3B0C0C;
   background-image:
-    radial-gradient(ellipse at 20% 30%, rgba(144, 136, 192, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 70%, rgba(13, 26, 13, 0.15) 0%, transparent 50%);
+          radial-gradient(ellipse at 20% 30%, rgba(144, 136, 192, 0.08) 0%, transparent 50%),
+          radial-gradient(ellipse at 80% 70%, rgba(13, 26, 13, 0.15) 0%, transparent 50%);
 }
 
 /* ── Header: sits at the top of the stage in natural flex flow ── */
@@ -672,10 +672,10 @@ body.gallery-active .navbar {
   overflow: hidden;
   /* layered glitter particle bg */
   background:
-    radial-gradient(circle at 20% 40%, rgba(200, 190, 255, 0.18) 0%, transparent 50%),
-    radial-gradient(circle at 75% 65%, rgba(255, 210, 240, 0.12) 0%, transparent 45%),
-    radial-gradient(circle at 50% 10%, rgba(180, 170, 255, 0.10) 0%, transparent 40%),
-    transparent;
+          radial-gradient(circle at 20% 40%, rgba(200, 190, 255, 0.18) 0%, transparent 50%),
+          radial-gradient(circle at 75% 65%, rgba(255, 210, 240, 0.12) 0%, transparent 45%),
+          radial-gradient(circle at 50% 10%, rgba(180, 170, 255, 0.10) 0%, transparent 40%),
+          transparent;
   border-color: rgba(180, 170, 255, 0.5) !important;
   transition: box-shadow 0.4s, border-color 0.4s, color 0.3s !important;
 }
@@ -685,21 +685,21 @@ body.gallery-active .navbar {
   background: #172C16 !important;
   border-color: rgba(23, 44, 22, 0.8) !important;
   box-shadow:
-    0 0 12px rgba(23, 44, 22, 0.5),
-    0 0 28px rgba(23, 44, 22, 0.28),
-    0 0 55px rgba(23, 44, 22, 0.14),
-    inset 0 0 18px rgba(23, 44, 22, 0.08);
+          0 0 12px rgba(23, 44, 22, 0.5),
+          0 0 28px rgba(23, 44, 22, 0.28),
+          0 0 55px rgba(23, 44, 22, 0.14),
+          inset 0 0 18px rgba(23, 44, 22, 0.08);
 }
 
 .btn-glitter-shimmer {
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    110deg,
-    transparent 25%,
-    rgba(255, 255, 255, 0.60) 48%,
-    rgba(220, 210, 255, 0.40) 52%,
-    transparent 75%
+          110deg,
+          transparent 25%,
+          rgba(255, 255, 255, 0.60) 48%,
+          rgba(220, 210, 255, 0.40) 52%,
+          transparent 75%
   );
   background-size: 220% 100%;
   animation: glitter-sweep 3s ease-in-out infinite;
@@ -802,10 +802,11 @@ body.gallery-active .navbar {
   background: var(--color-white);
   padding: 8px;
   box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.1),
-    0 12px 40px rgba(0, 0, 0, 0.05);
+          0 4px 20px rgba(0, 0, 0, 0.1),
+          0 12px 40px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
+  position: relative; /* badges position against this face, not clipped by parent overflow:hidden */
 }
 
 
@@ -845,6 +846,24 @@ body.gallery-active .navbar {
   text-transform: uppercase;
   padding: 4px 10px;
   z-index: 2;
+}
+
+.carousel-price-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: #1a5c1e;
+  color: #6fcf6f;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  z-index: 2;
+  border: 1px solid rgba(111, 207, 111, 0.4);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 .carousel-card-label {

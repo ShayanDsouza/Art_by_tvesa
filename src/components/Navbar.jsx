@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
+// Scroll to the fully-zoomed-in hold phase (progress 0.66 = middle of 0.60–0.72 hold).
+// Uses 'instant' so the carousel jumps directly to zoomed-in state rather than
+// animating through zoom-out → zoom-in → hold as smooth scroll passes each phase.
 function scrollToGalleryZoomed(e) {
   e.preventDefault()
   const gallery = document.querySelector('#gallery')
   const wrapper = document.querySelector('.gallery-scroll-wrapper')
   if (!gallery || !wrapper) return
   const scrollableHeight = wrapper.offsetHeight - window.innerHeight
-  const targetScrollY = gallery.offsetTop + 0.64 * scrollableHeight
-  window.scrollTo({ top: targetScrollY, behavior: 'smooth' })
+  const targetScrollY = gallery.offsetTop + 0.66 * scrollableHeight
+  window.scrollTo({ top: targetScrollY, behavior: 'instant' })
 }
 
 export default function Navbar() {

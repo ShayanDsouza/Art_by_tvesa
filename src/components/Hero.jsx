@@ -41,73 +41,73 @@ export default function Hero() {
     const wrapper = document.querySelector('.gallery-scroll-wrapper')
     if (gallery && wrapper) {
       const scrollableHeight = wrapper.offsetHeight - window.innerHeight
-      window.scrollTo({ top: gallery.offsetTop + 0.64 * scrollableHeight, behavior: 'smooth' })
+      window.scrollTo({ top: gallery.offsetTop + 0.66 * scrollableHeight, behavior: 'instant' })
     }
   }
 
   return (
-    <section id="hero" className="hero">
-      <HeroCanvas />
-      <div className="hero-bg-pattern" />
+      <section id="hero" className="hero">
+        <HeroCanvas />
+        <div className="hero-bg-pattern" />
 
-      {/* Left: title + button */}
-      <div className={`hero-content${phase >= 6 ? ' hero-visible' : ''}`}>
-        <span className="hero-overline">Welcome to my studio</span>
-        <h1>Art by Tvesa</h1>
-        <div className="hero-divider" />
-        <a href="#gallery" className="btn btn-outline" onClick={scrollToGallery}>
-          View Gallery
-        </a>
-      </div>
+        {/* Left: title + button */}
+        <div className={`hero-content${phase >= 6 ? ' hero-visible' : ''}`}>
+          <span className="hero-overline">Welcome to my studio</span>
+          <h1>Art by Tvesa</h1>
+          <div className="hero-divider" />
+          <a href="#gallery" className="btn btn-outline" onClick={scrollToGallery}>
+            View Gallery
+          </a>
+        </div>
 
-      {/* Right: Icarus + floating word images */}
-      <div ref={icarusRef} className="hero-composition">
+        {/* Right: Icarus + floating word images */}
+        <div ref={icarusRef} className="hero-composition">
 
-        {/* Icarus drops first */}
-        <img
-          src="/icarus.png"
-          alt="Icarus"
-          className={`hc-icarus${phase >= 1 ? ' visible' : ''}`}
-          draggable={false}
-        />
+          {/* Icarus drops first */}
+          <img
+              src="/icarus.png"
+              alt="Icarus"
+              className={`hc-icarus${phase >= 1 ? ' visible' : ''}`}
+              draggable={false}
+          />
 
-        {/* A — top left */}
-        <img
-          src="/a.png"
-          alt="A"
-          className={`hc-word hc-a${phase >= 2 ? ' visible' : ''}`}
-          draggable={false}
-        />
+          {/* A — top left */}
+          <img
+              src="/a.png"
+              alt="A"
+              className={`hc-word hc-a${phase >= 2 ? ' visible' : ''}`}
+              draggable={false}
+          />
 
-        {/* Gallery — centre right */}
-        <img
-          src="/gallery.png"
-          alt="Gallery"
-          className={`hc-word hc-gallery${phase >= 3 ? ' visible' : ''}`}
-          draggable={false}
-        />
+          {/* Gallery — centre right */}
+          <img
+              src="/gallery.png"
+              alt="Gallery"
+              className={`hc-word hc-gallery${phase >= 3 ? ' visible' : ''}`}
+              draggable={false}
+          />
 
-        {/* of — right */}
-        <img
-          src="/of.png"
-          alt="of"
-          className={`hc-word hc-of${phase >= 4 ? ' visible' : ''}`}
-          draggable={false}
-        />
+          {/* of — right */}
+          <img
+              src="/of.png"
+              alt="of"
+              className={`hc-word hc-of${phase >= 4 ? ' visible' : ''}`}
+              draggable={false}
+          />
 
-        {/* Trying — bottom left */}
-        <img
-          src="/trying.png"
-          alt="Trying"
-          className={`hc-word hc-trying${phase >= 5 ? ' visible' : ''}`}
-          draggable={false}
-        />
-      </div>
+          {/* Trying — bottom left */}
+          <img
+              src="/trying.png"
+              alt="Trying"
+              className={`hc-word hc-trying${phase >= 5 ? ' visible' : ''}`}
+              draggable={false}
+          />
+        </div>
 
-      <div className="hero-scroll-hint">
-        <span>Scroll</span>
-        <div className="hero-scroll-line" />
-      </div>
-    </section>
+        <div className="hero-scroll-hint">
+          <span>Scroll</span>
+          <div className="hero-scroll-line" />
+        </div>
+      </section>
   )
 }

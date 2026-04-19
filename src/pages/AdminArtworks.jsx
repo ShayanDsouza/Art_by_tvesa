@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp, writeBatch } from 'firebase/firestore'
+import { collection, addDoc, updateDoc, deleteDoc, deleteField, doc, onSnapshot, query, orderBy, serverTimestamp, writeBatch } from 'firebase/firestore'
 import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage'
 import { db, storage } from '../config/firebase'
 import { HiOutlinePlus, HiOutlinePencil, HiOutlineTrash, HiOutlineX, HiOutlinePhotograph, HiStar } from 'react-icons/hi'
@@ -8,9 +8,24 @@ import { SortableContext, useSortable, arrayMove, rectSortingStrategy } from '@d
 import { CSS } from '@dnd-kit/utilities'
 
 const EMPTY_FORM = { title: '', description: '', medium: '', category: '', height: 'normal', status: 'available', size: '', images: [] }
+const STATUS_ORDER = ['available', 'sold', 'not_for_sale']
 
-// Resize image and return a Blob ready for Storage upload
-function compressImageToBlob(file, maxWidth = 1200, quality = 0.8) {
+function getStatusLabel(status) {
+  if (status === 'sold') return 'Sold'
+  if (status === 'not_for_sale') return 'Not for Sale'
+  return 'Available'
+}
+
+function getNextStatus(status) {
+  const currentIndex = STATUS_ORDER.indexOf(status)
+  return STATUS_ORDER[(currentIndex + 1 + STATUS_ORDER.length) % STATUS_ORDER.length]
+}
+
+function getNextStatusActionLabel(status) {
+  return `Mark ${getStatusLabel(getNextStatus(status))}`
+}
+
+function compressImageToBlob(file, maxWidth = 2400, quality = 0.92) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = (e) => {
@@ -35,7 +50,6 @@ function compressImageToBlob(file, maxWidth = 1200, quality = 0.8) {
   })
 }
 
-// Get the thumbnail URL from an artwork (star or first image, fallback to legacy imageUrl)
 function getThumbnailUrl(artwork) {
   const imgs = artwork.images
   if (imgs && imgs.length > 0) {
@@ -70,11 +84,10 @@ function SortableAdminItem({ artwork, onEdit, onDelete, onToggleStatus, onToggle
       ) : (
         <div className="gallery-placeholder">{artwork.title}</div>
       )}
-      {artwork.status === 'sold' && <span className="gallery-sold-badge">Sold</span>}
+      {artwork.status !== 'available' && <span className="gallery-sold-badge">{getStatusLabel(artwork.status)}</span>}
       {extraCount > 0 && (
         <span className="admin-extra-images-badge">+{extraCount}</span>
       )}
-      {/* Star button — top right corner */}
       <button
         className={`admin-star-btn${artwork.featured ? ' admin-star-btn--active' : ''}`}
         onPointerDown={e => e.stopPropagation()}
@@ -91,7 +104,7 @@ function SortableAdminItem({ artwork, onEdit, onDelete, onToggleStatus, onToggle
             onClick={e => { e.stopPropagation(); onToggleStatus(artwork) }}
             className="admin-overlay-btn"
           >
-            {artwork.status === 'sold' ? 'Mark Available' : 'Mark Sold'}
+            {getNextStatusActionLabel(artwork.status)}
           </button>
           <button
             onPointerDown={e => e.stopPropagation()}
@@ -123,7 +136,6 @@ export default function AdminArtworks() {
   const [deleteConfirm, setDeleteConfirm] = useState(null)
   const isReorderingRef = useRef(false)
   const fileInputRef = useRef(null)
-  // Track storage paths uploaded this session so we can delete them if the user cancels
   const pendingUploadsRef = useRef([])
 
   const sensors = useSensors(
@@ -144,7 +156,6 @@ export default function AdminArtworks() {
     return unsubscribe
   }, [])
 
-  // One-time migration: assign order to artworks that don't have it
   useEffect(() => {
     if (artworks.length > 0 && artworks.some(a => a.order === undefined || a.order === null)) {
       const migrateOrder = async () => {
@@ -161,7 +172,6 @@ export default function AdminArtworks() {
   }, [artworks])
 
   const resetForm = () => {
-    // Delete any files uploaded this session that weren't saved
     pendingUploadsRef.current.forEach(path =>
       deleteObject(storageRef(storage, path)).catch(() => {})
     )
@@ -173,14 +183,13 @@ export default function AdminArtworks() {
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
-  // Handle multiple image uploads — compress then upload to Firebase Storage
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files)
     if (!files.length) return
     setCompressing(true)
     try {
       const uploaded = await Promise.all(files.map(async (file) => {
-        const blob = await compressImageToBlob(file, 1200, 0.8)
+        const blob = await compressImageToBlob(file, 2400, 0.92)
         const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
         const uniqueId = crypto.randomUUID()
         const path = `artworks/${uniqueId}_${safeName}`
@@ -216,7 +225,6 @@ export default function AdminArtworks() {
 
   const removeImage = (index) => {
     const img = form.images[index]
-    // Delete from Storage outside the state updater to avoid double-invocation in StrictMode
     if (img.storagePath) {
       deleteObject(storageRef(storage, img.storagePath)).catch(err => console.warn('Storage delete failed:', err))
       pendingUploadsRef.current = pendingUploadsRef.current.filter(p => p !== img.storagePath)
@@ -236,6 +244,7 @@ export default function AdminArtworks() {
     setLoading(true)
     try {
       const thumbUrl = (form.images.find(img => img.isThumbnail) || form.images[0])?.url || ''
+      const trimmedSize = form.size.trim()
       const artworkData = {
         title: form.title,
         description: form.description,
@@ -243,21 +252,23 @@ export default function AdminArtworks() {
         category: form.category,
         height: form.height,
         status: form.status,
-        ...(form.size.trim() && { size: form.size.trim() }),
         images: form.images,
-        imageUrl: thumbUrl, // backward-compat for carousel thumbnail
+        imageUrl: thumbUrl,
       }
 
       if (editingId) {
-        await updateDoc(doc(db, 'artworks', editingId), artworkData)
+        await updateDoc(doc(db, 'artworks', editingId), {
+          ...artworkData,
+          size: trimmedSize || deleteField(),
+        })
       } else {
         await addDoc(collection(db, 'artworks'), {
           ...artworkData,
+          ...(trimmedSize && { size: trimmedSize }),
           order: artworks.length,
           createdAt: serverTimestamp(),
         })
       }
-      // Uploads are saved — clear the pending list so resetForm doesn't delete them
       pendingUploadsRef.current = []
       resetForm()
     } catch (err) {
@@ -269,7 +280,6 @@ export default function AdminArtworks() {
   }
 
   const handleEdit = (artwork) => {
-    // Normalise: convert legacy imageUrl to images array
     let images = artwork.images || []
     if (images.length === 0 && artwork.imageUrl) {
       images = [{ url: artwork.imageUrl, isThumbnail: true }]
@@ -282,7 +292,6 @@ export default function AdminArtworks() {
   const handleDelete = async (id) => {
     try {
       const artwork = artworks.find(a => a.id === id)
-      // Delete all Storage files for this artwork
       if (artwork?.images) {
         await Promise.allSettled(
           artwork.images
@@ -299,7 +308,7 @@ export default function AdminArtworks() {
   }
 
   const toggleStatus = async (artwork) => {
-    const newStatus = artwork.status === 'sold' ? 'available' : 'sold'
+    const newStatus = getNextStatus(artwork.status)
     await updateDoc(doc(db, 'artworks', artwork.id), { status: newStatus })
   }
 
@@ -339,7 +348,6 @@ export default function AdminArtworks() {
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={artworkIds} strategy={rectSortingStrategy}>
           <div className="admin-masonry">
-            {/* Add New tile */}
             <div
               className="gallery-item gallery-item-normal admin-add-tile"
               onClick={() => { resetForm(); setShowForm(true) }}
@@ -365,7 +373,6 @@ export default function AdminArtworks() {
         </SortableContext>
       </DndContext>
 
-      {/* Add/Edit Modal */}
       {showForm && (
         <div className="modal-overlay" onClick={e => { if (e.target === e.currentTarget) resetForm() }}>
           <div className="modal admin-form-modal">
@@ -404,11 +411,12 @@ export default function AdminArtworks() {
                     <select value={form.status} onChange={e => setForm({...form, status: e.target.value})}>
                       <option value="available">Available</option>
                       <option value="sold">Sold</option>
+                      <option value="not_for_sale">Not for Sale</option>
                     </select>
                   </div>
                   <div className="admin-form-group">
-                    <label>Size <span className="admin-label-hint">— optional</span></label>
-                    <input type="text" value={form.size} onChange={e => setForm({...form, size: e.target.value})} placeholder="e.g. 30 × 40 cm" />
+                    <label>Size <span className="admin-label-hint">- optional</span></label>
+                    <input type="text" value={form.size} onChange={e => setForm({...form, size: e.target.value})} placeholder="e.g. 30 x 40 cm" />
                   </div>
                 </div>
                 <div className="admin-form-group">
@@ -416,17 +424,14 @@ export default function AdminArtworks() {
                   <textarea value={form.description} onChange={e => setForm({...form, description: e.target.value})} rows={3} required />
                 </div>
 
-                {/* ── Multi-image upload ── */}
                 <div className="admin-form-group">
-                  <label>Images <span className="admin-label-hint">— star to set thumbnail</span></label>
+                  <label>Images <span className="admin-label-hint">- star to set thumbnail</span></label>
 
-                  {/* Uploaded images row */}
                   {form.images.length > 0 && (
                     <div className="admin-image-grid">
                       {form.images.map((img, i) => (
                         <div key={i} className={`admin-image-thumb${img.isThumbnail ? ' is-thumb' : ''}`}>
                           <img src={img.url} alt={`Image ${i + 1}`} />
-                          {/* Star / thumbnail button */}
                           <button
                             type="button"
                             className={`admin-thumb-star${img.isThumbnail ? ' starred' : ''}`}
@@ -435,7 +440,6 @@ export default function AdminArtworks() {
                           >
                             <HiStar />
                           </button>
-                          {/* Remove button */}
                           <button
                             type="button"
                             className="admin-thumb-remove"
@@ -448,7 +452,6 @@ export default function AdminArtworks() {
                         </div>
                       ))}
 
-                      {/* Add more images button */}
                       <div
                         className="admin-image-thumb admin-image-add-more"
                         onClick={() => fileInputRef.current?.click()}
@@ -460,7 +463,6 @@ export default function AdminArtworks() {
                     </div>
                   )}
 
-                  {/* Initial upload area (shown when no images yet) */}
                   {form.images.length === 0 && (
                     <div className="admin-upload-area" onClick={() => fileInputRef.current?.click()}>
                       {compressing ? (
@@ -469,7 +471,7 @@ export default function AdminArtworks() {
                         <div className="admin-upload-placeholder">
                           <HiOutlinePhotograph />
                           <span>Click to upload images</span>
-                          <span className="admin-upload-hint">Select one or multiple — JPG, PNG</span>
+                          <span className="admin-upload-hint">Select one or multiple - JPG, PNG</span>
                         </div>
                       )}
                     </div>
@@ -501,7 +503,6 @@ export default function AdminArtworks() {
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
       {deleteConfirm && (
         <div className="modal-overlay" onClick={e => { if (e.target === e.currentTarget) setDeleteConfirm(null) }}>
           <div className="modal admin-delete-modal">
