@@ -36,8 +36,12 @@ function getStatusLabel(status) {
       return 'Sold'
     case 'not_for_sale':
       return 'Not for Sale'
-    default:
+    case 'available':
+    case undefined:
+    case null:
       return 'Available'
+    default:
+      return 'Unknown'
   }
 }
 
