@@ -41,7 +41,7 @@ export default function Hero() {
     const wrapper = document.querySelector('.gallery-scroll-wrapper')
     if (gallery && wrapper) {
       const scrollableHeight = wrapper.offsetHeight - window.innerHeight
-      window.scrollTo({ top: gallery.offsetTop + 0.66 * scrollableHeight, behavior: 'instant' })
+      window.scrollTo({ top: gallery.offsetTop + 0.66 * scrollableHeight, behavior: 'auto' })
     }
   }
 
