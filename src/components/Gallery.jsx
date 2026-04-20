@@ -408,7 +408,7 @@ export default function Gallery() {
                             ) : (
                                 <div className="carousel-card-placeholder">{art.title}</div>
                             )}
-                            {art.status !== 'available' && <span className="carousel-sold-badge">{statusLabel}</span>}
+                            {statusLabel !== 'Available' && <span className="carousel-sold-badge">{statusLabel}</span>}
                             {art.price && art.status === 'available' && (
                                 <span className="carousel-price-badge">{art.price}</span>
                             )}
