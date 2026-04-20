@@ -147,7 +147,7 @@ function ArtworkModal({ artwork, onClose, onInquire }) {
                 </button>
             ) : (
                 <button className="carousel-back-btn modal-popup-btn" type="button" disabled>
-                  Not for Sale
+                  {statusLabel}
                 </button>
             )}
           </div>
