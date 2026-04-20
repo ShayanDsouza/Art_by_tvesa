@@ -30,6 +30,17 @@ function getModalImages(art) {
   return []
 }
 
+function getStatusLabel(status) {
+  switch (status) {
+    case 'sold':
+      return 'Sold'
+    case 'not_for_sale':
+      return 'Not for Sale'
+    default:
+      return 'Available'
+  }
+}
+
 export default function Gallery() {
   const [artworks, setArtworks] = useState([])
   const [loading, setLoading] = useState(true)
@@ -358,6 +369,7 @@ export default function Gallery() {
                   {artworks.map((art, i) => {
                     const angle = i * angleStep
                     const isTall = art.height === 'tall'
+                    const statusLabel = getStatusLabel(art.status)
                     const cardStyle = isTall
                         ? {
                           transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
@@ -392,8 +404,8 @@ export default function Gallery() {
                             ) : (
                                 <div className="carousel-card-placeholder">{art.title}</div>
                             )}
-                            {art.status === 'sold' && <span className="carousel-sold-badge">Sold</span>}
-                            {art.price && art.status !== 'sold' && (
+                            {art.status !== 'available' && <span className="carousel-sold-badge">{statusLabel}</span>}
+                            {art.price && art.status === 'available' && (
                                 <span className="carousel-price-badge">{art.price}</span>
                             )}
                             <div className="carousel-card-label">
