@@ -15,6 +15,7 @@ import AdminMessages from './pages/AdminMessages'
 import AdminContent from './pages/AdminContent'
 import './App.css'
 import CollectionPage from "./pages/CollectionPage";
+import ShopPage from "./pages/ShopPage";
 
 function PublicSite() {
   const location = useLocation()
@@ -48,6 +49,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<PublicSite />} />
           <Route path="/collection" element={<CollectionPage />} />
+          <Route path="/shop" element={<ShopPage />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}>
             <Route index element={<AdminArtworks />} />

@@ -53,6 +53,7 @@ export default function Gallery() {
   const [isClosing, setIsClosing] = useState(false)
   const [rotation, setRotation] = useState(0)
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+  const [imageSizes, setImageSizes] = useState({})
   const [isDragging, setIsDragging] = useState(false)
   const carouselRef = useRef(null)
   const gallerySceneRef = useRef(null)
@@ -117,9 +118,9 @@ export default function Gallery() {
       scene.style.opacity      = currentOpacityRef.current.toFixed(4)
 
       const stillMoving =
-          Math.abs(currentScaleRef.current   - targetScale)   > 0.0003 ||
-          Math.abs(currentRadiusRef.current  - targetRadius)  > 0.05   ||
-          Math.abs(currentOpacityRef.current - targetOpacity) > 0.002
+        Math.abs(currentScaleRef.current   - targetScale)   > 0.0003 ||
+        Math.abs(currentRadiusRef.current  - targetRadius)  > 0.05   ||
+        Math.abs(currentOpacityRef.current - targetOpacity) > 0.002
 
       if (stillMoving) zoomRafRef.current = requestAnimationFrame(tick)
     }
@@ -250,6 +251,28 @@ export default function Gallery() {
     animFrameRef.current = requestAnimationFrame(decelerate)
   }, [])
 
+  // Measure image dimensions — works for both fresh loads and cached images
+  useEffect(() => {
+    if (!artworks.length) return
+    artworks.forEach(art => {
+      const thumbUrl = getThumbnailUrl(art)
+      if (!thumbUrl) return
+      const img = new window.Image()
+      img.onload = () => {
+        if (img.naturalWidth && img.naturalHeight) {
+          setImageSizes(prev => prev[art.id] ? prev : { ...prev, [art.id]: img.naturalWidth / img.naturalHeight })
+        }
+      }
+      img.src = thumbUrl
+    })
+  }, [artworks])
+
+  const handleImageLoad = useCallback((e, artId) => {
+    const { naturalWidth, naturalHeight } = e.target
+    if (!naturalWidth || !naturalHeight) return
+    setImageSizes(prev => prev[artId] ? prev : { ...prev, [artId]: naturalWidth / naturalHeight })
+  }, [])
+
   const handleCardClick = (art, e, cardAngle) => {
     const startX = dragStartRef.current
     if (startX !== null && Math.abs(e.clientX - startX) > 8) return
@@ -330,205 +353,193 @@ export default function Gallery() {
   const count = artworks.length
   const angleStep = count > 0 ? 360 / count : 0
   const radius = windowWidth <= 480
-    ? Math.max(180, count * 45)
+    ? Math.max(130, count * 28)
     : windowWidth <= 900
-      ? Math.max(260, count * 62)
+      ? Math.max(200, count * 42)
       : Math.max(360, Math.min(count * 80, 560))
 
-  const tallCard = windowWidth <= 480
-      ? { width: '100px', height: '150px', left: '60px' }
-      : windowWidth <= 900
-          ? { width: '130px', height: '185px', left: '70px' }
-          : { width: '210px', height: '290px', left: '115px' }
+  const cardHeight = windowWidth <= 480 ? 150 : windowWidth <= 900 ? 185 : 290
 
   const currentModalUrl = modalImages[modalImageIndex]?.url
 
   return (
-      <section id="gallery" className="gallery">
+    <section id="gallery" className="gallery">
 
-        <div className="gallery-scroll-wrapper" ref={galleryWrapperRef}>
-          <div className="gallery-stage">
+      <div className="gallery-scroll-wrapper" ref={galleryWrapperRef}>
+        <div className="gallery-stage">
 
-            <div className="gallery-header" ref={galleryHeaderRef}>
-              <span className="section-overline">Gallery</span>
-              <h2>Selected Works</h2>
-              <p className="carousel-hint">Scroll or drag to explore &middot; Click a piece to see details</p>
-            </div>
+          <div className="gallery-header" ref={galleryHeaderRef}>
+            <span className="section-overline">Gallery</span>
+            <h2>Selected Works</h2>
+            <p className="carousel-hint">Scroll or drag to explore &middot; Click a piece to see details</p>
+          </div>
 
-            {loading && <GalleryLoader />}
+          {loading && <GalleryLoader />}
 
-            <div className="gallery-carousel-scene" ref={gallerySceneRef}>
+          <div className="gallery-carousel-scene" ref={gallerySceneRef}>
+            <div
+              className="carousel-viewport"
+              ref={carouselRef}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={handlePointerUp}
+            >
               <div
-                  className="carousel-viewport"
-                  ref={carouselRef}
-                  onPointerDown={handlePointerDown}
-                  onPointerMove={handlePointerMove}
-                  onPointerUp={handlePointerUp}
-                  onPointerCancel={handlePointerUp}
+                className="carousel-ring"
+                style={{ transform: `rotateY(${rotation}deg)` }}
               >
-                <div
-                    className="carousel-ring"
-                    style={{ transform: `rotateY(${rotation}deg)` }}
-                >
-                  {artworks.map((art, i) => {
-                    const angle = i * angleStep
-                    const isTall = art.height === 'tall'
-                    const statusLabel = getStatusLabel(art.status)
-                    const cardStyle = isTall
-                        ? {
-                          transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
-                          width: tallCard.width,
-                          height: tallCard.height,
-                          left: tallCard.left,
-                          top: '0',
+                {artworks.map((art, i) => {
+                  const angle = i * angleStep
+                  const ratio = imageSizes[art.id] ?? 0.75
+                  const cardW = Math.round(cardHeight * ratio)
+                  const cardStyle = {
+                    transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
+                    width: `${cardW}px`,
+                    height: `${cardHeight}px`,
+                    left: `${-Math.round(cardW / 2)}px`,
+                    top: `${-Math.round(cardHeight / 2)}px`,
+                  }
+
+                  const thumbUrl = getThumbnailUrl(art)
+
+                  return (
+                    <div
+                      key={art.id}
+                      className="carousel-card"
+                      style={cardStyle}
+                      role="button"
+                      tabIndex={0}
+                      onClick={(e) => handleCardClick(art, e, angle)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          if (e.key !== 'Enter') e.preventDefault()
+                          handleCardClick(art, e, angle)
                         }
-                        : { transform: `rotateY(${angle}deg) translateZ(${radius}px)` }
-
-                    const thumbUrl = getThumbnailUrl(art)
-
-                    return (
-                        <div
-                            key={art.id}
-                            className={`carousel-card${isTall ? ' carousel-card-tall' : ''}`}
-                            style={cardStyle}
-                            role="button"
-                            tabIndex={0}
-                            onClick={(e) => handleCardClick(art, e, angle)}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter' || e.key === ' ') {
-                                if (e.key !== 'Enter') e.preventDefault()
-                                handleCardClick(art, e, angle)
-                              }
-                            }}
-                        >
-                          <div className="carousel-face carousel-face-natural-back" />
-                          <div className="carousel-face carousel-face-front">
-                            {thumbUrl ? (
-                                <img src={thumbUrl} alt={art.title} className="carousel-card-image" draggable={false} />
-                            ) : (
-                                <div className="carousel-card-placeholder">{art.title}</div>
-                            )}
-                            {statusLabel !== 'Available' && <span className="carousel-sold-badge">{statusLabel}</span>}
-                            {art.price && art.status === 'available' && (
-                                <span className="carousel-price-badge">{art.price}</span>
-                            )}
-                            <div className="carousel-card-label">
-                              <span className="carousel-card-category">{art.category}</span>
-                              <h3>{art.title}</h3>
-                            </div>
-                          </div>
+                      }}
+                    >
+                      <div className="carousel-face carousel-face-natural-back" />
+                      <div className="carousel-face carousel-face-front">
+                        {thumbUrl ? (
+                          <img src={thumbUrl} alt={art.title} className="carousel-card-image" draggable={false} onLoad={(e) => handleImageLoad(e, art.id)} />
+                        ) : (
+                          <div className="carousel-card-placeholder">{art.title}</div>
+                        )}
+                        {art.status === 'sold' && <span className="carousel-sold-badge">Sold</span>}
+                        <div className="carousel-card-label">
+                          <span className="carousel-card-category">{art.category}</span>
+                          <h3>{art.title}</h3>
                         </div>
-                    )
-                  })}
-                </div>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
+          </div>
 
-            {/* "View Full Collection" sits outside the zooming scene */}
-            <div className="gallery-view-all">
-              <Link to="/collection" className="btn btn-outline btn-glitter">
-                <span className="btn-glitter-shimmer" aria-hidden="true" />
-                <span className="btn-glitter-label">View Full Collection</span>
-              </Link>
+          {/* Buttons sit outside the zooming scene */}
+          <div className="gallery-view-all">
+            <Link to="/collection" className="btn btn-outline btn-glitter">
+              <span className="btn-glitter-shimmer" aria-hidden="true" />
+              <span className="btn-glitter-label">View Full Collection</span>
+            </Link>
+            <Link to="/shop" className="btn btn-outline btn-glitter">
+              <span className="btn-glitter-shimmer" aria-hidden="true" />
+              <span className="btn-glitter-label">View Shop</span>
+            </Link>
+          </div>
+
+        </div>
+      </div>
+
+      {/* ── Modal lives OUTSIDE all transforms ── */}
+      {selectedArt && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className={`modal-popup${isClosing ? ' is-closing' : ''}`}>
+            <button
+              type="button"
+              aria-label="Close"
+              className="modal-popup-close"
+              onClick={handleClose}
+            >×</button>
+
+            {/* Image panel with arrows */}
+            <div
+              className="modal-popup-image"
+              onTouchStart={handleModalTouchStart}
+              onTouchEnd={handleModalTouchEnd}
+            >
+              {currentModalUrl ? (
+                <img
+                  src={currentModalUrl}
+                  alt={`${selectedArt.title} — image ${modalImageIndex + 1}`}
+                  draggable={false}
+                  key={currentModalUrl}
+                />
+              ) : (
+                <div className="carousel-card-placeholder">{selectedArt.title}</div>
+              )}
+
+              {/* Left / right arrows — only shown when multiple images */}
+              {modalImgCount > 1 && (
+                <>
+                  <button
+                    className="modal-img-arrow modal-img-arrow-left"
+                    onClick={prevModalImage}
+                    aria-label="Previous image"
+                  >&#8249;</button>
+                  <button
+                    className="modal-img-arrow modal-img-arrow-right"
+                    onClick={nextModalImage}
+                    aria-label="Next image"
+                  >&#8250;</button>
+
+                  {/* Dot indicators */}
+                  <div className="modal-img-dots">
+                    {modalImages.map((_, i) => (
+                      <button
+                        key={i}
+                        className={`modal-img-dot${i === modalImageIndex ? ' active' : ''}`}
+                        onClick={(e) => { e.stopPropagation(); setModalImageIndex(i) }}
+                        aria-label={`Image ${i + 1}`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
 
+            <div className="modal-popup-details">
+              <span className="carousel-back-category">{selectedArt.category}</span>
+              <h2 className="modal-popup-title">{selectedArt.title}</h2>
+              <p className="modal-popup-desc">{selectedArt.description}</p>
+              <div className="carousel-back-meta">
+                <div className="carousel-back-meta-row">
+                  <span className="carousel-back-label">Medium</span>
+                  <span className="carousel-back-value">{selectedArt.medium}</span>
+                </div>
+                <div className="carousel-back-meta-row">
+                  <span className="carousel-back-label">Category</span>
+                  <span className="carousel-back-value">{selectedArt.category}</span>
+                </div>
+                {selectedArt.size && (
+                  <div className="carousel-back-meta-row">
+                    <span className="carousel-back-label">Size</span>
+                    <span className="carousel-back-value">{selectedArt.size}</span>
+                  </div>
+                )}
+              </div>
+              <button
+                className="carousel-back-btn modal-popup-btn"
+                onClick={handleInquire}
+              >
+                Contact for Availability
+              </button>
+            </div>
           </div>
         </div>
-
-        {/* ── Modal lives OUTSIDE all transforms ── */}
-        {selectedArt && (
-            <div className="modal-overlay" onClick={closeModal}>
-              <div className={`modal-popup${isClosing ? ' is-closing' : ''}`}>
-                <button
-                    type="button"
-                    aria-label="Close"
-                    className="modal-popup-close"
-                    onClick={handleClose}
-                >×</button>
-
-                {/* Image panel with arrows */}
-                <div
-                    className="modal-popup-image"
-                    onTouchStart={handleModalTouchStart}
-                    onTouchEnd={handleModalTouchEnd}
-                >
-                  {currentModalUrl ? (
-                      <img
-                          src={currentModalUrl}
-                          alt={`${selectedArt.title} — image ${modalImageIndex + 1}`}
-                          draggable={false}
-                          key={currentModalUrl}
-                      />
-                  ) : (
-                      <div className="carousel-card-placeholder">{selectedArt.title}</div>
-                  )}
-
-                  {/* Left / right arrows — only shown when multiple images */}
-                  {modalImgCount > 1 && (
-                      <>
-                        <button
-                            className="modal-img-arrow modal-img-arrow-left"
-                            onClick={prevModalImage}
-                            aria-label="Previous image"
-                        >&#8249;</button>
-                        <button
-                            className="modal-img-arrow modal-img-arrow-right"
-                            onClick={nextModalImage}
-                            aria-label="Next image"
-                        >&#8250;</button>
-
-                        {/* Dot indicators */}
-                        <div className="modal-img-dots">
-                          {modalImages.map((_, i) => (
-                              <button
-                                  key={i}
-                                  className={`modal-img-dot${i === modalImageIndex ? ' active' : ''}`}
-                                  onClick={(e) => { e.stopPropagation(); setModalImageIndex(i) }}
-                                  aria-label={`Image ${i + 1}`}
-                              />
-                          ))}
-                        </div>
-                      </>
-                  )}
-                </div>
-
-                <div className="modal-popup-details">
-                  <span className="carousel-back-category">{selectedArt.category}</span>
-                  <h2 className="modal-popup-title">{selectedArt.title}</h2>
-                  {selectedArt.status === 'sold' && <span className="carousel-back-sold">This piece has been sold</span>}
-                  <p className="modal-popup-desc">{selectedArt.description}</p>
-                  <div className="carousel-back-meta">
-                    <div className="carousel-back-meta-row">
-                      <span className="carousel-back-label">Medium</span>
-                      <span className="carousel-back-value">{selectedArt.medium}</span>
-                    </div>
-                    <div className="carousel-back-meta-row">
-                      <span className="carousel-back-label">Category</span>
-                      <span className="carousel-back-value">{selectedArt.category}</span>
-                    </div>
-                    {selectedArt.size && (
-                        <div className="carousel-back-meta-row">
-                          <span className="carousel-back-label">Size</span>
-                          <span className="carousel-back-value">{selectedArt.size}</span>
-                        </div>
-                    )}
-                    <div className="carousel-back-meta-row">
-                      <span className="carousel-back-label">Status</span>
-                      <span className="carousel-back-value">{selectedArt.status === 'sold' ? 'Sold' : 'Available'}</span>
-                    </div>
-                  </div>
-                  {selectedArt.status !== 'sold' && (
-                      <button
-                          className="carousel-back-btn modal-popup-btn"
-                          onClick={handleInquire}
-                      >
-                        Contact for Availability
-                      </button>
-                  )}
-                </div>
-              </div>
-            </div>
-        )}
-      </section>
+      )}
+    </section>
   )
 }

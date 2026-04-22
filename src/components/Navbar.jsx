@@ -1,24 +1,22 @@
-import { useState } from 'react'
-import { Link, useLocation, useNavigate } from "react-router-dom";
-
-// Scroll to the fully-zoomed-in hold phase (progress 0.66 = middle of 0.60–0.72 hold).
-// Uses 'instant' so the carousel jumps directly to zoomed-in state rather than
-// animating through zoom-out → zoom-in → hold as smooth scroll passes each phase.
-function scrollToGalleryZoomed(e) {
-  e.preventDefault()
-  const gallery = document.querySelector('#gallery')
-  const wrapper = document.querySelector('.gallery-scroll-wrapper')
-  if (!gallery || !wrapper) return
-  const scrollableHeight = wrapper.offsetHeight - window.innerHeight
-  const targetScrollY = gallery.offsetTop + 0.66 * scrollableHeight
-  window.scrollTo({ top: targetScrollY, behavior: 'instant' })
-}
+import { useState, useEffect } from 'react'
+import { Link, useLocation, useNavigate } from "react-router-dom"
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
-  const isCollection = location.pathname === '/collection'
+  const isShop = location.pathname === '/shop'
+
+  /* Close mobile drawer when home gallery enters "carousel mode" */
+  useEffect(() => {
+    const syncMenu = () => {
+      if (document.body.classList.contains('gallery-active')) setMenuOpen(false)
+    }
+    const obs = new MutationObserver(syncMenu)
+    obs.observe(document.body, { attributes: true, attributeFilter: ['class'] })
+    syncMenu()
+    return () => obs.disconnect()
+  }, [])
 
   const handleHashLink = (hash) => {
     setMenuOpen(false)
@@ -26,23 +24,10 @@ export default function Navbar() {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
     } else {
-      // Not on a page that has this section — go home first
       navigate('/')
-      // After navigation, scroll on next tick
       setTimeout(() => {
         document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth' })
       }, 100)
-    }
-  }
-
-  const handleGallery = (e) => {
-    e.preventDefault()
-    setMenuOpen(false)
-    if (location.pathname === '/') {
-      scrollToGalleryZoomed(e)
-    } else {
-      // Navigate home, then scroll to gallery
-      window.location.href = '/#gallery'
     }
   }
 
@@ -57,21 +42,23 @@ export default function Navbar() {
     }
   }
 
-  const handleCollectionClick = (e) => {
+  const handleShopClick = (e) => {
     setMenuOpen(false)
-    // If already on collection page, just scroll to top
-    if (isCollection) {
+    if (isShop) {
       e.preventDefault()
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
-    // Otherwise let the <Link> navigate normally — CollectionPage will scrollTo(0) on mount
   }
 
   return (
     <nav className="navbar">
-      <Link to="/" className="navbar-logo" onClick={() => setMenuOpen(false)}>
-        <img src="/logo.png" alt="Art by Tvesa" className="navbar-logo-img" />
-      </Link>
+      <div className="navbar-brand">
+        <div className="navbar-logo-wrap">
+          <Link to="/" className="navbar-logo" onClick={() => setMenuOpen(false)}>
+            <img src="/logo.png" alt="Art by Tvesa" className="navbar-logo-img" />
+          </Link>
+        </div>
+      </div>
 
       <button
         className={`hamburger ${menuOpen ? 'open' : ''}`}
@@ -85,7 +72,7 @@ export default function Navbar() {
 
       <ul className={`navbar-links ${menuOpen ? 'active' : ''}`}>
         <li>
-          <a href="#gallery" onClick={handleGallery}>Gallery</a>
+          <Link to="/collection" onClick={() => setMenuOpen(false)}>Gallery</Link>
         </li>
         <li>
           <a href="#about" onClick={(e) => { e.preventDefault(); handleHashLink('#about') }}>About</a>
@@ -95,12 +82,12 @@ export default function Navbar() {
         </li>
         <li>
           <Link
-            to="/collection"
+            to="/shop"
             className="navbar-collection-btn"
-            onClick={handleCollectionClick}
+            onClick={handleShopClick}
           >
             <span className="navbar-collection-shimmer" aria-hidden="true" />
-            <span className="navbar-collection-label">Full Collection</span>
+            <span className="navbar-collection-label">View Shop</span>
           </Link>
         </li>
       </ul>

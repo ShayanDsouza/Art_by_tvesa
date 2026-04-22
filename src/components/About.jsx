@@ -10,21 +10,25 @@ If you are curious about my academic work, check out my <a href="https://www.lin
 
 export default function About() {
   const [bio, setBio] = useState(DEFAULT_BIO)
+  const [artistImageUrl, setArtistImageUrl] = useState('/meet_artist.jpg')
 
   useEffect(() => {
     getDoc(doc(db, 'siteContent', 'about'))
-      .then(snap => { if (snap.exists() && snap.data().bio) setBio(snap.data().bio) })
+      .then(snap => {
+        if (!snap.exists()) return
+        if (snap.data().bio) setBio(snap.data().bio)
+        if (snap.data().artistImageUrl) setArtistImageUrl(snap.data().artistImageUrl)
+      })
       .catch(() => {})
   }, [])
 
-  // Split by double newline into paragraphs
   const paragraphs = bio.split('\n\n').filter(Boolean)
 
   return (
     <section id="about" className="about">
       <div className="about-content">
         <div className="about-image">
-          <img src="/meet_artist.jpg" alt="Tvesa Medh" className="about-photo" />
+          <img src={artistImageUrl} alt="Tvesa Medh" className="about-photo" />
         </div>
         <div className="about-text">
           <span className="section-overline">Meet the Artist</span>
