@@ -1,6 +1,9 @@
 // Vercel serverless function — POST /api/subscribe
-// Adds an email to Shopify as a subscribed customer via the Admin API.
-// Uses server-side env vars so the Admin token is never exposed to the browser.
+// Uses the Shopify Storefront API (customerCreate mutation) to subscribe an email
+// with acceptsMarketing: true. No Admin token needed — just the public Storefront token.
+// Requires: unauthenticated_write_customers scope on the Headless channel.
+
+import { randomUUID } from 'crypto'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -13,78 +16,64 @@ export default async function handler(req, res) {
   }
 
   const domain = process.env.VITE_SHOPIFY_STORE_DOMAIN
-  const token  = process.env.SHOPIFY_ADMIN_TOKEN
+  const token  = process.env.VITE_SHOPIFY_STOREFRONT_TOKEN
 
   if (!domain || !token) {
-    console.error('Missing VITE_SHOPIFY_STORE_DOMAIN or SHOPIFY_ADMIN_TOKEN env vars')
+    console.error('Missing Shopify env vars')
     return res.status(500).json({ error: 'Server misconfiguration.' })
   }
 
-  const adminBase = `https://${domain}/admin/api/2025-01`
-  const headers   = {
-    'Content-Type': 'application/json',
-    'X-Shopify-Access-Token': token,
-  }
+  // Generate a random password — the subscriber never needs to know or use it.
+  // It just satisfies Shopify's customerCreate requirement.
+  const password = randomUUID() + '-' + randomUUID()
+
+  const query = `
+    mutation customerCreate($input: CustomerCreateInput!) {
+      customerCreate(input: $input) {
+        customer { id email }
+        customerUserErrors { field message code }
+      }
+    }
+  `
 
   try {
-    // ── Attempt to create a new customer with marketing consent ──
-    const createRes = await fetch(`${adminBase}/customers.json`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        customer: {
-          email: email.trim().toLowerCase(),
-          tags: 'newsletter',           // ← marks them as newsletter-only signup
-          email_marketing_consent: {
-            state: 'subscribed',
-            opt_in_level: 'single_opt_in',
-          },
+    const shopifyRes = await fetch(
+      `https://${domain}/api/2025-01/graphql.json`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Shopify-Storefront-Access-Token': token,
         },
-      }),
-    })
-
-    const createData = await createRes.json()
-
-    // ── Customer already exists → update their marketing consent + add tag ──
-    if (!createRes.ok && createData.errors?.email) {
-      const searchRes = await fetch(
-        `${adminBase}/customers/search.json?query=email:${encodeURIComponent(email.trim())}`,
-        { headers }
-      )
-      const { customers } = await searchRes.json()
-
-      if (!customers || customers.length === 0) {
-        return res.status(400).json({ error: 'Could not find or create subscriber.' })
-      }
-
-      const existing = customers[0]
-      const existingTags = existing.tags ? existing.tags.split(', ') : []
-      const updatedTags = existingTags.includes('newsletter')
-        ? existing.tags
-        : [...existingTags, 'newsletter'].filter(Boolean).join(', ')
-
-      await fetch(`${adminBase}/customers/${existing.id}.json`, {
-        method: 'PUT',
-        headers,
         body: JSON.stringify({
-          customer: {
-            id: existing.id,
-            tags: updatedTags,
-            email_marketing_consent: {
-              state: 'subscribed',
-              opt_in_level: 'single_opt_in',
+          query,
+          variables: {
+            input: {
+              email: email.trim().toLowerCase(),
+              password,
+              acceptsMarketing: true,
             },
           },
         }),
-      })
+      }
+    )
 
-      // Already subscribed — still a success from the user's perspective
-      return res.status(200).json({ success: true })
+    const { data, errors } = await shopifyRes.json()
+
+    if (errors?.length) {
+      console.error('Shopify GraphQL errors:', errors)
+      return res.status(500).json({ error: 'Failed to subscribe. Please try again.' })
     }
 
-    if (!createRes.ok) {
-      const msg = Object.values(createData.errors || {}).flat()[0] || 'Failed to subscribe.'
-      return res.status(400).json({ error: msg })
+    const { customerUserErrors } = data.customerCreate
+
+    if (customerUserErrors.length > 0) {
+      // Email already registered → treat as success (they're already in the system)
+      const alreadyTaken = customerUserErrors.some(e => e.code === 'TAKEN')
+      if (alreadyTaken) {
+        return res.status(200).json({ success: true })
+      }
+      return res.status(400).json({ error: customerUserErrors[0].message })
     }
 
     return res.status(200).json({ success: true })
