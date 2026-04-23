@@ -175,13 +175,15 @@ export async function getCart(cartId) {
 // the Shopify Admin API to subscribe the email — keeping the admin token
 // server-side only (never exposed in the browser bundle).
 export async function subscribeToNewsletter(email) {
-  const res = await fetch('/api/subscribe', {
+  const res  = await fetch('/api/subscribe', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email }),
   })
-  const data = await res.json()
-  if (!res.ok) throw new Error(data.error || 'Failed to subscribe. Please try again.')
+  const text = await res.text()
+  let data = {}
+  try { data = JSON.parse(text) } catch { /* non-JSON body */ }
+  if (!res.ok) throw new Error(data.error || `Error ${res.status}. Please try again.`)
   return true
 }
 
