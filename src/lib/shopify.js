@@ -182,6 +182,7 @@ export async function subscribeToNewsletter(email) {
   `, {
     input: {
       email: email.trim().toLowerCase(),
+      password: crypto.randomUUID() + crypto.randomUUID(),
       acceptsMarketing: true,
     },
   })
