@@ -5,16 +5,20 @@ import NewsletterSignup from './NewsletterSignup'
 export default function Footer() {
   return (
     <footer className="footer">
-      <div className="footer-newsletter">
-        <NewsletterSignup />
-      </div>
-      <div className="footer-content">
-        <span className="footer-logo">Art by Tvesa</span>
-        <div className="footer-links">
-          <a href="https://www.instagram.com/artbytvesa/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><FaInstagram /></a>
-          <a href="https://in.pinterest.com/artbytvesa/my-art/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><FaPinterest /></a>
-          <a href="mailto:artbytvesa@gmail.com" aria-label="Email"><HiOutlineMail /></a>
+      <div className="footer-main">
+        <div className="footer-newsletter-col">
+          <NewsletterSignup />
         </div>
+        <div className="footer-brand-col">
+          <span className="footer-logo">Art by Tvesa</span>
+          <div className="footer-links">
+            <a href="https://www.instagram.com/artbytvesa/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><FaInstagram /></a>
+            <a href="https://in.pinterest.com/artbytvesa/my-art/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><FaPinterest /></a>
+            <a href="mailto:artbytvesa@gmail.com" aria-label="Email"><HiOutlineMail /></a>
+          </div>
+        </div>
+      </div>
+      <div className="footer-bottom">
         <p>&copy; {new Date().getFullYear()} Art by Tvesa. All rights reserved.</p>
         <p className="footer-credits">
           <span className="footer-credits-line">Artwork &amp; creative direction — <span>Tvesa Medh</span> &amp; <span>Yana Shah</span></span>
