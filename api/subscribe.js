@@ -34,6 +34,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         customer: {
           email: email.trim().toLowerCase(),
+          tags: 'newsletter',           // ← marks them as newsletter-only signup
           email_marketing_consent: {
             state: 'subscribed',
             opt_in_level: 'single_opt_in',
@@ -44,7 +45,7 @@ export default async function handler(req, res) {
 
     const createData = await createRes.json()
 
-    // ── Customer already exists → update their marketing consent ──
+    // ── Customer already exists → update their marketing consent + add tag ──
     if (!createRes.ok && createData.errors?.email) {
       const searchRes = await fetch(
         `${adminBase}/customers/search.json?query=email:${encodeURIComponent(email.trim())}`,
@@ -56,13 +57,19 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Could not find or create subscriber.' })
       }
 
-      const customerId = customers[0].id
-      await fetch(`${adminBase}/customers/${customerId}.json`, {
+      const existing = customers[0]
+      const existingTags = existing.tags ? existing.tags.split(', ') : []
+      const updatedTags = existingTags.includes('newsletter')
+        ? existing.tags
+        : [...existingTags, 'newsletter'].filter(Boolean).join(', ')
+
+      await fetch(`${adminBase}/customers/${existing.id}.json`, {
         method: 'PUT',
         headers,
         body: JSON.stringify({
           customer: {
-            id: customerId,
+            id: existing.id,
+            tags: updatedTags,
             email_marketing_consent: {
               state: 'subscribed',
               opt_in_level: 'single_opt_in',
