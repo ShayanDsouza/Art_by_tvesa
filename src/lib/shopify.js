@@ -189,12 +189,15 @@ export async function subscribeToNewsletter(email) {
 
   const { customer, customerUserErrors } = data.customerCreate
 
-  // If a customer object was returned, signup succeeded regardless of any info messages
-  if (customer) return true
+  // New subscriber created successfully
+  if (customer) return 'subscribed'
 
   if (customerUserErrors.length > 0) {
-    // Email already registered → treat as success
-    if (customerUserErrors.some(e => e.code === 'TAKEN')) return true
+    // Email already in the system (TAKEN code or Shopify's verification message)
+    const alreadyExists =
+      customerUserErrors.some(e => e.code === 'TAKEN') ||
+      customerUserErrors.some(e => e.message?.toLowerCase().includes('sent an email'))
+    if (alreadyExists) return 'already_subscribed'
     throw new Error(customerUserErrors[0].message)
   }
 

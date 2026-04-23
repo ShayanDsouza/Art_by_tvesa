@@ -3,7 +3,7 @@ import { subscribeToNewsletter } from '../lib/shopify'
 
 export default function NewsletterSignup() {
   const [email, setEmail]       = useState('')
-  const [status, setStatus]     = useState('idle') // idle | loading | success | error
+  const [status, setStatus]     = useState('idle') // idle | loading | success | already | error
   const [errorMsg, setErrorMsg] = useState('')
 
   const handleSubmit = async (e) => {
@@ -12,8 +12,8 @@ export default function NewsletterSignup() {
     setStatus('loading')
     setErrorMsg('')
     try {
-      await subscribeToNewsletter(email.trim())
-      setStatus('success')
+      const result = await subscribeToNewsletter(email.trim())
+      setStatus(result === 'already_subscribed' ? 'already' : 'success')
       setEmail('')
     } catch (err) {
       setErrorMsg(err.message || 'Something went wrong. Please try again.')
@@ -32,6 +32,11 @@ export default function NewsletterSignup() {
         <div className="newsletter-success">
           <p className="newsletter-success-title">You're on the list!</p>
           <p className="newsletter-success-sub">Check your inbox to verify your email — then you'll be the first to hear about new works and offers.</p>
+        </div>
+      ) : status === 'already' ? (
+        <div className="newsletter-success">
+          <p className="newsletter-success-title">You're already in! 🎨</p>
+          <p className="newsletter-success-sub">You're already on the mailing list. Stay tuned for new collections and exclusive offers.</p>
         </div>
       ) : (
         <form className="newsletter-form" onSubmit={handleSubmit}>
