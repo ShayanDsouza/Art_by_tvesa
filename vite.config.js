@@ -11,7 +11,10 @@ export default defineConfig({
       // Forward /api/* to the deployed Vercel functions so npm run dev
       // can test API routes without needing vercel dev
       '/api': {
-        target: 'https://art-by-tvesa.vercel.app',
+        // Point to the Shayan branch preview deployment (not main) so the
+        // api/ folder exists on the target. Update this URL from:
+        // Vercel dashboard → Deployments → Shayan branch → copy the preview URL
+        target: 'https://art-by-tvesa-ubnpnqekt-dsouzashayan-9117s-projects.vercel.app',
         changeOrigin: true,
       },
     },
