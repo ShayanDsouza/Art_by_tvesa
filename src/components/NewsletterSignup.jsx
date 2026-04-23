@@ -30,13 +30,13 @@ export default function NewsletterSignup() {
 
       {status === 'success' ? (
         <div className="newsletter-success">
-          <p className="newsletter-success-title">You're on the list!</p>
-          <p className="newsletter-success-sub">Check your inbox to verify your email — then you'll be the first to hear about new works and offers.</p>
+          <p className="newsletter-success-title">Almost there!</p>
+          <p className="newsletter-success-sub">We've sent you a confirmation email — click the link inside to complete your subscription.</p>
         </div>
       ) : status === 'already' ? (
         <div className="newsletter-success">
-          <p className="newsletter-success-title">You're already in! 🎨</p>
-          <p className="newsletter-success-sub">You're already on the mailing list. Stay tuned for new collections and exclusive offers.</p>
+          <p className="newsletter-success-title">You're already on the list!</p>
+          <p className="newsletter-success-sub">Stay tuned for new collections and exclusive offers.</p>
         </div>
       ) : (
         <form className="newsletter-form" onSubmit={handleSubmit}>
