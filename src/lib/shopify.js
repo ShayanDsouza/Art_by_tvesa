@@ -171,7 +171,31 @@ export async function getCart(cartId) {
 }
 
 /* ─── Newsletter ────────────────────────────────────────── */
-// TODO: wire up newsletter subscription when backend is ready
+export async function subscribeToNewsletter(email) {
+  const data = await shopifyFetch(`
+    mutation customerCreate($input: CustomerCreateInput!) {
+      customerCreate(input: $input) {
+        customer { id email acceptsMarketing }
+        customerUserErrors { field message code }
+      }
+    }
+  `, {
+    input: {
+      email: email.trim().toLowerCase(),
+      acceptsMarketing: true,
+    },
+  })
+
+  const { customerUserErrors } = data.customerCreate
+
+  if (customerUserErrors.length > 0) {
+    // Email already registered → treat as success
+    if (customerUserErrors.some(e => e.code === 'TAKEN')) return true
+    throw new Error(customerUserErrors[0].message)
+  }
+
+  return true
+}
 
 /* ─── Helpers ───────────────────────────────────────────── */
 export function formatPrice(amount, currencyCode = 'INR') {
