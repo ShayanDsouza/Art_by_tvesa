@@ -171,21 +171,7 @@ export async function getCart(cartId) {
 }
 
 /* ─── Newsletter ────────────────────────────────────────── */
-// Calls our own Vercel serverless function (/api/subscribe) which uses
-// the Shopify Admin API to subscribe the email — keeping the admin token
-// server-side only (never exposed in the browser bundle).
-export async function subscribeToNewsletter(email) {
-  const res  = await fetch('/api/subscribe', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email }),
-  })
-  const text = await res.text()
-  let data = {}
-  try { data = JSON.parse(text) } catch { /* non-JSON body */ }
-  if (!res.ok) throw new Error(data.error || `Error ${res.status}. Please try again.`)
-  return true
-}
+// TODO: wire up newsletter subscription when backend is ready
 
 /* ─── Helpers ───────────────────────────────────────────── */
 export function formatPrice(amount, currencyCode = 'INR') {
