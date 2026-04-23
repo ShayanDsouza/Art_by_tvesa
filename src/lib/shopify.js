@@ -173,33 +173,35 @@ export async function getCart(cartId) {
 /* ─── Newsletter ────────────────────────────────────────── */
 export async function subscribeToNewsletter(email) {
   const data = await shopifyFetch(`
-    mutation customerCreate($input: CustomerCreateInput!) {
-      customerCreate(input: $input) {
-        customer { id email acceptsMarketing }
-        customerUserErrors { field message code }
+    mutation {
+      customerSubscribeToEmailMarketing(input: {
+        email: "${email.trim().toLowerCase()}"
+        marketingConsent: {
+          marketingOptInLevel: SINGLE_OPT_IN
+          marketingState: SUBSCRIBED
+        }
+      }) {
+        emailMarketingConsent {
+          marketingState
+          marketingOptInLevel
+        }
+        userErrors { field message }
       }
     }
-  `, {
-    input: {
-      email: email.trim().toLowerCase(),
-      password: crypto.randomUUID(),
-      acceptsMarketing: true,
-    },
-  })
+  `)
 
-  const { customer, customerUserErrors } = data.customerCreate
+  const { emailMarketingConsent, userErrors } = data.customerSubscribeToEmailMarketing
 
-  // New subscriber created successfully
-  if (customer) return 'subscribed'
-
-  if (customerUserErrors.length > 0) {
-    // Email already in the system (TAKEN code or Shopify's verification message)
-    const alreadyExists =
-      customerUserErrors.some(e => e.code === 'TAKEN') ||
-      customerUserErrors.some(e => e.message?.toLowerCase().includes('sent an email'))
+  if (userErrors?.length > 0) {
+    const alreadyExists = userErrors.some(e =>
+      e.message?.toLowerCase().includes('already') ||
+      e.message?.toLowerCase().includes('subscribed')
+    )
     if (alreadyExists) return 'already_subscribed'
-    throw new Error(customerUserErrors[0].message)
+    throw new Error(userErrors[0].message)
   }
+
+  if (emailMarketingConsent?.marketingState === 'SUBSCRIBED') return 'subscribed'
 
   return true
 }
