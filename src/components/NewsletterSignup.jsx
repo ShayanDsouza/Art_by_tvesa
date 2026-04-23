@@ -29,7 +29,10 @@ export default function NewsletterSignup() {
       </p>
 
       {status === 'success' ? (
-        <p className="newsletter-success">Thank you for subscribing!</p>
+        <div className="newsletter-success">
+          <p className="newsletter-success-title">You're on the list!</p>
+          <p className="newsletter-success-sub">Check your inbox to verify your email — then you'll be the first to hear about new works and offers.</p>
+        </div>
       ) : (
         <form className="newsletter-form" onSubmit={handleSubmit}>
           <div className="newsletter-input-wrap">

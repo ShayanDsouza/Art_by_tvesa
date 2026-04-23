@@ -187,7 +187,10 @@ export async function subscribeToNewsletter(email) {
     },
   })
 
-  const { customerUserErrors } = data.customerCreate
+  const { customer, customerUserErrors } = data.customerCreate
+
+  // If a customer object was returned, signup succeeded regardless of any info messages
+  if (customer) return true
 
   if (customerUserErrors.length > 0) {
     // Email already registered → treat as success

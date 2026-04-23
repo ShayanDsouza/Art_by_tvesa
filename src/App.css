@@ -4139,9 +4139,26 @@ body.collection-page .navbar-collection-btn:hover {
 .newsletter-btn:disabled { opacity: 0.5; cursor: default; }
 
 .newsletter-success {
-  font-size: 0.95rem;
-  color: #2a7a2a;
-  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.newsletter-success-title {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #5F578A;
+  margin: 0;
+}
+
+.newsletter-success-sub {
+  font-size: 0.9rem;
+  color: #7a72aa;
+  margin: 0;
+  max-width: 380px;
+  line-height: 1.6;
 }
 
 .newsletter-error {
