@@ -16,6 +16,8 @@ import AdminContent from './pages/AdminContent'
 import './App.css'
 import CollectionPage from "./pages/CollectionPage";
 import ShopPage from "./pages/ShopPage";
+import ShopBrowsePage from "./pages/ShopBrowsePage";
+import { CartProvider } from "./contexts/CartContext";
 
 function PublicSite() {
   const location = useLocation()
@@ -45,11 +47,13 @@ function PublicSite() {
 export default function App() {
   return (
     <AuthProvider>
+      <CartProvider>
       <Router>
         <Routes>
           <Route path="/" element={<PublicSite />} />
           <Route path="/collection" element={<CollectionPage />} />
           <Route path="/shop" element={<ShopPage />} />
+          <Route path="/shop/browse" element={<ShopBrowsePage />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}>
             <Route index element={<AdminArtworks />} />
@@ -59,6 +63,7 @@ export default function App() {
           </Route>
         </Routes>
       </Router>
+      </CartProvider>
     </AuthProvider>
   )
 }

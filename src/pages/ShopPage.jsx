@@ -1,10 +1,8 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-import Contact from '../components/Contact'
 import Footer from '../components/Footer'
-
-const SHOPIFY_URL = 'https://art-by-tvesa.myshopify.com'
+import NewsletterSignup from '../components/NewsletterSignup'
 
 export default function ShopPage() {
   useEffect(() => {
@@ -30,10 +28,8 @@ export default function ShopPage() {
         {/* ── Two big category cards ── */}
         <section className="shop-categories">
 
-          <a
-            href={SHOPIFY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/shop/browse?tab=originals"
             className="shop-card shop-card-originals"
           >
             <div className="shop-card-inner">
@@ -45,12 +41,10 @@ export default function ShopPage() {
               </p>
               <span className="shop-card-cta">Browse Originals →</span>
             </div>
-          </a>
+          </Link>
 
-          <a
-            href={SHOPIFY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/shop/browse?tab=prints"
             className="shop-card shop-card-prints"
           >
             <div className="shop-card-inner">
@@ -62,18 +56,20 @@ export default function ShopPage() {
               </p>
               <span className="shop-card-cta">Browse Prints →</span>
             </div>
-          </a>
+          </Link>
 
         </section>
+
+        {/* ── Newsletter ── */}
+        <NewsletterSignup />
 
         {/* ── Back link ── */}
         <div className="shop-back">
           <Link to="/collection" className="shop-back-link">
-            ← View Full Collection
+            ← Archives
           </Link>
         </div>
 
-        <Contact />
       </main>
       <Footer />
     </>
