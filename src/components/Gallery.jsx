@@ -440,9 +440,8 @@ export default function Gallery() {
 
           {/* Buttons sit outside the zooming scene */}
           <div className="gallery-view-all">
-            <Link to="/collection" className="btn btn-outline btn-glitter">
-              <span className="btn-glitter-shimmer" aria-hidden="true" />
-              <span className="btn-glitter-label">Archives</span>
+            <Link to="/collection" className="btn btn-outline">
+              Archives
             </Link>
             <Link to="/shop" className="btn btn-outline btn-glitter">
               <span className="btn-glitter-shimmer" aria-hidden="true" />

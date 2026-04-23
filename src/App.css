@@ -890,12 +890,7 @@ body.gallery-active .navbar {
 .btn-glitter {
   position: relative;
   overflow: hidden;
-  /* layered glitter particle bg */
-  background:
-    radial-gradient(circle at 20% 40%, rgba(200, 190, 255, 0.18) 0%, transparent 50%),
-    radial-gradient(circle at 75% 65%, rgba(255, 210, 240, 0.12) 0%, transparent 45%),
-    radial-gradient(circle at 50% 10%, rgba(180, 170, 255, 0.10) 0%, transparent 40%),
-    transparent;
+  background: rgba(255, 252, 250, 0.96) !important;
   border-color: rgba(180, 170, 255, 0.5) !important;
   transition: box-shadow 0.4s, border-color 0.4s, color 0.3s !important;
 }
@@ -946,7 +941,7 @@ body.gallery-active .navbar {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 12px;
+  gap: 22px;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
