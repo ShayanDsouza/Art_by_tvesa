@@ -72,7 +72,7 @@ export default function Navbar() {
 
       <ul className={`navbar-links ${menuOpen ? 'active' : ''}`}>
         <li>
-          <Link to="/collection" onClick={() => setMenuOpen(false)}>Gallery</Link>
+          <Link to="/collection" onClick={() => setMenuOpen(false)}>Archives</Link>
         </li>
         <li>
           <a href="#about" onClick={(e) => { e.preventDefault(); handleHashLink('#about') }}>About</a>
