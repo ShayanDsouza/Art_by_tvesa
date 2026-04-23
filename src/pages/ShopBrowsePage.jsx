@@ -5,7 +5,6 @@ import Footer from '../components/Footer'
 import ShopCart from '../components/ShopCart'
 import { useCart } from '../contexts/CartContext'
 import { getCollectionProducts, formatPrice } from '../lib/shopify'
-import NewsletterSignup from '../components/NewsletterSignup'
 
 const TABS = [
   { id: 'originals', label: 'Original Artworks' },
@@ -189,9 +188,6 @@ export default function ShopBrowsePage() {
 
         {/* ── Products ── */}
         <ProductGrid handle={collectionHandle} />
-
-        {/* ── Newsletter ── */}
-        <NewsletterSignup />
 
         {/* ── Back ── */}
         <div className="shop-back">

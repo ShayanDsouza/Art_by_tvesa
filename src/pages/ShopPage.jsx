@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import NewsletterSignup from '../components/NewsletterSignup'
 
 export default function ShopPage() {
   useEffect(() => {
@@ -60,13 +59,10 @@ export default function ShopPage() {
 
         </section>
 
-        {/* ── Newsletter ── */}
-        <NewsletterSignup />
-
         {/* ── Back link ── */}
         <div className="shop-back">
           <Link to="/collection" className="shop-back-link">
-            ← Archives
+            ← Back to Archives
           </Link>
         </div>
 

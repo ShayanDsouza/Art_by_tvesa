@@ -1,9 +1,13 @@
 import { FaInstagram, FaPinterest } from 'react-icons/fa'
 import { HiOutlineMail } from 'react-icons/hi'
+import NewsletterSignup from './NewsletterSignup'
 
 export default function Footer() {
   return (
     <footer className="footer">
+      <div className="footer-newsletter">
+        <NewsletterSignup />
+      </div>
       <div className="footer-content">
         <span className="footer-logo">Art by Tvesa</span>
         <div className="footer-links">
