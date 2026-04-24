@@ -886,37 +886,38 @@ body.gallery-active .navbar {
   letter-spacing: -0.5px;
 }
 
-/* ===== GLITTER BUTTON ===== */
+/* ===== GLITTER BUTTON (View Shop carousel) ===== */
 .btn-glitter {
   position: relative;
   overflow: hidden;
   background: #E7DDDA !important;
-  color: rgba(23, 44, 22, 0.9) !important;
-  border-color: rgba(23, 44, 22, 0.25) !important;
-  transition: box-shadow 0.4s, border-color 0.4s, background 0.3s !important;
+  color: #172C16 !important;
+  border-color: rgba(23, 44, 22, 0.45) !important;
+  transition: color 0.3s, border-color 0.3s, box-shadow 0.3s, background 0.3s !important;
 }
 
 .btn-glitter:hover {
-  background: #d9cdc9 !important;
-  color: rgba(23, 44, 22, 1) !important;
-  border-color: rgba(23, 44, 22, 0.5) !important;
+  color: #fff !important;
+  background: #172C16 !important;
+  border-color: rgba(23, 44, 22, 0.8) !important;
   box-shadow:
-    0 0 12px rgba(23, 44, 22, 0.15),
-    0 0 28px rgba(23, 44, 22, 0.08);
+    0 0 10px rgba(23, 44, 22, 0.45),
+    0 0 22px rgba(23, 44, 22, 0.25),
+    0 0 40px rgba(23, 44, 22, 0.12);
 }
 
+/* Matches navbar shimmer exactly */
 .btn-glitter-shimmer {
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    110deg,
-    transparent 20%,
-    rgba(255, 255, 255, 0.55) 45%,
-    rgba(240, 235, 230, 0.35) 55%,
-    transparent 80%
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 70%
   );
-  background-size: 220% 100%;
-  animation: glitter-sweep 3s ease-in-out infinite;
+  background-size: 200% 100%;
+  animation: shimmer-sweep 2.6s ease-in-out infinite;
   pointer-events: none;
   border-radius: inherit;
   z-index: 0;
@@ -927,24 +928,23 @@ body.gallery-active .navbar {
   z-index: 1;
 }
 
-@keyframes glitter-sweep {
-  0%   { background-position: 220% 0; opacity: 0.6; }
-  50%  { opacity: 1; }
-  100% { background-position: -220% 0; opacity: 0.6; }
-}
-
 /* ===== 3D CAROUSEL ===== */
-/* Both carousel buttons match the navbar colour */
+/* Both carousel buttons match the navbar exactly */
 .gallery-view-all .btn-outline {
   background: #E7DDDA !important;
-  color: rgba(23, 44, 22, 0.9) !important;
-  border-color: rgba(23, 44, 22, 0.25) !important;
+  color: #172C16 !important;
+  border-color: rgba(23, 44, 22, 0.45) !important;
+  transition: color 0.3s, border-color 0.3s, box-shadow 0.3s, background 0.3s !important;
 }
 
 .gallery-view-all .btn-outline:hover {
-  background: #d9cdc9 !important;
-  color: rgba(23, 44, 22, 1) !important;
-  border-color: rgba(23, 44, 22, 0.5) !important;
+  color: #fff !important;
+  background: #172C16 !important;
+  border-color: rgba(23, 44, 22, 0.8) !important;
+  box-shadow:
+    0 0 10px rgba(23, 44, 22, 0.45),
+    0 0 22px rgba(23, 44, 22, 0.25),
+    0 0 40px rgba(23, 44, 22, 0.12);
 }
 
 .gallery-view-all {
@@ -1725,7 +1725,7 @@ body.gallery-active .navbar {
   align-items: center;
   justify-content: space-between;
   gap: 40px;
-  padding: 48px 60px;
+  padding: 36px 60px;
   border-bottom: 1px solid rgba(23, 44, 22, 0.12);
 }
 
@@ -1752,8 +1752,14 @@ body.gallery-active .navbar {
   margin-bottom: 20px;
 }
 
+.footer-newsletter-col .newsletter-form {
+  align-items: flex-start;
+  width: 100%;
+}
+
 .footer-newsletter-col .newsletter-input-wrap {
-  max-width: 420px;
+  width: 100%;
+  max-width: 480px;
 }
 
 .footer-newsletter-col .newsletter-input {
