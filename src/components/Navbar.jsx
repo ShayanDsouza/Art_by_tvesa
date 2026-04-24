@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from "react-router-dom"
+import DarkModeToggle from './DarkModeToggle'
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
   const isShop = location.pathname === '/shop'
+  const isHome = location.pathname === '/'
 
   /* Close mobile drawer when home gallery enters "carousel mode" */
   useEffect(() => {
@@ -58,6 +60,7 @@ export default function Navbar() {
             <img src="/logo.png" alt="Art by Tvesa" className="navbar-logo-img" />
           </Link>
         </div>
+        {!isHome && <DarkModeToggle />}
       </div>
 
       <button

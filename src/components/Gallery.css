@@ -1023,3 +1023,97 @@
   color: #6fcf6f;
   font-weight: 600;
 }
+
+
+/* ══════════════════════════════════════════════════════════════
+   DARK MODE — Archive / Collection page
+   Activated via html.dark (set by DarkModeToggle component)
+   ══════════════════════════════════════════════════════════════ */
+
+html.dark .gallery-section {
+  background-color: #0B180B;
+}
+
+html.dark .gallery-eyebrow {
+  color: #9B93CC;
+}
+
+html.dark .gallery-heading {
+  color: #E4D8D5;
+}
+
+html.dark .gallery-subheading {
+  color: rgba(228, 216, 213, 0.75);
+}
+
+/* Search */
+html.dark .gallery-search {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(228, 216, 213, 0.18);
+  color: #E4D8D5;
+}
+
+html.dark .gallery-search::placeholder {
+  color: rgba(228, 216, 213, 0.35);
+}
+
+html.dark .gallery-search:focus {
+  border-color: #9B93CC;
+  box-shadow: 0 0 0 3px rgba(155, 147, 204, 0.18);
+}
+
+html.dark .gallery-search-clear::before {
+  color: #E4D8D5;
+}
+
+/* Filter buttons */
+html.dark .gallery-filter-btn {
+  color: rgba(228, 216, 213, 0.8);
+  border-color: rgba(228, 216, 213, 0.2);
+}
+
+html.dark .gallery-filter-btn:hover {
+  background: rgba(228, 216, 213, 0.08);
+  border-color: rgba(228, 216, 213, 0.4);
+}
+
+html.dark .gallery-filter-btn--active {
+  background: #5A9E58;
+  border-color: #5A9E58;
+  color: #0E0B0B;
+}
+
+/* Result count */
+html.dark .gallery-count {
+  color: rgba(228, 216, 213, 0.4);
+}
+
+/* Cards */
+html.dark .gallery-card__img-wrap {
+  background: #181212;
+}
+
+/* Layout toggle buttons */
+html.dark .layout-toggle-btn {
+  color: rgba(228, 216, 213, 0.5);
+  border-color: rgba(228, 216, 213, 0.15);
+}
+
+html.dark .layout-toggle-btn:hover,
+html.dark .layout-toggle-btn--active {
+  color: #E4D8D5;
+  border-color: rgba(228, 216, 213, 0.5);
+  background: rgba(228, 216, 213, 0.07);
+}
+
+/* Back button (browse/collection pages) */
+html.dark .back-btn {
+  color: rgba(228, 216, 213, 0.7);
+  border-color: rgba(228, 216, 213, 0.25);
+}
+
+html.dark .back-btn:hover {
+  background: rgba(228, 216, 213, 0.1);
+  color: #E4D8D5;
+  border-color: rgba(228, 216, 213, 0.5);
+}

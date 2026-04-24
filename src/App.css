@@ -4331,3 +4331,357 @@ body.collection-page .navbar-collection-btn:hover {
   .browse-tab { padding: 10px 14px; font-size: 0.7rem; }
   .browse-header { padding: 24px 16px 12px; }
 }
+
+
+/* =====================================================
+   DARK MODE TOGGLE BUTTON
+   ===================================================== */
+.dark-mode-toggle {
+  background: none;
+  border: 1px solid rgba(23, 44, 22, 0.35);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #172C16;
+  transition: color 0.25s, border-color 0.25s, background 0.25s;
+  flex-shrink: 0;
+  order: -1; /* sits before the hamburger on mobile */
+}
+
+.dark-mode-toggle:hover {
+  background: rgba(23, 44, 22, 0.08);
+  border-color: rgba(23, 44, 22, 0.6);
+}
+
+html.dark .dark-mode-toggle {
+  color: #9B93CC;
+  border-color: rgba(155, 147, 204, 0.4);
+}
+
+html.dark .dark-mode-toggle:hover {
+  background: rgba(155, 147, 204, 0.12);
+  border-color: rgba(155, 147, 204, 0.7);
+}
+
+
+/* =====================================================
+   DARK MODE — GLOBAL PALETTE
+   Deep dark with green / maroon / purple accents
+   bg:        #0E0B0B   surface: #181212   border: rgba(228,216,213,0.1)
+   text:      #E4D8D5   muted:   rgba(228,216,213,0.55)
+   green:     #5A9E58   purple:  #9B93CC   maroon: #B85050
+   ===================================================== */
+
+html.dark {
+  color-scheme: dark;
+}
+
+/* ── Base page ── */
+html.dark body {
+  background: #0B180B;
+  color: #E4D8D5;
+}
+
+/* ── Navbar ── */
+html.dark .navbar {
+  background: #142614;
+}
+
+html.dark .navbar-links a {
+  color: rgba(228, 216, 213, 0.75);
+}
+
+html.dark .navbar-links a:hover,
+html.dark .navbar-links a.active {
+  color: #E4D8D5;
+}
+
+html.dark .navbar-links a::after {
+  background: #9B93CC;
+}
+
+html.dark .navbar-collection-btn {
+  color: #E4D8D5 !important;
+  border-color: rgba(228, 216, 213, 0.35) !important;
+}
+
+html.dark .navbar-collection-btn:hover {
+  background: #5A9E58 !important;
+  border-color: #5A9E58 !important;
+  color: #fff !important;
+  box-shadow: 0 0 10px rgba(90, 158, 88, 0.45), 0 0 22px rgba(90, 158, 88, 0.25) !important;
+}
+
+html.dark .hamburger span {
+  background: #E4D8D5;
+}
+
+/* ── Footer ── */
+html.dark .footer {
+  background: #0B180B;
+  color: rgba(228, 216, 213, 0.6);
+}
+
+html.dark .footer-bottom {
+  border-top-color: rgba(228, 216, 213, 0.1);
+}
+
+html.dark .footer-credit-link {
+  color: rgba(228, 216, 213, 0.5);
+}
+
+html.dark .footer-credit-link:hover {
+  color: #9B93CC;
+}
+
+/* ── Footer newsletter ── */
+html.dark .footer-main .newsletter-title {
+  color: rgba(228, 216, 213, 0.9);
+}
+
+html.dark .footer-main .newsletter-sub {
+  color: rgba(228, 216, 213, 0.5);
+}
+
+html.dark .footer-main .newsletter-input {
+  background: rgba(228, 216, 213, 0.06);
+  border-color: rgba(228, 216, 213, 0.15);
+  color: #E4D8D5;
+}
+
+html.dark .footer-main .newsletter-input::placeholder {
+  color: rgba(228, 216, 213, 0.35);
+}
+
+html.dark .footer-main .newsletter-btn {
+  border-left-color: rgba(228, 216, 213, 0.15);
+  color: rgba(228, 216, 213, 0.7);
+}
+
+html.dark .footer-main .newsletter-btn:hover {
+  background: rgba(228, 216, 213, 0.06);
+  color: #E4D8D5;
+}
+
+/* ── Contact section ── */
+html.dark .contact {
+  background: #0E0B0B;
+}
+
+html.dark .contact h2,
+html.dark .contact .section-overline {
+  color: #E4D8D5;
+}
+
+html.dark .contact-subtitle {
+  color: rgba(228, 216, 213, 0.55);
+}
+
+html.dark .contact-form input,
+html.dark .contact-form textarea {
+  background: rgba(228, 216, 213, 0.05);
+  border-color: rgba(228, 216, 213, 0.15);
+  color: #E4D8D5;
+}
+
+html.dark .contact-form input::placeholder,
+html.dark .contact-form textarea::placeholder {
+  color: rgba(228, 216, 213, 0.35);
+}
+
+html.dark .contact-form input:focus,
+html.dark .contact-form textarea:focus {
+  border-color: #9B93CC;
+}
+
+html.dark .contact-form .btn {
+  background: #5A9E58;
+  color: #fff;
+}
+
+html.dark .contact-form .btn:hover {
+  background: #9B93CC;
+}
+
+html.dark .contact-socials a {
+  color: rgba(228, 216, 213, 0.85);
+}
+
+html.dark .contact-socials a:hover {
+  color: #9B93CC;
+}
+
+/* ── Collection / Archive page ── */
+html.dark body.collection-page {
+  background: #0B180B;
+}
+
+html.dark body.collection-page .navbar {
+  background: #142614;
+}
+
+html.dark body.collection-page .footer {
+  background: #0B180B;
+  color: rgba(228, 216, 213, 0.6);
+}
+
+html.dark body.collection-page .footer-logo,
+html.dark body.collection-page .footer-copy {
+  color: rgba(228, 216, 213, 0.85) !important;
+}
+
+html.dark body.collection-page .footer-links a {
+  color: rgba(228, 216, 213, 0.6) !important;
+}
+
+html.dark body.collection-page .footer-links a:hover {
+  color: #9B93CC !important;
+}
+
+html.dark body.collection-page .footer p {
+  color: rgba(228, 216, 213, 0.45) !important;
+}
+
+/* ── Shop pages ── */
+html.dark .shop-main {
+  background: #0B180B;
+}
+
+html.dark .shop-hero-title {
+  color: #E4D8D5;
+}
+
+html.dark .shop-hero-sub {
+  color: rgba(228, 216, 213, 0.55);
+}
+
+html.dark .shop-card-prints {
+  background: linear-gradient(140deg, #1A1624 0%, #231D35 60%, #2D2547 100%);
+}
+
+html.dark .shop-card-prints .shop-card-title  { color: #E4D8D5; }
+html.dark .shop-card-prints .shop-card-desc   { color: rgba(228, 216, 213, 0.65); }
+html.dark .shop-card-prints .shop-card-cta    { color: #9B93CC; }
+html.dark .shop-card-prints .shop-card-overline { color: #9B93CC; opacity: 0.85; }
+
+html.dark .shop-back-link {
+  color: rgba(228, 216, 213, 0.5);
+}
+
+html.dark .shop-back-link:hover {
+  color: #9B93CC;
+}
+
+/* ── Browse page ── */
+html.dark .browse-header {
+  background: #0E0B0B;
+}
+
+html.dark .browse-title {
+  color: #E4D8D5;
+}
+
+html.dark .browse-sub {
+  color: rgba(228, 216, 213, 0.55);
+}
+
+html.dark .browse-tabs {
+  background: #181212;
+  border-bottom-color: rgba(228, 216, 213, 0.1);
+}
+
+html.dark .browse-tab {
+  color: rgba(228, 216, 213, 0.55);
+}
+
+html.dark .browse-tab:hover {
+  color: #E4D8D5;
+}
+
+html.dark .browse-tab--active {
+  color: #E4D8D5;
+  border-bottom-color: #9B93CC;
+}
+
+html.dark .browse-subtabs {
+  background: #141010;
+  border-bottom-color: rgba(228, 216, 213, 0.08);
+}
+
+html.dark .browse-subtab {
+  color: rgba(228, 216, 213, 0.5);
+}
+
+html.dark .browse-subtab--active {
+  background: rgba(155, 147, 204, 0.15);
+  color: #9B93CC;
+  border-color: rgba(155, 147, 204, 0.4);
+}
+
+html.dark .browse-card {
+  background: #181212;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+
+html.dark .browse-card:hover {
+  box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+}
+
+html.dark .browse-card-title {
+  color: #E4D8D5;
+}
+
+html.dark .browse-card-variant {
+  color: rgba(228, 216, 213, 0.55);
+}
+
+html.dark .browse-card-price {
+  color: #9B93CC;
+}
+
+html.dark .browse-status-badge {
+  background: rgba(228, 216, 213, 0.08);
+  color: rgba(228, 216, 213, 0.5);
+}
+
+html.dark .browse-card-overlay {
+  background: rgba(11, 24, 11, 0.75);
+}
+
+/* ── Buttons in dark mode ── */
+html.dark .btn:not(.btn-outline) {
+  background: #5A9E58;
+  color: #fff;
+}
+
+html.dark .btn:not(.btn-outline):hover {
+  background: #9B93CC;
+  color: #fff;
+}
+
+html.dark .btn-outline {
+  color: #E4D8D5;
+  border-color: rgba(228, 216, 213, 0.3);
+}
+
+html.dark .btn-outline:hover {
+  background: #B85050;
+  border-color: #B85050;
+  color: #fff;
+}
+
+/* Gallery-view-all carousel buttons keep their light style on dark pages */
+html.dark .gallery-view-all .btn-outline {
+  background: rgba(228, 216, 213, 0.92) !important;
+  color: #142614 !important;
+  border-color: rgba(228, 216, 213, 0.5) !important;
+}
+
+html.dark .gallery-view-all .btn-outline:hover {
+  background: #fff !important;
+  color: #0B180B !important;
+}
