@@ -4467,24 +4467,27 @@ html.dark .footer-main .newsletter-btn:hover {
   color: #E4D8D5;
 }
 
-/* ── Contact section ── */
+/* ── Contact section — purple theme ── */
 html.dark .contact {
-  background: #0E0B0B;
+  background: #14112A;
 }
 
-html.dark .contact h2,
-html.dark .contact .section-overline {
+html.dark .contact h2 {
   color: #E4D8D5;
 }
 
+html.dark .contact .section-overline {
+  color: #9B93CC;
+}
+
 html.dark .contact-subtitle {
-  color: rgba(228, 216, 213, 0.55);
+  color: rgba(228, 216, 213, 0.6);
 }
 
 html.dark .contact-form input,
 html.dark .contact-form textarea {
-  background: rgba(228, 216, 213, 0.05);
-  border-color: rgba(228, 216, 213, 0.15);
+  background: rgba(155, 147, 204, 0.08);
+  border-color: rgba(155, 147, 204, 0.25);
   color: #E4D8D5;
 }
 
@@ -4496,6 +4499,7 @@ html.dark .contact-form textarea::placeholder {
 html.dark .contact-form input:focus,
 html.dark .contact-form textarea:focus {
   border-color: #9B93CC;
+  box-shadow: 0 0 0 3px rgba(155, 147, 204, 0.18);
 }
 
 html.dark .contact-form .btn {
@@ -4508,11 +4512,11 @@ html.dark .contact-form .btn:hover {
 }
 
 html.dark .contact-socials a {
-  color: rgba(228, 216, 213, 0.85);
+  color: #9B93CC;
 }
 
 html.dark .contact-socials a:hover {
-  color: #9B93CC;
+  color: #B85050;
 }
 
 /* ── Collection / Archive page ── */
@@ -4577,8 +4581,12 @@ html.dark .shop-back-link:hover {
 }
 
 /* ── Browse page ── */
+html.dark .browse-main {
+  background: #0B180B;
+}
+
 html.dark .browse-header {
-  background: #0E0B0B;
+  background: #0B180B;
 }
 
 html.dark .browse-title {
@@ -4590,7 +4598,7 @@ html.dark .browse-sub {
 }
 
 html.dark .browse-tabs {
-  background: #181212;
+  background: #142614;
   border-bottom-color: rgba(228, 216, 213, 0.1);
 }
 
@@ -4608,7 +4616,7 @@ html.dark .browse-tab--active {
 }
 
 html.dark .browse-subtabs {
-  background: #141010;
+  background: #0E1E0E;
   border-bottom-color: rgba(228, 216, 213, 0.08);
 }
 
@@ -4623,12 +4631,12 @@ html.dark .browse-subtab--active {
 }
 
 html.dark .browse-card {
-  background: #181212;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  background: #142614;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
 }
 
 html.dark .browse-card:hover {
-  box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
 }
 
 html.dark .browse-card-title {
@@ -4677,7 +4685,7 @@ html.dark .btn-outline:hover {
 /* Gallery-view-all carousel buttons keep their light style on dark pages */
 html.dark .gallery-view-all .btn-outline {
   background: rgba(228, 216, 213, 0.92) !important;
-  color: #142614 !important;
+  color: #0B180B !important;
   border-color: rgba(228, 216, 213, 0.5) !important;
 }
 
