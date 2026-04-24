@@ -1688,6 +1688,25 @@ body.gallery-active .navbar {
   margin-top: 36px;
 }
 
+.contact-socials {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 36px;
+}
+
+.contact-socials a {
+  font-size: 1.6rem;
+  color: rgba(23, 44, 22, 0.6);
+  transition: color 0.3s, transform 0.3s;
+  display: flex;
+}
+
+.contact-socials a:hover {
+  color: #5F578A;
+  transform: translateY(-2px);
+}
+
 .social-links {
   display: flex;
   justify-content: center;
@@ -1722,71 +1741,41 @@ body.gallery-active .navbar {
   color: rgba(23, 44, 22, 0.7);
 }
 
-/* ── Two-column row: newsletter left, brand right ── */
+/* ── Newsletter centred in footer ── */
 .footer-main {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 40px;
-  padding: 20px 60px 36px;
+  padding: 20px 60px 0;
 }
 
-.footer-newsletter-col {
-  flex: 1;
-  text-align: left;
-}
-
-.footer-newsletter-col .newsletter-section {
-  padding: 0;
+.footer-main .newsletter-section {
+  padding: 20px 24px 32px;
   margin: 0;
   background: transparent;
   border-top: none;
-  text-align: left;
-  align-items: flex-start;
 }
 
-.footer-newsletter-col .newsletter-title {
+.footer-main .newsletter-title {
   font-size: clamp(1.4rem, 2.5vw, 2rem);
   color: rgba(23, 44, 22, 0.85);
   margin-bottom: 6px;
 }
 
-.footer-newsletter-col .newsletter-sub {
+.footer-main .newsletter-sub {
   color: rgba(23, 44, 22, 0.55);
   margin-bottom: 20px;
 }
 
-.footer-newsletter-col .newsletter-form {
-  align-items: flex-start;
-  width: 100%;
-}
-
-.footer-newsletter-col .newsletter-input-wrap {
-  width: 100%;
+.footer-main .newsletter-input-wrap {
   max-width: 480px;
 }
 
-.footer-newsletter-col .newsletter-input {
+.footer-main .newsletter-input {
   border-color: rgba(23, 44, 22, 0.2);
   background: rgba(255, 255, 255, 0.6);
 }
 
-.footer-newsletter-col .newsletter-btn {
+.footer-main .newsletter-btn {
   border-left-color: rgba(23, 44, 22, 0.2);
   color: rgba(23, 44, 22, 0.7);
-}
-
-.footer-newsletter-col .newsletter-success {
-  align-items: flex-start;
-}
-
-.footer-brand-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  flex-shrink: 0;
-  align-self: center;
 }
 
 /* ── Bottom bar: credits ── */
@@ -1798,16 +1787,10 @@ body.gallery-active .navbar {
 
 @media (max-width: 768px) {
   .footer-main {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 32px;
-    padding: 0 24px 32px;
+    padding: 16px 24px 0;
   }
-  .footer-newsletter-col .newsletter-input-wrap {
+  .footer-main .newsletter-input-wrap {
     max-width: 100%;
-  }
-  .footer-brand-col {
-    align-self: center;
   }
   .footer-bottom {
     padding: 20px 24px 28px;
