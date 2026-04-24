@@ -906,15 +906,15 @@ body.gallery-active .navbar {
     0 0 40px rgba(23, 44, 22, 0.12);
 }
 
-/* Matches navbar shimmer exactly */
+/* Same shimmer as navbar — visible at rest, not just on hover */
 .btn-glitter-shimmer {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     105deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.55) 50%,
-    transparent 70%
+    transparent 25%,
+    rgba(255, 255, 255, 0.70) 50%,
+    transparent 75%
   );
   background-size: 200% 100%;
   animation: shimmer-sweep 2.6s ease-in-out infinite;
@@ -1727,8 +1727,7 @@ body.gallery-active .navbar {
   align-items: center;
   justify-content: space-between;
   gap: 40px;
-  padding: 36px 60px;
-  border-bottom: 1px solid rgba(23, 44, 22, 0.12);
+  padding: 0 60px 36px;
 }
 
 .footer-newsletter-col {
@@ -1790,6 +1789,7 @@ body.gallery-active .navbar {
 .footer-bottom {
   padding: 28px 60px 36px;
   text-align: center;
+  border-top: 1px solid rgba(23, 44, 22, 0.12);
 }
 
 @media (max-width: 768px) {
