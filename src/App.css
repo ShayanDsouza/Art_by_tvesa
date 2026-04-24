@@ -1115,31 +1115,33 @@ body.gallery-active .navbar {
 .carousel-hover-shop-btn {
   display: inline-block;
   padding: 9px 20px;
-  background: #E7DDDA;
-  color: rgba(23, 44, 22, 0.9);
+  background: transparent;
+  color: #E7DDDA;
   font-family: var(--font-body);
   font-size: 0.65rem;
   font-weight: 500;
   letter-spacing: 2px;
   text-transform: uppercase;
   text-decoration: none;
-  border: none;
+  border: 1px solid rgba(231, 221, 218, 0.75);
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
 .carousel-hover-shop-btn:hover {
-  background: #fff;
-  color: rgba(23, 44, 22, 1);
+  background: rgba(231, 221, 218, 0.15);
+  border-color: #E7DDDA;
 }
 
 .carousel-hover-status {
-  color: #E7DDDA;
+  display: inline-block;
+  padding: 9px 20px;
+  color: rgba(231, 221, 218, 0.8);
   font-family: var(--font-body);
   font-size: 0.65rem;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  opacity: 0.9;
+  border: 1px solid rgba(231, 221, 218, 0.4);
 }
 
 .carousel-card-category {
