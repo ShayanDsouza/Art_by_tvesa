@@ -4349,7 +4349,6 @@ body.collection-page .navbar-collection-btn:hover {
   color: #172C16;
   transition: color 0.25s, border-color 0.25s, background 0.25s;
   flex-shrink: 0;
-  order: -1; /* sits before the hamburger on mobile */
 }
 
 .dark-mode-toggle:hover {
