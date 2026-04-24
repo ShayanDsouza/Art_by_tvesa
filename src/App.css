@@ -70,10 +70,7 @@
 
 /* Fade navbar while lightbox is active */
 body.gallery-active .navbar {
-  opacity: 0.15;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  background: rgba(45, 40, 69, 0.3);
+  opacity: 0;
   pointer-events: none;
 }
 
