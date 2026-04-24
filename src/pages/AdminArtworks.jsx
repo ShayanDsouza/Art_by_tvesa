@@ -7,7 +7,7 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from 
 import { SortableContext, useSortable, arrayMove, rectSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-const EMPTY_FORM = { title: '', description: '', medium: '', category: '', height: 'normal', status: 'available', size: '', images: [] }
+const EMPTY_FORM = { title: '', description: '', medium: '', category: '', height: 'normal', status: 'available', size: '', shopUrl: '', images: [] }
 const STATUS_ORDER = ['available', 'sold', 'not_for_sale']
 
 function getStatusLabel(status) {
@@ -245,6 +245,7 @@ export default function AdminArtworks() {
     try {
       const thumbUrl = (form.images.find(img => img.isThumbnail) || form.images[0])?.url || ''
       const trimmedSize = form.size.trim()
+      const trimmedShopUrl = form.shopUrl.trim()
       const artworkData = {
         title: form.title,
         description: form.description,
@@ -260,11 +261,13 @@ export default function AdminArtworks() {
         await updateDoc(doc(db, 'artworks', editingId), {
           ...artworkData,
           size: trimmedSize || deleteField(),
+          shopUrl: trimmedShopUrl || deleteField(),
         })
       } else {
         await addDoc(collection(db, 'artworks'), {
           ...artworkData,
           ...(trimmedSize && { size: trimmedSize }),
+          ...(trimmedShopUrl && { shopUrl: trimmedShopUrl }),
           order: artworks.length,
           createdAt: serverTimestamp(),
         })
@@ -418,6 +421,10 @@ export default function AdminArtworks() {
                     <label>Size <span className="admin-label-hint">- optional</span></label>
                     <input type="text" value={form.size} onChange={e => setForm({...form, size: e.target.value})} placeholder="e.g. 30 x 40 cm" />
                   </div>
+                </div>
+                <div className="admin-form-group">
+                  <label>Shop URL <span className="admin-label-hint">- optional, shown as "View in Shop" on hover (only if Available)</span></label>
+                  <input type="url" value={form.shopUrl} onChange={e => setForm({...form, shopUrl: e.target.value})} placeholder="https://artbytvesa.myshopify.com/products/..." />
                 </div>
                 <div className="admin-form-group">
                   <label>Description</label>

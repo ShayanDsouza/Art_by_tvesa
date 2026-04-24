@@ -310,6 +310,39 @@
   font-weight: 600;
 }
 
+.gallery-hover-shop-btn {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 18px;
+  background: #E7DDDA;
+  color: rgba(23, 44, 22, 0.9);
+  font-family: "Raleway", sans-serif;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  align-self: flex-start;
+}
+
+.gallery-hover-shop-btn:hover {
+  background: #fff;
+  color: rgba(23, 44, 22, 1);
+}
+
+.gallery-hover-status {
+  display: inline-block;
+  margin-top: 10px;
+  color: rgba(231, 221, 218, 0.75);
+  font-family: "Raleway", sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+}
+
 
 /* ── Skeleton ───────────────────────────────────────── */
 .gallery-skeleton-grid {

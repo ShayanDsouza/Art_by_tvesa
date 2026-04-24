@@ -13,7 +13,6 @@ const fallbackArt = [
   { id: '6', title: 'Artwork 6', description: 'Rich textures layered with meaning.', medium: 'Canvas', category: 'Painting', status: 'available' },
 ]
 
-// Returns the thumbnail URL for a given artwork (starred, or first, or legacy imageUrl)
 function getThumbnailUrl(art) {
   const imgs = art.images
   if (imgs && imgs.length > 0) {
@@ -22,35 +21,9 @@ function getThumbnailUrl(art) {
   return art.imageUrl || ''
 }
 
-// Returns ordered images array for modal (thumbnail first, then rest)
-function getModalImages(art) {
-  const imgs = art.images
-  if (imgs && imgs.length > 0) return imgs
-  if (art.imageUrl) return [{ url: art.imageUrl, isThumbnail: true }]
-  return []
-}
-
-function getStatusLabel(status) {
-  switch (status) {
-    case 'sold':
-      return 'Sold'
-    case 'not_for_sale':
-      return 'Not for Sale'
-    case 'available':
-    case undefined:
-    case null:
-      return 'Available'
-    default:
-      return 'Unknown'
-  }
-}
-
 export default function Gallery() {
   const [artworks, setArtworks] = useState([])
   const [loading, setLoading] = useState(true)
-  const [selectedArt, setSelectedArt] = useState(null)
-  const [modalImageIndex, setModalImageIndex] = useState(0)
-  const [isClosing, setIsClosing] = useState(false)
   const [rotation, setRotation] = useState(0)
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [imageSizes, setImageSizes] = useState({})
@@ -65,13 +38,10 @@ export default function Gallery() {
   const lastXRef = useRef(0)
   const animFrameRef = useRef(null)
   const autoRotateRef = useRef(null)
-  const closeTimeoutRef = useRef(null)
   const zoomRafRef = useRef(null)
   const currentScaleRef = useRef(0.35)
   const currentRadiusRef = useRef(28)
   const currentOpacityRef = useRef(0.1)
-  // Touch swipe for modal
-  const modalTouchStartX = useRef(null)
 
   useEffect(() => {
     try {
@@ -82,7 +52,6 @@ export default function Gallery() {
         } else {
           const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
           docs.sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity))
-          // Show up to 8 featured; if none starred fall back to first 8 by order
           const featured = docs.filter(a => a.featured).slice(0, 8)
           setArtworks(featured.length > 0 ? featured : docs.slice(0, 8))
         }
@@ -136,10 +105,6 @@ export default function Gallery() {
       const scrolled = Math.max(0, -rect.top)
       const progress = Math.min(1, scrolled / scrollableHeight)
 
-      // Phase 1: 0.00 → 0.18 — header fades, carousel stays tiny
-      // Phase 2: 0.18 → 0.60 — carousel zooms IN
-      // Phase 3: 0.60 → 0.72 — hold at full
-      // Phase 4: 0.72 → 1.00 — carousel zooms OUT
       let carouselT
       if (progress < 0.18) {
         carouselT = 0
@@ -155,7 +120,7 @@ export default function Gallery() {
       header.style.opacity = headerOpacity.toFixed(4)
       header.style.pointerEvents = headerOpacity > 0.01 ? '' : 'none'
 
-      targetScale   = 0.35 + carouselT * 0.50   // 0.35 → 0.85
+      targetScale   = 0.35 + carouselT * 0.50
       targetRadius  = (1 - carouselT) * 28
       targetOpacity = 0.10 + carouselT * 0.90
 
@@ -185,15 +150,9 @@ export default function Gallery() {
     }
   }, [])
 
-  // ── Body scroll lock when modal open ──────────────────────────────────────
-  useEffect(() => {
-    document.body.style.overflow = selectedArt ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
-  }, [selectedArt])
-
   // ── Auto-rotate carousel ──────────────────────────────────────────────────
   useEffect(() => {
-    if (isDragging || selectedArt) return
+    if (isDragging) return
     let lastTime = performance.now()
     const autoRotate = () => {
       const now = performance.now()
@@ -205,7 +164,7 @@ export default function Gallery() {
     }
     autoRotateRef.current = requestAnimationFrame(autoRotate)
     return () => cancelAnimationFrame(autoRotateRef.current)
-  }, [isDragging, selectedArt])
+  }, [isDragging])
 
   // ── Wheel handler ─────────────────────────────────────────────────────────
   useEffect(() => {
@@ -222,12 +181,11 @@ export default function Gallery() {
 
   const handlePointerDown = useCallback((e) => {
     dragStartRef.current = e.clientX
-    if (selectedArt) return
     setIsDragging(true)
     lastXRef.current = e.clientX
     velocityRef.current = 0
     cancelAnimationFrame(animFrameRef.current)
-  }, [selectedArt])
+  }, [])
 
   const handlePointerMove = useCallback((e) => {
     if (!isDragging) return
@@ -251,7 +209,7 @@ export default function Gallery() {
     animFrameRef.current = requestAnimationFrame(decelerate)
   }, [])
 
-  // Measure image dimensions — works for both fresh loads and cached images
+  // Measure image dimensions
   useEffect(() => {
     if (!artworks.length) return
     artworks.forEach(art => {
@@ -273,82 +231,12 @@ export default function Gallery() {
     setImageSizes(prev => prev[artId] ? prev : { ...prev, [artId]: naturalWidth / naturalHeight })
   }, [])
 
-  const handleCardClick = (art, e, cardAngle) => {
-    const startX = dragStartRef.current
-    if (startX !== null && Math.abs(e.clientX - startX) > 8) return
-    const totalAngle = ((rotationRef.current + cardAngle) % 360 + 360) % 360
-    const isFrontFacing = totalAngle < 90 || totalAngle > 270
-    if (!isFrontFacing) return
-    setSelectedArt(art)
-    setModalImageIndex(0)
-  }
-
   // ── Responsive resize listener ────────────────────────────────────────────
   useEffect(() => {
     const onResize = () => setWindowWidth(window.innerWidth)
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
   }, [])
-
-  // ── Close timeout cleanup ─────────────────────────────────────────────────
-  useEffect(() => {
-    return () => {
-      if (closeTimeoutRef.current !== null) {
-        clearTimeout(closeTimeoutRef.current)
-        closeTimeoutRef.current = null
-      }
-    }
-  }, [])
-
-  const handleClose = () => {
-    setIsClosing(true)
-    if (closeTimeoutRef.current !== null) clearTimeout(closeTimeoutRef.current)
-    closeTimeoutRef.current = setTimeout(() => {
-      setSelectedArt(null)
-      setModalImageIndex(0)
-      setIsClosing(false)
-      closeTimeoutRef.current = null
-    }, 480)
-  }
-
-  const closeModal = (e) => {
-    if (e.target === e.currentTarget) handleClose()
-  }
-
-  const handleInquire = (e) => {
-    e.stopPropagation()
-    const message = `Hi, I'm interested in "${selectedArt.title}". Could you share more details?`
-    window.dispatchEvent(new CustomEvent('artInquiry', { detail: { message } }))
-    handleClose()
-    setTimeout(() => {
-      document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
-    }, 520)
-  }
-
-  // ── Modal image navigation ────────────────────────────────────────────────
-  const modalImages = selectedArt ? getModalImages(selectedArt) : []
-  const modalImgCount = modalImages.length
-
-  const prevModalImage = (e) => {
-    e.stopPropagation()
-    setModalImageIndex(i => (i - 1 + modalImgCount) % modalImgCount)
-  }
-  const nextModalImage = (e) => {
-    e.stopPropagation()
-    setModalImageIndex(i => (i + 1) % modalImgCount)
-  }
-
-  // Touch swipe support for modal images
-  const handleModalTouchStart = (e) => { modalTouchStartX.current = e.touches[0].clientX }
-  const handleModalTouchEnd = (e) => {
-    if (modalTouchStartX.current === null) return
-    const dx = e.changedTouches[0].clientX - modalTouchStartX.current
-    if (Math.abs(dx) > 40) {
-      if (dx < 0) setModalImageIndex(i => (i + 1) % modalImgCount)
-      else setModalImageIndex(i => (i - 1 + modalImgCount) % modalImgCount)
-    }
-    modalTouchStartX.current = null
-  }
 
   const count = artworks.length
   const angleStep = count > 0 ? 360 / count : 0
@@ -360,8 +248,6 @@ export default function Gallery() {
 
   const cardHeight = windowWidth <= 480 ? 150 : windowWidth <= 900 ? 185 : 290
 
-  const currentModalUrl = modalImages[modalImageIndex]?.url
-
   return (
     <section id="gallery" className="gallery">
 
@@ -371,7 +257,7 @@ export default function Gallery() {
           <div className="gallery-header" ref={galleryHeaderRef}>
             <span className="section-overline">Gallery</span>
             <h2>Selected Works</h2>
-            <p className="carousel-hint">Scroll or drag to explore &middot; Click a piece to see details</p>
+            <p className="carousel-hint">Scroll or drag to explore &middot; Hover a piece to interact</p>
           </div>
 
           {loading && <GalleryLoader />}
@@ -402,21 +288,13 @@ export default function Gallery() {
                   }
 
                   const thumbUrl = getThumbnailUrl(art)
+                  const isAvailable = art.status === 'available' || !art.status
 
                   return (
                     <div
                       key={art.id}
                       className="carousel-card"
                       style={cardStyle}
-                      role="button"
-                      tabIndex={0}
-                      onClick={(e) => handleCardClick(art, e, angle)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          if (e.key !== 'Enter') e.preventDefault()
-                          handleCardClick(art, e, angle)
-                        }
-                      }}
                     >
                       <div className="carousel-face carousel-face-natural-back" />
                       <div className="carousel-face carousel-face-front">
@@ -425,10 +303,28 @@ export default function Gallery() {
                         ) : (
                           <div className="carousel-card-placeholder">{art.title}</div>
                         )}
-                        {art.status === 'sold' && <span className="carousel-sold-badge">Sold</span>}
                         <div className="carousel-card-label">
                           <span className="carousel-card-category">{art.category}</span>
                           <h3>{art.title}</h3>
+                        </div>
+
+                        {/* Hover overlay */}
+                        <div className="carousel-card-hover-overlay">
+                          {isAvailable && art.shopUrl ? (
+                            <a
+                              href={art.shopUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="carousel-hover-shop-btn"
+                              onPointerDown={e => e.stopPropagation()}
+                            >
+                              View in Shop
+                            </a>
+                          ) : !isAvailable ? (
+                            <span className="carousel-hover-status">
+                              {art.status === 'sold' ? 'Sold' : 'Not Available'}
+                            </span>
+                          ) : null}
                         </div>
                       </div>
                     </div>
@@ -452,93 +348,6 @@ export default function Gallery() {
         </div>
       </div>
 
-      {/* ── Modal lives OUTSIDE all transforms ── */}
-      {selectedArt && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className={`modal-popup${isClosing ? ' is-closing' : ''}`}>
-            <button
-              type="button"
-              aria-label="Close"
-              className="modal-popup-close"
-              onClick={handleClose}
-            >×</button>
-
-            {/* Image panel with arrows */}
-            <div
-              className="modal-popup-image"
-              onTouchStart={handleModalTouchStart}
-              onTouchEnd={handleModalTouchEnd}
-            >
-              {currentModalUrl ? (
-                <img
-                  src={currentModalUrl}
-                  alt={`${selectedArt.title} — image ${modalImageIndex + 1}`}
-                  draggable={false}
-                  key={currentModalUrl}
-                />
-              ) : (
-                <div className="carousel-card-placeholder">{selectedArt.title}</div>
-              )}
-
-              {/* Left / right arrows — only shown when multiple images */}
-              {modalImgCount > 1 && (
-                <>
-                  <button
-                    className="modal-img-arrow modal-img-arrow-left"
-                    onClick={prevModalImage}
-                    aria-label="Previous image"
-                  >&#8249;</button>
-                  <button
-                    className="modal-img-arrow modal-img-arrow-right"
-                    onClick={nextModalImage}
-                    aria-label="Next image"
-                  >&#8250;</button>
-
-                  {/* Dot indicators */}
-                  <div className="modal-img-dots">
-                    {modalImages.map((_, i) => (
-                      <button
-                        key={i}
-                        className={`modal-img-dot${i === modalImageIndex ? ' active' : ''}`}
-                        onClick={(e) => { e.stopPropagation(); setModalImageIndex(i) }}
-                        aria-label={`Image ${i + 1}`}
-                      />
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-
-            <div className="modal-popup-details">
-              <span className="carousel-back-category">{selectedArt.category}</span>
-              <h2 className="modal-popup-title">{selectedArt.title}</h2>
-              <p className="modal-popup-desc">{selectedArt.description}</p>
-              <div className="carousel-back-meta">
-                <div className="carousel-back-meta-row">
-                  <span className="carousel-back-label">Medium</span>
-                  <span className="carousel-back-value">{selectedArt.medium}</span>
-                </div>
-                <div className="carousel-back-meta-row">
-                  <span className="carousel-back-label">Category</span>
-                  <span className="carousel-back-value">{selectedArt.category}</span>
-                </div>
-                {selectedArt.size && (
-                  <div className="carousel-back-meta-row">
-                    <span className="carousel-back-label">Size</span>
-                    <span className="carousel-back-value">{selectedArt.size}</span>
-                  </div>
-                )}
-              </div>
-              <button
-                className="carousel-back-btn modal-popup-btn"
-                onClick={handleInquire}
-              >
-                Contact for Availability
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   )
 }
