@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
@@ -12,6 +13,14 @@ export default function ShopPage() {
 
   return (
     <>
+      <Helmet>
+        <title>Shop — Art by Tvesa</title>
+        <meta name="description" content="Shop original paintings and fine-art prints by Tvesa Medh. One-of-a-kind artworks in acrylic, oil, and mixed media, plus high-quality reproductions." />
+        <meta property="og:title" content="Shop — Art by Tvesa" />
+        <meta property="og:description" content="Shop original paintings and fine-art prints by Tvesa Medh." />
+        <meta property="og:url" content="https://artbytvesa.com/shop" />
+        <link rel="canonical" href="https://artbytvesa.com/shop" />
+      </Helmet>
       <Navbar />
       <main className="shop-main">
 

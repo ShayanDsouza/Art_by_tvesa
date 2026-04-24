@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import ShopCart from '../components/ShopCart'
@@ -139,13 +140,20 @@ export default function ShopBrowsePage() {
 
   return (
     <>
+      <Helmet>
+        <title>{activeTab === 'originals' ? 'Original Artworks' : 'Prints'} — Art by Tvesa Shop</title>
+        <meta name="description" content={activeTab === 'originals'
+          ? 'Browse original one-of-a-kind paintings by Tvesa Medh — acrylic, oil, and mixed media. Each piece is unique and sold once.'
+          : 'Browse fine-art prints and reproductions by Tvesa Medh. High-quality prints of selected original works.'} />
+        <link rel="canonical" href="https://artbytvesa.com/shop/browse" />
+      </Helmet>
       <Navbar />
 
       <main className="browse-main">
 
         {/* ── Page header with cart inline ── */}
         <section className="browse-header">
-          <h1 className="browse-title">The Shop</h1>
+          <h2 className="browse-title">The Shop</h2>
           <button className="cart-trigger" onClick={openCart} aria-label="Open cart">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
               <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>

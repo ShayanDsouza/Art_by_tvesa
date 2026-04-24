@@ -150,7 +150,7 @@ export default function GridGallery() {
       <div className="gallery-header">
         {collectionText && <>
           <p className="gallery-eyebrow">{collectionText.eyebrow}</p>
-          <h1 className="gallery-heading">{collectionText.heading}</h1>
+          <h2 className="gallery-heading">{collectionText.heading}</h2>
           {collectionText.subheading && <p className="gallery-subheading">{collectionText.subheading}</p>}
         </>}
       </div>

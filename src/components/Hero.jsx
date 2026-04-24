@@ -66,9 +66,10 @@ export default function Hero() {
           {/* Icarus drops first */}
           <img
               src="/icarus.png"
-              alt="Icarus"
+              alt="Icarus — Art by Tvesa"
               className={`hc-icarus${phase >= 1 ? ' visible' : ''}`}
               draggable={false}
+              fetchpriority="high"
           />
 
           {/* A — top left */}
