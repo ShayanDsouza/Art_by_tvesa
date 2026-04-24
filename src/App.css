@@ -906,17 +906,18 @@ body.gallery-active .navbar {
     0 0 40px rgba(23, 44, 22, 0.12);
 }
 
-/* Same shimmer as navbar — visible at rest, not just on hover */
+/* Same shimmer as navbar — crisp bright band, always animating */
 .btn-glitter-shimmer {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     105deg,
-    transparent 25%,
-    rgba(255, 255, 255, 0.70) 50%,
-    transparent 75%
+    transparent 30%,
+    rgba(255, 255, 255, 0.92) 48%,
+    rgba(255, 255, 255, 0.92) 52%,
+    transparent 70%
   );
-  background-size: 200% 100%;
+  background-size: 250% 100%;
   animation: shimmer-sweep 2.6s ease-in-out infinite;
   pointer-events: none;
   border-radius: inherit;
@@ -1724,7 +1725,7 @@ body.gallery-active .navbar {
 /* ── Two-column row: newsletter left, brand right ── */
 .footer-main {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 40px;
   padding: 0 60px 36px;
@@ -1737,7 +1738,9 @@ body.gallery-active .navbar {
 
 .footer-newsletter-col .newsletter-section {
   padding: 0;
+  margin: 0;
   background: transparent;
+  border-top: none;
   text-align: left;
   align-items: flex-start;
 }
@@ -1797,7 +1800,7 @@ body.gallery-active .navbar {
     flex-direction: column;
     align-items: flex-start;
     gap: 32px;
-    padding: 40px 24px;
+    padding: 0 24px 32px;
   }
   .footer-newsletter-col .newsletter-input-wrap {
     max-width: 100%;
@@ -3228,7 +3231,16 @@ body.gallery-active .navbar {
   .gallery-header { top: 55px; }
   .gallery-header h2 { font-size: 2rem; }
   .gallery-carousel-scene { padding-bottom: 72px; justify-content: center; }
-  .gallery-view-all { bottom: 18px; }
+  .gallery-view-all {
+    bottom: 18px;
+    gap: 12px;
+    flex-wrap: nowrap;
+  }
+  .gallery-view-all .btn {
+    padding: 10px 22px;
+    font-size: 0.68rem;
+    letter-spacing: 1.8px;
+  }
   .gallery-currency { left: 24px; top: 12px; }
 }
 
@@ -3237,6 +3249,12 @@ body.gallery-active .navbar {
   .gallery-header { top: 46px; }
   .gallery-header h2 { font-size: 1.5rem; }
   .gallery-carousel-scene { padding-bottom: 64px; justify-content: center; }
+  .gallery-view-all { gap: 8px; }
+  .gallery-view-all .btn {
+    padding: 8px 16px;
+    font-size: 0.62rem;
+    letter-spacing: 1.5px;
+  }
   .gallery-currency {
     position: relative;
     top: 0;
