@@ -129,8 +129,8 @@ export default function ShopBrowsePage() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
-    document.body.classList.add('shop-page')
-    return () => document.body.classList.remove('shop-page')
+    document.body.classList.add('shop-page', 'shop-browse-page')
+    return () => document.body.classList.remove('shop-page', 'shop-browse-page')
   }, [])
 
   const collectionHandle =

@@ -7,8 +7,8 @@ import Footer from '../components/Footer'
 export default function ShopPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-    document.body.classList.add('shop-page')
-    return () => document.body.classList.remove('shop-page')
+    document.body.classList.add('shop-page', 'shop-cards-page')
+    return () => document.body.classList.remove('shop-page', 'shop-cards-page')
   }, [])
 
   return (
