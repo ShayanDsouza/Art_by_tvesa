@@ -6,7 +6,6 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
-  const isShop = location.pathname === '/shop'
   const isHome = location.pathname === '/'
 
   /* Close mobile drawer when home gallery enters "carousel mode" */
@@ -44,6 +43,8 @@ export default function Navbar() {
     }
   }
 
+  const isShop = location.pathname === '/shop'
+
   const handleShopClick = (e) => {
     setMenuOpen(false)
     if (isShop) {
@@ -60,7 +61,7 @@ export default function Navbar() {
             <img src="/logo.png" alt="Art by Tvesa" className="navbar-logo-img" />
           </Link>
         </div>
-        {!isHome && !isShop && <DarkModeToggle />}
+        {!isHome && <DarkModeToggle />}
       </div>
 
       <button
