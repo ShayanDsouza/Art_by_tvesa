@@ -1027,93 +1027,95 @@
 
 /* ══════════════════════════════════════════════════════════════
    DARK MODE — Archive / Collection page
-   Activated via html.dark (set by DarkModeToggle component)
+   bg: #3E1919  text: #E7DDD9  buttons: #5E578D
    ══════════════════════════════════════════════════════════════ */
 
 html.dark .gallery-section {
-  background-color: #0B180B;
+  background-color: #3E1919;
 }
 
 html.dark .gallery-eyebrow {
-  color: #9B93CC;
+  color: #E7DDD9;
+  opacity: 0.65;
 }
 
 html.dark .gallery-heading {
-  color: #E4D8D5;
+  color: #E7DDD9;
 }
 
 html.dark .gallery-subheading {
-  color: rgba(228, 216, 213, 0.75);
+  color: rgba(231, 221, 217, 0.7);
 }
 
 /* Search */
 html.dark .gallery-search {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(228, 216, 213, 0.18);
-  color: #E4D8D5;
+  background: rgba(231, 221, 217, 0.07);
+  border-color: rgba(231, 221, 217, 0.2);
+  color: #E7DDD9;
 }
 
 html.dark .gallery-search::placeholder {
-  color: rgba(228, 216, 213, 0.35);
+  color: rgba(231, 221, 217, 0.35);
 }
 
 html.dark .gallery-search:focus {
-  border-color: #9B93CC;
-  box-shadow: 0 0 0 3px rgba(155, 147, 204, 0.18);
+  border-color: #5E578D;
+  box-shadow: 0 0 0 3px rgba(94, 87, 141, 0.25);
 }
 
 html.dark .gallery-search-clear::before {
-  color: #E4D8D5;
+  color: #E7DDD9;
 }
 
 /* Filter buttons */
 html.dark .gallery-filter-btn {
-  color: rgba(228, 216, 213, 0.8);
-  border-color: rgba(228, 216, 213, 0.2);
+  color: rgba(231, 221, 217, 0.8);
+  border-color: rgba(231, 221, 217, 0.22);
 }
 
 html.dark .gallery-filter-btn:hover {
-  background: rgba(228, 216, 213, 0.08);
-  border-color: rgba(228, 216, 213, 0.4);
+  background: rgba(94, 87, 141, 0.15);
+  border-color: rgba(94, 87, 141, 0.5);
+  color: #E7DDD9;
 }
 
 html.dark .gallery-filter-btn--active {
-  background: #5A9E58;
-  border-color: #5A9E58;
-  color: #0E0B0B;
+  background: #5E578D;
+  border-color: #5E578D;
+  color: #E7DDD9;
 }
 
 /* Result count */
 html.dark .gallery-count {
-  color: rgba(228, 216, 213, 0.4);
+  color: rgba(231, 221, 217, 0.4);
 }
 
 /* Cards */
 html.dark .gallery-card__img-wrap {
-  background: #181212;
+  background: #2a1010;
 }
 
 /* Layout toggle buttons */
 html.dark .layout-toggle-btn {
-  color: rgba(228, 216, 213, 0.5);
-  border-color: rgba(228, 216, 213, 0.15);
+  color: rgba(231, 221, 217, 0.5);
+  border-color: rgba(231, 221, 217, 0.15);
 }
 
 html.dark .layout-toggle-btn:hover,
 html.dark .layout-toggle-btn--active {
-  color: #E4D8D5;
-  border-color: rgba(228, 216, 213, 0.5);
-  background: rgba(228, 216, 213, 0.07);
+  color: #E7DDD9;
+  border-color: rgba(94, 87, 141, 0.5);
+  background: rgba(94, 87, 141, 0.15);
 }
 
 /* Back button (browse/collection pages) */
 html.dark .back-btn {
-  color: rgba(228, 216, 213, 0.7);
-  border-color: rgba(228, 216, 213, 0.25);
+  color: rgba(231, 221, 217, 0.7);
+  border-color: rgba(231, 221, 217, 0.25);
 }
 
 html.dark .back-btn:hover {
-  background: rgba(228, 216, 213, 0.1);
-  color: #E4D8D5;
-  border-color: rgba(228, 216, 213, 0.5);
+  background: rgba(94, 87, 141, 0.2);
+  color: #E7DDD9;
+  border-color: rgba(94, 87, 141, 0.6);
 }

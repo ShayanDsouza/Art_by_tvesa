@@ -4520,33 +4520,46 @@ html.dark .contact-socials a:hover {
 
 /* ── Collection / Archive page ── */
 html.dark body.collection-page {
-  background: #0B180B;
+  background: #3E1919;
 }
 
+/* Navbar seamless — same bg as page */
 html.dark body.collection-page .navbar {
-  background: #142614;
+  background: #3E1919;
+}
+
+html.dark body.collection-page .navbar-links a {
+  color: rgba(231, 221, 217, 0.75);
+}
+
+html.dark body.collection-page .navbar-links a:hover {
+  color: #E7DDD9;
+}
+
+html.dark body.collection-page .hamburger span {
+  background: #E7DDD9;
 }
 
 html.dark body.collection-page .footer {
-  background: #0B180B;
-  color: rgba(228, 216, 213, 0.6);
+  background: #3E1919;
+  color: rgba(231, 221, 217, 0.6);
 }
 
-html.dark body.collection-page .footer-logo,
-html.dark body.collection-page .footer-copy {
-  color: rgba(228, 216, 213, 0.85) !important;
+html.dark body.collection-page .footer-bottom {
+  border-top-color: rgba(231, 221, 217, 0.1);
 }
 
-html.dark body.collection-page .footer-links a {
-  color: rgba(228, 216, 213, 0.6) !important;
+html.dark body.collection-page .footer p,
+html.dark body.collection-page .footer-credits {
+  color: rgba(231, 221, 217, 0.5) !important;
 }
 
-html.dark body.collection-page .footer-links a:hover {
-  color: #9B93CC !important;
+html.dark body.collection-page .footer-credit-link {
+  color: rgba(231, 221, 217, 0.5) !important;
 }
 
-html.dark body.collection-page .footer p {
-  color: rgba(228, 216, 213, 0.45) !important;
+html.dark body.collection-page .footer-credit-link:hover {
+  color: #5E578D !important;
 }
 
 /* ── Shop pages ── */
