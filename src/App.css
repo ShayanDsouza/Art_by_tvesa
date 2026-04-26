@@ -4340,8 +4340,8 @@ body.collection-page .navbar-collection-btn:hover {
   background: none;
   border: none;
   border-radius: 0;
-  width: 32px;
-  height: 32px;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4357,8 +4357,8 @@ body.collection-page .navbar-collection-btn:hover {
 }
 
 .dark-mode-toggle-img {
-  width: 28px;
-  height: 28px;
+  width: 52px;
+  height: 52px;
   object-fit: contain;
   display: block;
 }
