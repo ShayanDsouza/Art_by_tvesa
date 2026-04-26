@@ -3969,9 +3969,13 @@ body.collection-page .navbar-collection-btn:hover {
   transform: scale(1.025);
 }
 
-/* Postcard — always show full landscape image, no cropping */
+/* Postcard — landscape frame matches horizontal format, fills edge to edge */
+.browse-card--postcard .browse-card-img-wrap {
+  aspect-ratio: 3 / 2;
+}
+
 .browse-card--postcard .browse-card-img {
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
 }
 
