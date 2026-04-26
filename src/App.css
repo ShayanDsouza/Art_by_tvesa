@@ -4338,32 +4338,33 @@ body.collection-page .navbar-collection-btn:hover {
    ===================================================== */
 .dark-mode-toggle {
   background: none;
-  border: 1px solid rgba(23, 44, 22, 0.35);
-  border-radius: 50%;
-  width: 34px;
-  height: 34px;
+  border: none;
+  border-radius: 0;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #172C16;
-  transition: color 0.25s, border-color 0.25s, background 0.25s;
+  padding: 0;
   flex-shrink: 0;
+  transition: opacity 0.2s, transform 0.2s;
 }
 
 .dark-mode-toggle:hover {
-  background: rgba(23, 44, 22, 0.08);
-  border-color: rgba(23, 44, 22, 0.6);
+  opacity: 0.8;
+  transform: scale(1.08);
 }
 
-html.dark .dark-mode-toggle {
-  color: #9B93CC;
-  border-color: rgba(155, 147, 204, 0.4);
+.dark-mode-toggle-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
 }
 
 html.dark .dark-mode-toggle:hover {
-  background: rgba(155, 147, 204, 0.12);
-  border-color: rgba(155, 147, 204, 0.7);
+  opacity: 0.85;
 }
 
 
