@@ -60,7 +60,7 @@ export default function Navbar() {
             <img src="/logo.png" alt="Art by Tvesa" className="navbar-logo-img" />
           </Link>
         </div>
-        {!isHome && <DarkModeToggle />}
+        {!isHome && !isShop && <DarkModeToggle />}
       </div>
 
       <button
