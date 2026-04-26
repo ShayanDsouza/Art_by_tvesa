@@ -3975,11 +3975,14 @@ body.collection-page .navbar-collection-btn:hover {
 }
 
 .browse-card--postcard .browse-card-img-wrap {
-  will-change: transform; /* force GPU layer so overflow:hidden clips correctly */
+  /* clip-path clips in paint-space so rotated children are properly bounded */
+  clip-path: inset(0);
+  transform: translateZ(0); /* force compositing layer */
 }
 
 .browse-card.browse-card--postcard:hover .browse-card-img:not(.hidden) {
-  transform: rotate(90deg) scale(1.5);
+  /* scale(2) > 4/3 minimum needed to fill corners of a 3:4 frame after 90° rotation */
+  transform: rotate(90deg) scale(2);
 }
 
 .browse-card-img.hidden {
