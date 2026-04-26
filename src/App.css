@@ -4520,12 +4520,13 @@ html.dark .contact-form textarea:focus {
 }
 
 html.dark .contact-form .btn {
-  background: #5A9E58;
-  color: #fff;
+  background: #D8D0CC;
+  color: #3b0c0c;
 }
 
 html.dark .contact-form .btn:hover {
   background: #9B93CC;
+  color: #fff;
 }
 
 html.dark .contact-socials a {
