@@ -1683,6 +1683,14 @@ body.gallery-active .navbar {
 .contact-form .btn {
   align-self: center;
   margin-top: 36px;
+  background: #D8D0CC;
+  color: #3b0c0c;
+}
+
+.contact-form .btn:hover {
+  background: #5F578A;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(95, 87, 138, 0.35);
 }
 
 .contact-socials {
