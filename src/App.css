@@ -3633,7 +3633,7 @@ body.collection-page .navbar-collection-btn:hover {
 
 .shop-card-prints {
   background: linear-gradient(140deg, #f5f0ff 0%, #ede4ff 60%, #e0d2ff 100%);
-  color: var(--color-text);
+  color: #1a1028;
 }
 
 .shop-card-overline {
@@ -3645,7 +3645,7 @@ body.collection-page .navbar-collection-btn:hover {
 }
 
 .shop-card-originals .shop-card-overline { color: #e8d0ff; opacity: 0.75; }
-.shop-card-prints    .shop-card-overline { color: var(--color-grape); }
+.shop-card-prints    .shop-card-overline { color: #3d3670; opacity: 1; }
 
 .shop-card-title {
   font-family: var(--font-heading);
@@ -3665,7 +3665,7 @@ body.collection-page .navbar-collection-btn:hover {
 }
 
 .shop-card-originals .shop-card-desc { color: rgba(255,255,255,0.75); }
-.shop-card-prints    .shop-card-desc { color: var(--color-text-light); }
+.shop-card-prints    .shop-card-desc { color: #3a3060; }
 
 .shop-card-cta {
   font-size: 0.9rem;
@@ -3676,7 +3676,7 @@ body.collection-page .navbar-collection-btn:hover {
 }
 
 .shop-card-originals .shop-card-cta { color: #d4adff; }
-.shop-card-prints    .shop-card-cta { color: var(--color-grape); }
+.shop-card-prints    .shop-card-cta { color: #3d3670; }
 
 /* shimmer on hover for originals */
 .shop-card-originals::before {
