@@ -240,7 +240,7 @@
 .gallery-card__img-wrap {
   position: relative;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 0 0 8px 8px;
   background: #f0f0f0;
   width: 100%;
 }
