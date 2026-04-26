@@ -22,18 +22,20 @@ export default function ShopPage() {
         <link rel="canonical" href="https://artbytvesa.com/shop" />
       </Helmet>
       <Navbar />
+
       <main className="shop-main">
 
         {/* ── Hero ── */}
         <section className="shop-hero">
           <span className="section-overline">Art by Tvesa</span>
           <h1 className="shop-hero-title">The Shop</h1>
+          <div className="shop-hero-rule" />
           <p className="shop-hero-sub">
             Original works and prints — each piece made with intention.
           </p>
         </section>
 
-        {/* ── Two big category cards ── */}
+        {/* ── Two editorial category panels ── */}
         <section className="shop-categories">
 
           <Link
@@ -41,13 +43,21 @@ export default function ShopPage() {
             className="shop-card shop-card-originals"
           >
             <div className="shop-card-inner">
-              <span className="shop-card-overline">One of a Kind</span>
-              <h2 className="shop-card-title">Original Artworks</h2>
-              <p className="shop-card-desc">
-                Unique, hand-crafted pieces in acrylic, oil, and mixed media.
-                Each artwork is sold once — yours forever.
-              </p>
-              <span className="shop-card-cta">Browse Originals →</span>
+              <div className="shop-card-top">
+                <span className="shop-card-overline">One of a Kind</span>
+                <span className="shop-card-number">01</span>
+              </div>
+              <div className="shop-card-body">
+                <h2 className="shop-card-title">Original<br />Artworks</h2>
+                <p className="shop-card-desc">
+                  Unique, hand-crafted pieces in acrylic, oil, and mixed media.
+                  Each artwork is sold once — yours forever.
+                </p>
+                <div className="shop-card-cta">
+                  <span>Browse Originals</span>
+                  <span className="shop-card-arrow">→</span>
+                </div>
+              </div>
             </div>
           </Link>
 
@@ -56,13 +66,21 @@ export default function ShopPage() {
             className="shop-card shop-card-prints"
           >
             <div className="shop-card-inner">
-              <span className="shop-card-overline">Reproductions</span>
-              <h2 className="shop-card-title">Prints</h2>
-              <p className="shop-card-desc">
-                High-quality fine-art prints of selected works. Bring the
-                colour and emotion of each piece into your space.
-              </p>
-              <span className="shop-card-cta">Browse Prints →</span>
+              <div className="shop-card-top">
+                <span className="shop-card-overline">Reproductions</span>
+                <span className="shop-card-number">02</span>
+              </div>
+              <div className="shop-card-body">
+                <h2 className="shop-card-title">Fine Art<br />Prints</h2>
+                <p className="shop-card-desc">
+                  High-quality fine-art prints of selected works. Bring the
+                  colour and emotion of each piece into your space.
+                </p>
+                <div className="shop-card-cta">
+                  <span>Browse Prints</span>
+                  <span className="shop-card-arrow">→</span>
+                </div>
+              </div>
             </div>
           </Link>
 

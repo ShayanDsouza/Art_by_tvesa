@@ -3561,154 +3561,227 @@ body.collection-page .navbar-collection-btn:hover {
 /* ===== SHOP PAGE ===== */
 .shop-main {
   min-height: 100vh;
-  background: var(--color-bg);
+  background: #E7DDDA;
   padding-top: 80px;
 }
 
+/* ── Hero ── */
 .shop-hero {
   text-align: center;
-  padding: 72px 24px 48px;
-  max-width: 640px;
+  padding: 80px 24px 52px;
+  max-width: 580px;
   margin: 0 auto;
 }
 
 .shop-hero-title {
   font-family: var(--font-heading);
-  font-size: clamp(2.8rem, 6vw, 5rem);
-  font-weight: 700;
-  color: var(--color-text);
-  margin: 8px 0 18px;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
+  font-size: clamp(3.2rem, 7vw, 5.5rem);
+  font-weight: 300;
+  color: #172C16;
+  margin: 10px 0 22px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.shop-hero-rule {
+  width: 36px;
+  height: 1px;
+  background: #5F578A;
+  margin: 0 auto 22px;
 }
 
 .shop-hero-sub {
-  font-size: 1.05rem;
-  color: var(--color-text-light);
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: rgba(23, 44, 22, 0.55);
   line-height: 1.7;
-  max-width: 420px;
+  max-width: 360px;
   margin: 0 auto;
 }
 
-/* ── Category cards ── */
+/* ── Category panels ── */
 .shop-categories {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  max-width: 900px;
+  gap: 20px;
+  max-width: 1080px;
   margin: 0 auto;
-  padding: 0 24px 64px;
+  padding: 0 28px 72px;
 }
 
 .shop-card {
   display: block;
   text-decoration: none;
-  border-radius: 16px;
+  border-radius: 6px;
   overflow: hidden;
   position: relative;
-  transition: transform 0.28s ease, box-shadow 0.28s ease;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  min-height: 500px;
   cursor: pointer;
+  transition: box-shadow 0.35s ease;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.08);
 }
 
 .shop-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.14);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.18);
 }
 
 .shop-card-inner {
-  padding: 48px 36px 44px;
+  position: relative;
+  z-index: 2;
+  padding: 44px 40px 40px;
   height: 100%;
+  min-height: 500px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  position: relative;
-  z-index: 1;
+  justify-content: space-between;
+  transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.shop-card-originals {
-  background: linear-gradient(140deg, #1a1028 0%, #2d1a4a 60%, #3b1f5e 100%);
-  color: #fff;
+.shop-card:hover .shop-card-inner {
+  transform: translateY(-6px);
 }
 
-.shop-card-prints {
-  background: linear-gradient(140deg, #f5f0ff 0%, #ede4ff 60%, #e0d2ff 100%);
-  color: #1a1028;
+/* top row: overline + number */
+.shop-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.shop-card-number {
+  font-family: var(--font-heading);
+  font-size: 5rem;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  opacity: 0.12;
 }
 
 .shop-card-overline {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 3px;
   text-transform: uppercase;
-  opacity: 0.6;
+  padding-top: 8px;
 }
 
-.shop-card-originals .shop-card-overline { color: #e8d0ff; opacity: 0.75; }
-.shop-card-prints    .shop-card-overline { color: #3d3670; opacity: 1; }
+/* bottom: title + desc + cta */
+.shop-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
 
 .shop-card-title {
   font-family: var(--font-heading);
-  font-size: clamp(1.6rem, 2.8vw, 2.2rem);
-  font-weight: 700;
+  font-size: clamp(2.2rem, 3.2vw, 3rem);
+  font-weight: 400;
   margin: 0;
-  line-height: 1.15;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
 }
-
-.shop-card-originals .shop-card-title { color: #fff; }
-.shop-card-prints    .shop-card-title { color: #1a1028; font-weight: 800; }
 
 .shop-card-desc {
-  font-size: 0.95rem;
-  line-height: 1.65;
-  flex: 1;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  max-width: 300px;
 }
-
-.shop-card-originals .shop-card-desc { color: rgba(255,255,255,0.75); }
-.shop-card-prints    .shop-card-desc { color: #3a3060; }
 
 .shop-card-cta {
-  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.5px;
-  margin-top: 8px;
-  display: inline-block;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding-top: 20px;
+  margin-top: 4px;
+  border-top: 1px solid currentColor;
+  transition: gap 0.25s ease, opacity 0.25s ease;
+  opacity: 0.65;
 }
 
-.shop-card-originals .shop-card-cta { color: #d4adff; }
-.shop-card-prints    .shop-card-cta { color: #3d3670; }
+.shop-card:hover .shop-card-cta {
+  gap: 18px;
+  opacity: 1;
+}
 
-/* shimmer on hover for originals */
-.shop-card-originals::before {
+.shop-card-arrow {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.shop-card:hover .shop-card-arrow {
+  transform: translateX(5px);
+}
+
+/* ── Originals — deep evergreen into midnight ── */
+.shop-card-originals {
+  background: linear-gradient(145deg, #0f1e10 0%, #172C16 30%, #1c1535 70%, #100c22 100%);
+}
+
+.shop-card-originals .shop-card-overline { color: rgba(231, 221, 218, 0.65); }
+.shop-card-originals .shop-card-number  { color: #E7DDDA; }
+.shop-card-originals .shop-card-title   { color: #E7DDDA; }
+.shop-card-originals .shop-card-desc    { color: rgba(231, 221, 218, 0.65); }
+.shop-card-originals .shop-card-cta     { color: rgba(231, 221, 218, 0.85); border-top-color: rgba(231, 221, 218, 0.2); }
+
+/* radial glow on hover */
+.shop-card-originals::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.07) 50%, transparent 70%);
-  background-size: 200% 100%;
-  background-position: 200% 0;
-  transition: background-position 0.55s ease;
+  background: radial-gradient(ellipse at 25% 85%, rgba(95, 87, 138, 0.35) 0%, transparent 55%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
   pointer-events: none;
+  z-index: 1;
 }
-.shop-card-originals:hover::before {
-  background-position: -200% 0;
+.shop-card-originals:hover::after { opacity: 1; }
+
+/* ── Prints — warm cream to lavender ── */
+.shop-card-prints {
+  background: linear-gradient(145deg, #faf7f3 0%, #f2ebff 55%, #e2d0ff 100%);
 }
+
+.shop-card-prints .shop-card-overline { color: #4a4280; }
+.shop-card-prints .shop-card-number  { color: #5F578A; }
+.shop-card-prints .shop-card-title   { color: #1a0d2e; }
+.shop-card-prints .shop-card-desc    { color: #3a2d5e; }
+.shop-card-prints .shop-card-cta     { color: #3d3670; border-top-color: rgba(61, 54, 112, 0.22); }
+
+/* soft radial on hover */
+.shop-card-prints::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 75% 85%, rgba(95, 87, 138, 0.18) 0%, transparent 55%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+.shop-card-prints:hover::after { opacity: 1; }
 
 /* ── Back link ── */
 .shop-back {
   text-align: center;
-  padding: 0 24px 56px;
+  padding: 0 24px 64px;
 }
 
 .shop-back-link {
-  font-size: 0.9rem;
-  color: var(--color-text-light);
+  font-size: 0.78rem;
+  color: rgba(23, 44, 22, 0.45);
   text-decoration: none;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   transition: color 0.2s;
 }
 
 .shop-back-link:hover {
-  color: var(--color-grape);
+  color: #5F578A;
 }
 
 /* ── Responsive ── */
@@ -3721,6 +3794,7 @@ body.collection-page .navbar-collection-btn:hover {
 
   .shop-card-inner {
     padding: 36px 28px 32px;
+    min-height: 400px;
   }
 
   .shop-hero {
