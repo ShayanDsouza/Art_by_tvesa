@@ -3969,9 +3969,13 @@ body.collection-page .navbar-collection-btn:hover {
   transform: scale(1.025);
 }
 
-/* Postcard — portrait frame, image fills fully (same as originals) */
+/* Postcard — rotate 90deg on hover, instant (no transition) */
+.browse-card--postcard .browse-card-img {
+  transition: opacity 0.35s ease;
+}
+
 .browse-card--postcard:hover .browse-card-img:not(.hidden) {
-  transform: scale(1.025);
+  transform: rotate(90deg) scale(1.35);
 }
 
 .browse-card-img.hidden {
