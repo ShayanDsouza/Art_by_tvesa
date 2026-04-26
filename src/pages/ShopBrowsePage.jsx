@@ -151,11 +151,16 @@ export default function ShopBrowsePage() {
 
       <main className="browse-main">
 
-        {/* ── Page header with cart inline ── */}
+        {/* ── Page header ── */}
         <section className="browse-header">
-          <h2 className="browse-title">The Shop</h2>
+          <div className="browse-header-text">
+            <span className="browse-overline">Art by Tvesa</span>
+            <h2 className="browse-title">
+              {activeTab === 'originals' ? 'Original Artworks' : 'Prints'}
+            </h2>
+          </div>
           <button className="cart-trigger" onClick={openCart} aria-label="Open cart">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
               <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
               <line x1="3" y1="6" x2="21" y2="6"/>
               <path d="M16 10a4 4 0 01-8 0"/>
