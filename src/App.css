@@ -3969,6 +3969,19 @@ body.collection-page .navbar-collection-btn:hover {
   transform: scale(1.025);
 }
 
+/* Postcard — rotate landscape image to fill portrait frame on hover */
+.browse-card--postcard .browse-card-img-wrap {
+  overflow: hidden;
+}
+
+.browse-card--postcard .browse-card-img {
+  transition: opacity 0.35s ease, transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.browse-card--postcard:hover .browse-card-img:not(.hidden) {
+  transform: rotate(-90deg) scale(1.35);
+}
+
 .browse-card-img.hidden {
   opacity: 0;
 }

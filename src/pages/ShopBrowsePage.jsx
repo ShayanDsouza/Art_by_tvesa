@@ -23,7 +23,7 @@ const COLLECTION_HANDLES = {
   posters:   'posters',
 }
 
-function ProductCard({ product }) {
+function ProductCard({ product, isPostcard }) {
   const { addItem, loading } = useCart()
   const [added, setAdded] = useState(false)
   const [hovered, setHovered] = useState(false)
@@ -40,7 +40,7 @@ function ProductCard({ product }) {
 
   return (
     <div
-      className="browse-card"
+      className={`browse-card${isPostcard ? ' browse-card--postcard' : ''}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -91,7 +91,7 @@ function ProductCard({ product }) {
   )
 }
 
-function ProductGrid({ handle }) {
+function ProductGrid({ handle, isPostcard }) {
   const [products, setProducts] = useState([])
   const [status, setStatus] = useState('loading')
 
@@ -112,7 +112,7 @@ function ProductGrid({ handle }) {
 
   return (
     <div className="browse-grid">
-      {products.map(p => <ProductCard key={p.id} product={p} />)}
+      {products.map(p => <ProductCard key={p.id} product={p} isPostcard={isPostcard} />)}
     </div>
   )
 }
@@ -200,7 +200,7 @@ export default function ShopBrowsePage() {
         )}
 
         {/* ── Products ── */}
-        <ProductGrid handle={collectionHandle} />
+        <ProductGrid handle={collectionHandle} isPostcard={activeSubTab === 'postcards' && activeTab === 'prints'} />
 
         {/* ── Back ── */}
         <div className="shop-back">
