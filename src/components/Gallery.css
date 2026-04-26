@@ -465,7 +465,7 @@
 
   .gallery-masonry,
   .gallery-skeleton-grid {
-    columns: 2;
+    columns: 3;
     column-gap: 0.75rem;
   }
 }
@@ -486,7 +486,7 @@
 
   .gallery-masonry,
   .gallery-skeleton-grid {
-    columns: 2;
+    columns: 3;
     column-gap: 0.5rem;
     padding: 0;
   }
