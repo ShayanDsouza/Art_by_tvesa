@@ -3566,7 +3566,7 @@ body.collection-page .navbar-collection-btn:hover {
 /* ===== SHOP PAGE ===== */
 .shop-main {
   min-height: 100vh;
-  background: #E7DDDA;
+  background: #EDE6E1;
   padding-top: 80px;
 }
 
@@ -4898,32 +4898,48 @@ html.dark body.collection-page .footer-credit-link:hover {
   color: #5E578D !important;
 }
 
-/* ── Shop cards page — dark mode ── */
+/* ── Shop cards page — dark mode (maroon, matches browse) ── */
 html.dark body.shop-cards-page {
-  background: #0B180B;
+  background: #3E1919;
+}
+
+html.dark body.shop-cards-page .navbar {
+  background: #3E1919;
+}
+
+html.dark body.shop-cards-page .navbar-links a {
+  color: rgba(231, 221, 217, 0.75);
+}
+
+html.dark body.shop-cards-page .navbar-links a:hover {
+  color: #E7DDD9;
+}
+
+html.dark body.shop-cards-page .hamburger span {
+  background: #E7DDD9;
 }
 
 html.dark body.shop-cards-page .shop-main {
-  background: #0B180B;
+  background: #3E1919;
 }
 
 html.dark body.shop-cards-page .shop-hero-title {
-  color: #E4D8D5;
+  color: #E7DDD9;
 }
 
 html.dark body.shop-cards-page .shop-hero-sub {
-  color: rgba(228, 216, 213, 0.55);
+  color: rgba(231, 221, 217, 0.55);
 }
 
 html.dark body.shop-cards-page .shop-hero-rule {
-  background: rgba(228, 216, 213, 0.18);
+  background: rgba(231, 221, 217, 0.2);
 }
 
 html.dark body.shop-cards-page .section-overline {
-  color: rgba(228, 216, 213, 0.5);
+  color: #9B94C9;
 }
 
-/* Prints card — flip to deep violet in dark mode */
+/* Prints card — deep violet in dark mode */
 html.dark body.shop-cards-page .shop-card-prints {
   background: linear-gradient(145deg, #150d2a 0%, #1e1245 55%, #2a1660 100%);
 }
@@ -4946,15 +4962,19 @@ html.dark body.shop-cards-page .shop-card-prints .shop-card-cta {
 }
 
 html.dark body.shop-cards-page .shop-back-link {
-  color: rgba(228, 216, 213, 0.5);
+  color: rgba(231, 221, 217, 0.5);
 }
 
 html.dark body.shop-cards-page .shop-back-link:hover {
-  color: #9B93CC;
+  color: #9B94C9;
 }
 
 html.dark body.shop-cards-page .footer {
-  background: #0B180B;
+  background: #3E1919;
+}
+
+html.dark body.shop-cards-page .footer-bottom {
+  border-top-color: rgba(231, 221, 217, 0.1);
 }
 
 /* ── Browse page — maroon palette matching archives dark mode ── */
