@@ -4797,13 +4797,13 @@ html.dark .cart-empty {
   color: rgba(228, 216, 213, 0.3);
 }
 
-/* ── Contact section — slightly lifted surface from page bg ── */
+/* ── Contact section — matches page bg in dark mode ── */
 html.dark .contact {
-  background: #192B19;
+  background: #0B180B;
 }
 
 html.dark body.collection-page .contact {
-  background: #4a2222;
+  background: #3E1919;
 }
 
 html.dark .contact h2 {
