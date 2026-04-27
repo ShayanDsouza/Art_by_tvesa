@@ -3969,20 +3969,35 @@ body.collection-page .navbar-collection-btn:hover {
   transform: scale(1.025);
 }
 
-/* Postcard — rotate 90deg on hover, instant (no transition) */
-.browse-card--postcard .browse-card-img {
-  transition: opacity 0.35s ease;
-}
+/* Postcard — rotate 90deg on hover, instant (no transition)
+   Strategy: rotate a wrapper div (not the leaf img) so overflow:hidden
+   on img-wrap clips it correctly without GPU-layer compositing issues.
+   The rotator is 200%×200% of the frame and centered, so after any
+   90° rotation the content always overcovers the frame on every side. */
 
 .browse-card--postcard .browse-card-img-wrap {
-  /* clip-path clips in paint-space so rotated children are properly bounded */
-  clip-path: inset(0);
-  transform: translateZ(0); /* force compositing layer */
+  overflow: hidden; /* clips the rotator */
 }
 
-.browse-card.browse-card--postcard:hover .browse-card-img:not(.hidden) {
-  /* scale(2) > 4/3 minimum needed to fill corners of a 3:4 frame after 90° rotation */
-  transform: rotate(90deg) scale(2);
+.browse-card-postcard-rotator {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  transition: none; /* instant rotation */
+}
+
+.browse-card-postcard-rotator .browse-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: none;
+}
+
+.browse-card.browse-card--postcard:hover .browse-card-postcard-rotator {
+  transform: rotate(90deg);
 }
 
 .browse-card-img.hidden {

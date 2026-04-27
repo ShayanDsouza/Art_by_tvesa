@@ -47,12 +47,23 @@ function ProductCard({ product, isPostcard }) {
       <div className="browse-card-img-wrap">
         {product.image ? (
           <>
-            <img
-              src={product.image.url}
-              alt={product.image.altText || product.title}
-              className={`browse-card-img${showFramed ? ' hidden' : ''}`}
-              loading="lazy"
-            />
+            {isPostcard ? (
+              <div className="browse-card-postcard-rotator">
+                <img
+                  src={product.image.url}
+                  alt={product.image.altText || product.title}
+                  className={`browse-card-img${showFramed ? ' hidden' : ''}`}
+                  loading="lazy"
+                />
+              </div>
+            ) : (
+              <img
+                src={product.image.url}
+                alt={product.image.altText || product.title}
+                className={`browse-card-img${showFramed ? ' hidden' : ''}`}
+                loading="lazy"
+              />
+            )}
             {product.hoverImage && (
               <img
                 src={product.hoverImage.url}
