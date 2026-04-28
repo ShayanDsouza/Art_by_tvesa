@@ -20,6 +20,7 @@ import CollectionPage from "./pages/CollectionPage";
 import ShopPage from "./pages/ShopPage";
 import ShopBrowsePage from "./pages/ShopBrowsePage";
 import { CartProvider } from "./contexts/CartContext";
+import { CustomerProvider } from "./contexts/CustomerContext";
 
 function PublicSite() {
   const location = useLocation()
@@ -56,6 +57,7 @@ export default function App() {
   return (
     <HelmetProvider>
       <AuthProvider>
+        <CustomerProvider>
         <CartProvider>
           <Router>
             <Routes>
@@ -74,6 +76,7 @@ export default function App() {
             </Routes>
           </Router>
         </CartProvider>
+        </CustomerProvider>
       </AuthProvider>
     </HelmetProvider>
   )

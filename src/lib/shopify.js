@@ -176,6 +176,44 @@ export async function getCart(cartId) {
   return data.cart
 }
 
+/* ─── Customer auth ─────────────────────────────────────── */
+export async function createCustomerToken(email, password) {
+  const data = await shopifyFetch(`
+    mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
+      customerAccessTokenCreate(input: $input) {
+        customerAccessToken { accessToken expiresAt }
+        customerUserErrors { field message code }
+      }
+    }
+  `, { input: { email, password } })
+  const { customerAccessToken, customerUserErrors } = data.customerAccessTokenCreate
+  if (customerUserErrors.length) throw new Error(customerUserErrors[0].message)
+  return customerAccessToken // { accessToken, expiresAt }
+}
+
+export async function getCustomer(accessToken) {
+  const data = await shopifyFetch(`
+    query GetCustomer($token: String!) {
+      customer(customerAccessToken: $token) {
+        firstName
+        lastName
+        email
+      }
+    }
+  `, { token: accessToken })
+  return data.customer // null if token invalid/expired
+}
+
+export async function deleteCustomerToken(accessToken) {
+  await shopifyFetch(`
+    mutation customerAccessTokenDelete($token: String!) {
+      customerAccessTokenDelete(customerAccessToken: $token) {
+        deletedAccessToken
+      }
+    }
+  `, { token: accessToken }).catch(() => {})
+}
+
 /* ─── Newsletter ────────────────────────────────────────── */
 export async function subscribeToNewsletter(email) {
   const data = await shopifyFetch(`

@@ -1,14 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import ShopCart from '../components/ShopCart'
 import { useCart } from '../contexts/CartContext'
-import {
-  getCollectionProducts, formatPrice,
-  SHOPIFY_ACCOUNT_URL, SHOPIFY_ORDERS_URL, SHOPIFY_PROFILE_URL,
-} from '../lib/shopify'
+import { useCustomer } from '../contexts/CustomerContext'
+import { getCollectionProducts, formatPrice, SHOPIFY_ORDERS_URL } from '../lib/shopify'
 
 const TABS = [
   { id: 'originals', label: 'Original Artworks' },
@@ -134,20 +132,13 @@ function ProductGrid({ handle, isPostcard }) {
 export default function ShopBrowsePage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { totalQuantity, openCart } = useCart()
-  const [accountOpen, setAccountOpen] = useState(false)
-  const accountRef = useRef(null)
+  const { customer } = useCustomer()
 
-  // Close dropdown on outside click
-  useEffect(() => {
-    if (!accountOpen) return
-    const handler = (e) => {
-      if (accountRef.current && !accountRef.current.contains(e.target)) {
-        setAccountOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [accountOpen])
+  // Build 1-2 letter initials from customer name (falls back to email initial)
+  const initials = customer
+    ? ([customer.firstName?.[0], customer.lastName?.[0]].filter(Boolean).join('') ||
+       customer.email?.[0] || '?').toUpperCase()
+    : null
 
   const activeTab    = searchParams.get('tab') || 'originals'
   const activeSubTab = searchParams.get('sub') || 'postcards'
@@ -188,47 +179,23 @@ export default function ShopBrowsePage() {
             </h2>
           </div>
           <div className="browse-header-actions">
-            {/* ── Account menu ── */}
-            <div className="account-menu-wrap" ref={accountRef}>
-              <button
-                className="cart-trigger"
-                onClick={() => setAccountOpen(o => !o)}
-                aria-label="Account"
-                aria-expanded={accountOpen}
-              >
+            {/* ── Account / profile ── */}
+            <a
+              href={SHOPIFY_ORDERS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cart-trigger"
+              aria-label="My orders"
+            >
+              {initials ? (
+                <span className="account-avatar">{initials}</span>
+              ) : (
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="8" r="4"/>
                   <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
                 </svg>
-              </button>
-              {accountOpen && (
-                <div className="account-dropdown">
-                  <a href={SHOPIFY_ACCOUNT_URL} target="_blank" rel="noopener noreferrer" className="account-dropdown-item" onClick={() => setAccountOpen(false)}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="8" r="4"/>
-                      <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-                    </svg>
-                    My Account
-                  </a>
-                  <a href={SHOPIFY_ORDERS_URL} target="_blank" rel="noopener noreferrer" className="account-dropdown-item" onClick={() => setAccountOpen(false)}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
-                      <rect x="9" y="3" width="6" height="4" rx="1"/>
-                      <line x1="9" y1="12" x2="15" y2="12"/>
-                      <line x1="9" y1="16" x2="13" y2="16"/>
-                    </svg>
-                    My Orders
-                  </a>
-                  <a href={SHOPIFY_PROFILE_URL} target="_blank" rel="noopener noreferrer" className="account-dropdown-item" onClick={() => setAccountOpen(false)}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-                      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                    </svg>
-                    Edit Profile
-                  </a>
-                </div>
               )}
-            </div>
+            </a>
 
             {/* ── Cart ── */}
             <button className="cart-trigger" onClick={openCart} aria-label="Open cart">
