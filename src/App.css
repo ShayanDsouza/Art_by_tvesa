@@ -4139,6 +4139,75 @@ body.collection-page .navbar-collection-btn:hover {
   border: 2px solid #EDE6E1;
 }
 
+/* ===== BROWSE HEADER ACTIONS (profile + cart) ===== */
+.browse-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* ── Account dropdown ── */
+.account-menu-wrap {
+  position: relative;
+}
+
+.account-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #FAF7F4;
+  border: 1.5px solid rgba(23,44,22,0.12);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+  min-width: 168px;
+  z-index: 200;
+  overflow: hidden;
+  animation: fadeIn 0.15s ease;
+}
+
+.account-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 16px;
+  font-size: 0.82rem;
+  font-family: var(--font-body);
+  letter-spacing: 0.03em;
+  color: #172C16;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.account-dropdown-item + .account-dropdown-item {
+  border-top: 1px solid rgba(23,44,22,0.07);
+}
+
+.account-dropdown-item:hover {
+  background: rgba(95,87,138,0.07);
+  color: #5F578A;
+}
+
+/* Dark mode */
+html.dark body.shop-browse-page .account-dropdown {
+  background: #2a1010;
+  border-color: rgba(231,221,217,0.12);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+
+html.dark body.shop-browse-page .account-dropdown-item {
+  color: #E7DDD9;
+}
+
+html.dark body.shop-browse-page .account-dropdown-item + .account-dropdown-item {
+  border-color: rgba(231,221,217,0.08);
+}
+
+html.dark body.shop-browse-page .account-dropdown-item:hover {
+  background: rgba(155,148,201,0.12);
+  color: #9B94C9;
+}
+
 /* ===== CART DRAWER ===== */
 .cart-backdrop {
   position: fixed;
