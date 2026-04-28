@@ -279,8 +279,15 @@ export default function Gallery() {
                   const angle = i * angleStep
                   const ratio = imageSizes[art.id] ?? 0.75
                   const cardW = Math.round(cardHeight * ratio)
+
+                  // How close is this card to facing the viewer (world-angle 0°)?
+                  const worldAngle = ((rotation + angle) % 360 + 360) % 360
+                  const distFromFront = Math.min(worldAngle, 360 - worldAngle) // 0=front, 180=back
+                  const proximity = 1 - Math.min(distFromFront / (angleStep * 1.5), 1) // 1=front, 0=away
+                  const scale = (1 + 0.1 * proximity).toFixed(4)
+
                   const cardStyle = {
-                    transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
+                    transform: `rotateY(${angle}deg) translateZ(${radius}px) scale(${scale})`,
                     width: `${cardW}px`,
                     height: `${cardHeight}px`,
                     left: `${-Math.round(cardW / 2)}px`,

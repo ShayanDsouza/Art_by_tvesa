@@ -1000,6 +1000,7 @@ body.gallery-active .navbar {
   height: 290px;
   transform-style: preserve-3d;
   cursor: pointer;
+  transition: transform 0.25s ease;
 }
 
 /* Portrait/tall card — width and height are set inline in JSX; backface must match */
