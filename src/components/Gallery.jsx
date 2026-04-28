@@ -284,7 +284,7 @@ export default function Gallery() {
                   const worldAngle = ((rotation + angle) % 360 + 360) % 360
                   const distFromFront = Math.min(worldAngle, 360 - worldAngle) // 0=front, 180=back
                   const proximity = 1 - Math.min(distFromFront / (angleStep * 1.5), 1) // 1=front, 0=away
-                  const scale = (1 + 0.1 * proximity).toFixed(4)
+                  const scale = (1 + 0.28 * proximity).toFixed(4)
 
                   const cardStyle = {
                     transform: `rotateY(${angle}deg) translateZ(${radius}px) scale(${scale})`,
