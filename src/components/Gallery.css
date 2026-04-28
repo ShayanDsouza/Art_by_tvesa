@@ -212,7 +212,7 @@
 /* ── Grid (Pinterest-style masonry) ───────────────────── */
 .gallery-masonry {
   columns: 4;
-  column-gap: 1.25rem;
+  column-gap: 0.9rem;
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
@@ -229,7 +229,7 @@
   transition: opacity 0.5s ease, transform 0.5s ease;
   display: inline-block; /* required for CSS columns masonry */
   break-inside: avoid;
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.9rem;
 }
 
 .gallery-card--visible {

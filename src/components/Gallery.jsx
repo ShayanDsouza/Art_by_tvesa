@@ -52,8 +52,8 @@ export default function Gallery() {
         } else {
           const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
           docs.sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity))
-          const featured = docs.filter(a => a.featured).slice(0, 8)
-          setArtworks(featured.length > 0 ? featured : docs.slice(0, 8))
+          const featured = docs.filter(a => a.featured).slice(0, 11)
+          setArtworks(featured.length > 0 ? featured : docs.slice(0, 11))
         }
         setLoading(false)
       }, () => { setArtworks(fallbackArt); setLoading(false) })

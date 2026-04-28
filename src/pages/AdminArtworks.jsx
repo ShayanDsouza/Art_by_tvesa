@@ -92,8 +92,8 @@ function SortableAdminItem({ artwork, onEdit, onDelete, onToggleStatus, onToggle
         className={`admin-star-btn${artwork.featured ? ' admin-star-btn--active' : ''}`}
         onPointerDown={e => e.stopPropagation()}
         onClick={e => { e.stopPropagation(); onToggleFeatured(artwork) }}
-        title={artwork.featured ? 'Remove from carousel' : featuredCount >= 8 ? 'Max 8 in carousel' : 'Add to carousel'}
-        disabled={!artwork.featured && featuredCount >= 8}
+        title={artwork.featured ? 'Remove from carousel' : featuredCount >= 11 ? 'Max 11 in carousel' : 'Add to carousel'}
+        disabled={!artwork.featured && featuredCount >= 11}
       >★</button>
       <div className="gallery-overlay admin-overlay">
         <span className="gallery-overlay-category">{artwork.category}</span>
@@ -318,7 +318,7 @@ export default function AdminArtworks() {
   const featuredCount = artworks.filter(a => a.featured).length
 
   const toggleFeatured = async (artwork) => {
-    if (!artwork.featured && featuredCount >= 8) return
+    if (!artwork.featured && featuredCount >= 11) return
     await updateDoc(doc(db, 'artworks', artwork.id), { featured: !artwork.featured })
   }
 
@@ -344,7 +344,7 @@ export default function AdminArtworks() {
       <div className="admin-page-header">
         <div>
           <h1>Artworks</h1>
-          <p>{artworks.length} piece{artworks.length !== 1 ? 's' : ''} · <span className="admin-featured-count">★ {featuredCount}/8 in carousel</span></p>
+          <p>{artworks.length} piece{artworks.length !== 1 ? 's' : ''} · <span className="admin-featured-count">★ {featuredCount}/11 in carousel</span></p>
         </div>
       </div>
 
