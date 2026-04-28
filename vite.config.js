@@ -7,12 +7,15 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     strictPort: true,
-    proxy: {
-      '/api': {
-        target: 'https://art-by-tvesa-ubnpnqekt-dsouzashayan-9117s-projects.vercel.app',
-        changeOrigin: true,
-        secure: true,
-      },
+  },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './src/test/setup.js',
+    coverage: {
+      reporter: ['text', 'lcov'],
+      include: ['src/**/*.{js,jsx}', 'functions/**/*.js'],
+      exclude: ['src/test/**', 'src/config/**'],
     },
   },
 })

@@ -1,6 +1,17 @@
 import { useState, useEffect } from 'react'
 import { doc, getDoc } from 'firebase/firestore'
+import DOMPurify from 'dompurify'
 import { db } from '../config/firebase'
+
+// Allow only safe inline formatting; strip scripts/iframes/event-handlers.
+const PURIFY_CONFIG = {
+  ALLOWED_TAGS: ['a', 'b', 'i', 'em', 'strong', 'br'],
+  ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
+}
+
+function sanitizeBio(html) {
+  return DOMPurify.sanitize(html, PURIFY_CONFIG)
+}
 
 const DEFAULT_BIO = `Hi, I'm Tvesa, thanks for being here! I'm an aspiring Criminologist and part-time artist that works primarily with acrylic and oil paints. I also enjoy the occasional tattoo-style ink work, watercolour and digital messing around.
 
@@ -34,7 +45,7 @@ export default function About() {
           <span className="section-overline">Meet the Artist</span>
           <h2>Tvesa Medh</h2>
           {paragraphs.map((p, i) => (
-            <p key={i} dangerouslySetInnerHTML={{ __html: p }} />
+            <p key={i} dangerouslySetInnerHTML={{ __html: sanitizeBio(p) }} />
           ))}
         </div>
       </div>
