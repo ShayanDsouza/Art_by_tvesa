@@ -240,7 +240,7 @@
 .gallery-card__img-wrap {
   position: relative;
   overflow: hidden;
-  border-radius: 0 0 8px 8px;
+  border-radius: 8px;
   background: #f0f0f0;
   width: 100%;
 }
@@ -894,7 +894,7 @@
 }
 
 .gallery-masonry--grid .gallery-card__img-wrap {
-  border-radius: 8px 8px 0 0;
+  border-radius: 8px;
   overflow: hidden;
   aspect-ratio: 1 / 1;
 }
@@ -1027,7 +1027,11 @@
 
 /* ══════════════════════════════════════════════════════════════
    DARK MODE — Archive / Collection page
-   bg: #3E1919  text: #E7DDD9  buttons: #5E578D
+   Palette:
+     bg (maroon)  : #3E1919
+     header/btn   : #172C16  (evergreen)
+     text         : #E7DDDA  (dust-grey)
+     accent       : #5F578A  (dusty-grape / purple)
    ══════════════════════════════════════════════════════════════ */
 
 html.dark .gallery-section {
@@ -1035,87 +1039,86 @@ html.dark .gallery-section {
 }
 
 html.dark .gallery-eyebrow {
-  color: #E7DDD9;
-  opacity: 0.65;
+  color: rgba(231, 221, 218, 0.65);
 }
 
 html.dark .gallery-heading {
-  color: #E7DDD9;
+  color: #E7DDDA;
 }
 
 html.dark .gallery-subheading {
-  color: rgba(231, 221, 217, 0.7);
+  color: rgba(231, 221, 218, 0.65);
 }
 
 /* Search */
 html.dark .gallery-search {
-  background: rgba(231, 221, 217, 0.07);
-  border-color: rgba(231, 221, 217, 0.2);
-  color: #E7DDD9;
+  background: rgba(231, 221, 218, 0.07);
+  border-color: rgba(231, 221, 218, 0.2);
+  color: #E7DDDA;
 }
 
 html.dark .gallery-search::placeholder {
-  color: rgba(231, 221, 217, 0.35);
+  color: rgba(231, 221, 218, 0.35);
 }
 
 html.dark .gallery-search:focus {
-  border-color: #5E578D;
-  box-shadow: 0 0 0 3px rgba(94, 87, 141, 0.25);
+  border-color: #5F578A;
+  box-shadow: 0 0 0 3px rgba(95, 87, 138, 0.25);
 }
 
 html.dark .gallery-search-clear::before {
-  color: #E7DDD9;
+  color: #E7DDDA;
 }
 
 /* Filter buttons */
 html.dark .gallery-filter-btn {
-  color: rgba(231, 221, 217, 0.8);
-  border-color: rgba(231, 221, 217, 0.22);
+  color: rgba(231, 221, 218, 0.75);
+  border-color: rgba(231, 221, 218, 0.22);
 }
 
 html.dark .gallery-filter-btn:hover {
-  background: rgba(94, 87, 141, 0.15);
-  border-color: rgba(94, 87, 141, 0.5);
-  color: #E7DDD9;
+  background: rgba(231, 221, 218, 0.08);
+  border-color: rgba(231, 221, 218, 0.4);
+  color: #E7DDDA;
 }
 
 html.dark .gallery-filter-btn--active {
-  background: #5E578D;
-  border-color: #5E578D;
-  color: #E7DDD9;
+  background: #5F578A;
+  border-color: #5F578A;
+  color: #E7DDDA;
 }
 
 /* Result count */
 html.dark .gallery-count {
-  color: rgba(231, 221, 217, 0.4);
+  color: rgba(231, 221, 218, 0.4);
 }
 
 /* Cards */
 html.dark .gallery-card__img-wrap {
-  background: #2a1010;
+  background: #172C16;
 }
 
 /* Layout toggle buttons */
 html.dark .layout-toggle-btn {
-  color: rgba(231, 221, 217, 0.5);
-  border-color: rgba(231, 221, 217, 0.15);
+  color: rgba(231, 221, 218, 0.5);
+  border-color: rgba(231, 221, 218, 0.15);
 }
 
 html.dark .layout-toggle-btn:hover,
 html.dark .layout-toggle-btn--active {
-  color: #E7DDD9;
-  border-color: rgba(94, 87, 141, 0.5);
-  background: rgba(94, 87, 141, 0.15);
+  color: #E7DDDA;
+  border-color: #5F578A;
+  background: rgba(95, 87, 138, 0.18);
 }
 
 /* Back button (browse/collection pages) */
 html.dark .back-btn {
-  color: rgba(231, 221, 217, 0.7);
-  border-color: rgba(231, 221, 217, 0.25);
+  color: rgba(231, 221, 218, 0.7);
+  border-color: rgba(231, 221, 218, 0.25);
 }
 
 html.dark .back-btn:hover {
-  background: rgba(94, 87, 141, 0.2);
-  color: #E7DDD9;
-  border-color: rgba(94, 87, 141, 0.6);
+  background: rgba(231, 221, 218, 0.08);
+  color: #E7DDDA;
+  border-color: #5F578A;
 }

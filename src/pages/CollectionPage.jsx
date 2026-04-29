@@ -9,8 +9,16 @@ export default function CollectionPage() {
   useEffect(() => {
     // Always start at the top of the page, instantly (no smooth scroll)
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    // Re-apply stored dark preference while on this page
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.documentElement.classList.add('dark')
+    }
     document.body.classList.add('collection-page')
-    return () => document.body.classList.remove('collection-page')
+    return () => {
+      document.body.classList.remove('collection-page')
+      // Remove dark class when leaving archives — dark mode is archives-only
+      document.documentElement.classList.remove('dark')
+    }
   }, [])
 
   return (

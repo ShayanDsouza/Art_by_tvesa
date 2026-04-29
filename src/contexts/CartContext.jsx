@@ -8,14 +8,14 @@ export function CartProvider({ children }) {
   const [cartOpen, setCartOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const addItem = useCallback(async (variantId) => {
+  const addItem = useCallback(async (variantId, quantity = 1) => {
     setLoading(true)
     try {
       let updated
       if (!cart) {
-        updated = await createCart(variantId, 1)
+        updated = await createCart(variantId, quantity)
       } else {
-        updated = await addToCart(cart.id, variantId, 1)
+        updated = await addToCart(cart.id, variantId, quantity)
       }
       setCart(updated)
       setCartOpen(true)

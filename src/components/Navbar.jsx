@@ -1,14 +1,19 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import DarkModeToggle from './DarkModeToggle'
 
 export default function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const location = useLocation()
-  const navigate = useNavigate()
-  const isHome = location.pathname === '/'
+  const [menuOpen, setMenuOpen]         = useState(false)
+  const [shopDropdownOpen, setShopDropdownOpen] = useState(false)
+  const location  = useLocation()
+  const navigate  = useNavigate()
+  const dropRef   = useRef(null)
 
-  /* Close mobile drawer when home gallery enters "carousel mode" */
+  const isHome       = location.pathname === '/'
+  const isCollection = location.pathname === '/collection'
+  const isShop       = location.pathname.startsWith('/shop')
+
+  /* Close mobile drawer when carousel is active */
   useEffect(() => {
     const syncMenu = () => {
       if (document.body.classList.contains('gallery-active')) setMenuOpen(false)
@@ -17,6 +22,17 @@ export default function Navbar() {
     obs.observe(document.body, { attributes: true, attributeFilter: ['class'] })
     syncMenu()
     return () => obs.disconnect()
+  }, [])
+
+  /* Close shop dropdown on outside click */
+  useEffect(() => {
+    const handler = (e) => {
+      if (dropRef.current && !dropRef.current.contains(e.target)) {
+        setShopDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
   }, [])
 
   const handleHashLink = (hash) => {
@@ -43,25 +59,22 @@ export default function Navbar() {
     }
   }
 
-  const isShop = location.pathname === '/shop'
-
-  const handleShopClick = (e) => {
+  const closeAll = () => {
     setMenuOpen(false)
-    if (isShop) {
-      e.preventDefault()
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
+    setShopDropdownOpen(false)
   }
 
   return (
     <nav className="navbar">
       <div className="navbar-brand">
         <div className="navbar-logo-wrap">
-          <Link to="/" className="navbar-logo" onClick={() => setMenuOpen(false)}>
-            <img src="/logo.png" alt="Art by Tvesa" className="navbar-logo-img" />
+          <Link to="/" className="navbar-logo" onClick={closeAll}>
+            <img src="/logo.png"           alt="Art by Tvesa" className="navbar-logo-img navbar-logo-light" />
+            <img src="/dark_mode_logo.png" alt="Art by Tvesa" className="navbar-logo-img navbar-logo-dark" />
           </Link>
         </div>
-        {!isHome && <DarkModeToggle />}
+        {/* Dark mode toggle only on the Archives page */}
+        {isCollection && <DarkModeToggle />}
       </div>
 
       <button
@@ -76,7 +89,7 @@ export default function Navbar() {
 
       <ul className={`navbar-links ${menuOpen ? 'active' : ''}`}>
         <li>
-          <Link to="/collection" onClick={() => setMenuOpen(false)}>Archives</Link>
+          <Link to="/collection" onClick={closeAll}>Archives</Link>
         </li>
         <li>
           <a href="#about" onClick={(e) => { e.preventDefault(); handleHashLink('#about') }}>About</a>
@@ -84,15 +97,36 @@ export default function Navbar() {
         <li>
           <a href="#contact" onClick={handleContact}>Contact</a>
         </li>
-        <li>
+
+        {/* ── Shop button with dropdown ── */}
+        <li
+          className="navbar-shop-item"
+          ref={dropRef}
+          onMouseEnter={() => setShopDropdownOpen(true)}
+          onMouseLeave={() => setShopDropdownOpen(false)}
+        >
           <Link
             to="/shop"
             className="navbar-collection-btn"
-            onClick={handleShopClick}
+            onClick={(e) => {
+              if (isShop && location.pathname === '/shop') {
+                e.preventDefault()
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+              }
+              closeAll()
+            }}
           >
             <span className="navbar-collection-shimmer" aria-hidden="true" />
             <span className="navbar-collection-label">View Shop</span>
           </Link>
+
+          {shopDropdownOpen && (
+            <div className="navbar-shop-dropdown">
+              <Link to="/shop" onClick={closeAll}>Shop All</Link>
+              <Link to="/shop/browse?tab=originals" onClick={closeAll}>Original Artworks</Link>
+              <Link to="/shop/browse?tab=prints" onClick={closeAll}>Prints</Link>
+            </div>
+          )}
         </li>
       </ul>
     </nav>

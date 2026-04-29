@@ -73,6 +73,7 @@ export async function getCollectionProducts(handle) {
               images(first: 2) {
                 edges { node { url altText } }
               }
+              handle
               variants(first: 1) {
                 edges {
                   node {
@@ -92,12 +93,43 @@ export async function getCollectionProducts(handle) {
   if (!data.collection) return []
   return data.collection.products.edges.map(({ node }) => ({
     id: node.id,
+    handle: node.handle,
     title: node.title,
     available: node.availableForSale,
     image: node.images.edges[0]?.node ?? null,
     hoverImage: node.images.edges[1]?.node ?? null,
     variant: node.variants.edges[0]?.node ?? null,
   }))
+}
+
+export async function getProduct(handle) {
+  const data = await shopifyFetch(`
+    query GetProduct($handle: String!) {
+      product(handle: $handle) {
+        id
+        handle
+        title
+        descriptionHtml
+        vendor
+        availableForSale
+        images(first: 10) {
+          edges { node { url altText } }
+        }
+        variants(first: 10) {
+          edges {
+            node {
+              id
+              title
+              availableForSale
+              quantityAvailable
+              price { amount currencyCode }
+            }
+          }
+        }
+      }
+    }
+  `, { handle })
+  return data.product ?? null
 }
 
 /* ─── Cart ──────────────────────────────────────────────── */

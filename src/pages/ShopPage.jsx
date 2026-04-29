@@ -35,7 +35,7 @@ export default function ShopPage() {
           </p>
         </section>
 
-        {/* ── Two editorial category panels ── */}
+        {/* ── Three editorial category panels ── */}
         <section className="shop-categories">
 
           <Link
@@ -78,6 +78,29 @@ export default function ShopPage() {
                 </p>
                 <div className="shop-card-cta">
                   <span>Browse Prints</span>
+                  <span className="shop-card-arrow">→</span>
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          <Link
+            to="/shop/browse?tab=commissions"
+            className="shop-card shop-card-commissions"
+          >
+            <div className="shop-card-inner">
+              <div className="shop-card-top">
+                <span className="shop-card-overline">Custom Work</span>
+                <span className="shop-card-number">03</span>
+              </div>
+              <div className="shop-card-body">
+                <h2 className="shop-card-title">Commissions</h2>
+                <p className="shop-card-desc">
+                  A handpicked selection of past commissions. Each piece was
+                  made to order — explore what's possible.
+                </p>
+                <div className="shop-card-cta">
+                  <span>View Commissions</span>
                   <span className="shop-card-arrow">→</span>
                 </div>
               </div>

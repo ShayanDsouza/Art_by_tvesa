@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import ShopCart from '../components/ShopCart'
 import { useCart } from '../contexts/CartContext'
-import { useCustomer } from '../contexts/CustomerContext'
 import { getCollectionProducts, formatPrice, SHOPIFY_ORDERS_URL } from '../lib/shopify'
 
 const TABS = [
-  { id: 'originals', label: 'Original Artworks' },
-  { id: 'prints',    label: 'Prints' },
+  { id: 'originals',   label: 'Original Artworks' },
+  { id: 'prints',      label: 'Prints' },
+  { id: 'commissions', label: 'Commissions' },
 ]
 
 const PRINT_SUBTABS = [
@@ -19,18 +19,29 @@ const PRINT_SUBTABS = [
 ]
 
 const COLLECTION_HANDLES = {
-  originals: 'original-works',
-  postcards: 'postcards',
-  posters:   'posters',
+  originals:   'original-works',
+  postcards:   'postcards',
+  posters:     'posters',
+  commissions: 'commissions',
 }
 
-function ProductCard({ product, isPostcard }) {
+const SORT_OPTIONS = [
+  { value: 'featured',   label: 'Featured' },
+  { value: 'price-asc',  label: 'Price: Low to High' },
+  { value: 'price-desc', label: 'Price: High to Low' },
+  { value: 'name-az',    label: 'Alphabetically, A–Z' },
+  { value: 'name-za',    label: 'Alphabetically, Z–A' },
+]
+
+/* ─── Product card ───────────────────────────────────────── */
+function ProductCard({ product, isPostcard, activeTab, activeSubTab }) {
   const { addItem, loading } = useCart()
   const [added, setAdded] = useState(false)
   const [hovered, setHovered] = useState(false)
 
   const handleAdd = async (e) => {
     e.stopPropagation()
+    e.preventDefault()
     if (!product.variant?.id) return
     await addItem(product.variant.id)
     setAdded(true)
@@ -38,9 +49,13 @@ function ProductCard({ product, isPostcard }) {
   }
 
   const showFramed = hovered && product.hoverImage
+  const productUrl = `/shop/product/${product.handle}?tab=${activeTab}${activeTab === 'prints' ? `&sub=${activeSubTab}` : ''}`
+  // Prints use contain so full artwork shows; originals/commissions use cover to fill the frame
+  const useContain = !isPostcard && activeTab === 'prints'
 
   return (
-    <div
+    <Link
+      to={productUrl}
       className={`browse-card${isPostcard ? ' browse-card--postcard' : ''}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -61,7 +76,7 @@ function ProductCard({ product, isPostcard }) {
               <img
                 src={product.image.url}
                 alt={product.image.altText || product.title}
-                className={`browse-card-img${showFramed ? ' hidden' : ''}`}
+                className={`browse-card-img${useContain ? ' browse-card-img--contain' : ''}${showFramed ? ' hidden' : ''}`}
                 loading="lazy"
               />
             )}
@@ -76,6 +91,11 @@ function ProductCard({ product, isPostcard }) {
           </>
         ) : (
           <div className="browse-card-img-placeholder" />
+        )}
+
+        {/* Sold-out badge */}
+        {!product.available && (
+          <span className="browse-card-sold-badge">Sold out</span>
         )}
 
         {/* Add to cart overlay on hover */}
@@ -99,13 +119,21 @@ function ProductCard({ product, isPostcard }) {
           </p>
         )}
       </div>
-    </div>
+    </Link>
   )
 }
 
-function ProductGrid({ handle, isPostcard }) {
-  const [products, setProducts] = useState([])
-  const [status, setStatus] = useState('loading')
+/* ─── Product grid with full Shopify-style filter + sort ─── */
+function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
+  const [products, setProducts]   = useState([])
+  const [status, setStatus]       = useState('loading')
+  const [sort, setSort]           = useState('featured')
+  const [openFilter, setOpenFilter] = useState(null) // 'availability' | 'price' | 'sort' | null
+  const [filterInStock, setFilterInStock]       = useState(false)
+  const [filterOutOfStock, setFilterOutOfStock] = useState(false)
+  const [priceFrom, setPriceFrom] = useState('')
+  const [priceTo, setPriceTo]     = useState('')
+  const filterBarRef = useRef(null)
 
   useEffect(() => {
     setStatus('loading')
@@ -118,27 +146,218 @@ function ProductGrid({ handle, isPostcard }) {
       .catch(() => setStatus('error'))
   }, [handle])
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (filterBarRef.current && !filterBarRef.current.contains(e.target)) {
+        setOpenFilter(null)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
   if (status === 'loading') return <div className="browse-status">Loading…</div>
   if (status === 'error')   return <div className="browse-status">Could not load products. Please try again.</div>
   if (status === 'empty')   return <div className="browse-status">Coming soon — check back shortly.</div>
 
+  // Counts for availability labels
+  const inStockCount    = products.filter(p => p.available).length
+  const outOfStockCount = products.filter(p => !p.available).length
+  const maxPrice        = Math.max(0, ...products.map(p => parseFloat(p.variant?.price.amount ?? 0)))
+  const availSelected   = (filterInStock ? 1 : 0) + (filterOutOfStock ? 1 : 0)
+
+  const displayed = products
+    .filter(p => {
+      // Availability
+      if (filterInStock || filterOutOfStock) {
+        if (filterInStock && filterOutOfStock) return true
+        if (filterInStock)    return p.available
+        if (filterOutOfStock) return !p.available
+      }
+      return true
+    })
+    .filter(p => {
+      // Price range
+      const price = parseFloat(p.variant?.price.amount ?? 0)
+      if (priceFrom !== '' && price < parseFloat(priceFrom)) return false
+      if (priceTo   !== '' && price > parseFloat(priceTo))   return false
+      return true
+    })
+    .sort((a, b) => {
+      const pa = parseFloat(a.variant?.price.amount ?? 0)
+      const pb = parseFloat(b.variant?.price.amount ?? 0)
+      if (sort === 'price-asc')  return pa - pb
+      if (sort === 'price-desc') return pb - pa
+      if (sort === 'name-az')    return a.title.localeCompare(b.title)
+      if (sort === 'name-za')    return b.title.localeCompare(a.title)
+      return 0
+    })
+
+  const toggleFilter = (name) => setOpenFilter(f => f === name ? null : name)
+
   return (
-    <div className="browse-grid">
-      {products.map(p => <ProductCard key={p.id} product={p} isPostcard={isPostcard} />)}
-    </div>
+    <>
+      {/* ── Filter / sort bar — exact Shopify style ── */}
+      <div className="browse-filter-bar" ref={filterBarRef}>
+        <div className="browse-filter-group">
+          <span className="browse-filter-label">Filter:</span>
+          <div className="browse-filter-sep" />
+
+          {/* Availability button + dropdown */}
+          <div className="browse-filter-item">
+            <button
+              className={`browse-shopify-filter${availSelected > 0 ? ' active' : ''}`}
+              onClick={() => toggleFilter('availability')}
+            >
+              Availability
+              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+
+            {openFilter === 'availability' && (
+              <div className="browse-filter-dropdown">
+                <div className="browse-filter-dropdown-header">
+                  <span className="browse-filter-selected-count">{availSelected} selected</span>
+                  <button
+                    className="browse-filter-reset"
+                    onClick={() => { setFilterInStock(false); setFilterOutOfStock(false) }}
+                  >Reset</button>
+                </div>
+                <div className="browse-filter-dropdown-divider" />
+                <label className="browse-filter-check-row">
+                  <input
+                    type="checkbox"
+                    checked={filterInStock}
+                    onChange={e => setFilterInStock(e.target.checked)}
+                  />
+                  In stock ({inStockCount})
+                </label>
+                <label className="browse-filter-check-row">
+                  <input
+                    type="checkbox"
+                    checked={filterOutOfStock}
+                    onChange={e => setFilterOutOfStock(e.target.checked)}
+                  />
+                  Out of stock ({outOfStockCount})
+                </label>
+              </div>
+            )}
+          </div>
+
+          {/* Price button + dropdown */}
+          <div className="browse-filter-item">
+            <button
+              className={`browse-shopify-filter${(priceFrom !== '' || priceTo !== '') ? ' active' : ''}`}
+              onClick={() => toggleFilter('price')}
+            >
+              Price
+              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+
+            {openFilter === 'price' && (
+              <div className="browse-filter-dropdown browse-filter-dropdown--price">
+                <div className="browse-filter-dropdown-header">
+                  <span className="browse-filter-price-info">
+                    The highest price is {formatPrice(maxPrice, 'INR')}
+                  </span>
+                  <button
+                    className="browse-filter-reset"
+                    onClick={() => { setPriceFrom(''); setPriceTo('') }}
+                  >Reset</button>
+                </div>
+                <div className="browse-filter-dropdown-divider" />
+                <div className="browse-filter-price-inputs">
+                  <div className="browse-filter-price-field">
+                    <span className="browse-filter-price-currency">₹</span>
+                    <input
+                      type="number"
+                      className="browse-filter-price-input"
+                      placeholder="From"
+                      value={priceFrom}
+                      onChange={e => setPriceFrom(e.target.value)}
+                      min="0"
+                    />
+                  </div>
+                  <div className="browse-filter-price-field">
+                    <span className="browse-filter-price-currency">₹</span>
+                    <input
+                      type="number"
+                      className="browse-filter-price-input"
+                      placeholder="To"
+                      value={priceTo}
+                      onChange={e => setPriceTo(e.target.value)}
+                      min="0"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Sort + count */}
+        <div className="browse-sort-group">
+          <span className="browse-filter-label">Sort by:</span>
+          <div className="browse-filter-sep" />
+          <div className="browse-filter-item">
+            <button
+              className="browse-shopify-filter browse-shopify-sort-btn"
+              onClick={() => toggleFilter('sort')}
+            >
+              {SORT_OPTIONS.find(o => o.value === sort)?.label ?? 'Featured'}
+              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+
+            {openFilter === 'sort' && (
+              <div className="browse-filter-dropdown browse-sort-dropdown">
+                {SORT_OPTIONS.map(o => (
+                  <button
+                    key={o.value}
+                    className={`browse-sort-option${sort === o.value ? ' active' : ''}`}
+                    onClick={() => { setSort(o.value); setOpenFilter(null) }}
+                  >
+                    {o.value === sort && (
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className="browse-sort-check">
+                        <polyline points="2 6 5 9 10 3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <span className="browse-product-count">
+            {displayed.length} product{displayed.length !== 1 ? 's' : ''}
+          </span>
+        </div>
+      </div>
+
+      <div className="browse-grid">
+        {displayed.map(p => (
+          <ProductCard
+            key={p.id}
+            product={p}
+            isPostcard={isPostcard}
+            activeTab={activeTab}
+            activeSubTab={activeSubTab}
+          />
+        ))}
+      </div>
+    </>
   )
 }
 
+/* ─── Page ───────────────────────────────────────────────── */
 export default function ShopBrowsePage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { totalQuantity, openCart } = useCart()
-  const { customer } = useCustomer()
-
-  // Build 1-2 letter initials from customer name (falls back to email initial)
-  const initials = customer
-    ? ([customer.firstName?.[0], customer.lastName?.[0]].filter(Boolean).join('') ||
-       customer.email?.[0] || '?').toUpperCase()
-    : null
 
   const activeTab    = searchParams.get('tab') || 'originals'
   const activeSubTab = searchParams.get('sub') || 'postcards'
@@ -153,17 +372,27 @@ export default function ShopBrowsePage() {
   }, [])
 
   const collectionHandle =
-    activeTab === 'originals'
-      ? COLLECTION_HANDLES.originals
-      : COLLECTION_HANDLES[activeSubTab] ?? COLLECTION_HANDLES.postcards
+    activeTab === 'originals'   ? COLLECTION_HANDLES.originals :
+    activeTab === 'commissions' ? COLLECTION_HANDLES.commissions :
+    COLLECTION_HANDLES[activeSubTab] ?? COLLECTION_HANDLES.postcards
+
+  const isPostcard = activeTab === 'prints' && activeSubTab === 'postcards'
+
+  const pageTitle =
+    activeTab === 'originals'   ? 'Original Artworks' :
+    activeTab === 'commissions' ? 'Commissions' : 'Prints'
 
   return (
     <>
       <Helmet>
-        <title>{activeTab === 'originals' ? 'Original Artworks' : 'Prints'} — Art by Tvesa Shop</title>
-        <meta name="description" content={activeTab === 'originals'
-          ? 'Browse original one-of-a-kind paintings by Tvesa Medh — acrylic, oil, and mixed media. Each piece is unique and sold once.'
-          : 'Browse fine-art prints and reproductions by Tvesa Medh. High-quality prints of selected original works.'} />
+        <title>{pageTitle} — Art by Tvesa Shop</title>
+        <meta name="description" content={
+          activeTab === 'originals'
+            ? 'Browse original one-of-a-kind paintings by Tvesa Medh — acrylic, oil, and mixed media. Each piece is unique and sold once.'
+            : activeTab === 'commissions'
+            ? 'Commission a custom artwork by Tvesa Medh.'
+            : 'Browse fine-art prints and reproductions by Tvesa Medh. High-quality prints of selected original works.'
+        } />
         <link rel="canonical" href="https://artbytvesa.com/shop/browse" />
       </Helmet>
       <Navbar />
@@ -174,12 +403,9 @@ export default function ShopBrowsePage() {
         <section className="browse-header">
           <div className="browse-header-text">
             <span className="browse-overline">Art by Tvesa</span>
-            <h2 className="browse-title">
-              {activeTab === 'originals' ? 'Original Artworks' : 'Prints'}
-            </h2>
+            <h2 className="browse-title">{pageTitle}</h2>
           </div>
           <div className="browse-header-actions">
-            {/* ── Account / profile ── */}
             <a
               href={SHOPIFY_ORDERS_URL}
               target="_blank"
@@ -187,17 +413,11 @@ export default function ShopBrowsePage() {
               className="cart-trigger"
               aria-label="My orders"
             >
-              {initials ? (
-                <span className="account-avatar">{initials}</span>
-              ) : (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="8" r="4"/>
-                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-                </svg>
-              )}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              </svg>
             </a>
-
-            {/* ── Cart ── */}
             <button className="cart-trigger" onClick={openCart} aria-label="Open cart">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
                 <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
@@ -239,8 +459,14 @@ export default function ShopBrowsePage() {
           </div>
         )}
 
-        {/* ── Products ── */}
-        <ProductGrid handle={collectionHandle} isPostcard={activeSubTab === 'postcards' && activeTab === 'prints'} />
+        {/* ── Products — key forces re-mount on collection change ── */}
+        <ProductGrid
+          key={collectionHandle}
+          handle={collectionHandle}
+          isPostcard={isPostcard}
+          activeTab={activeTab}
+          activeSubTab={activeSubTab}
+        />
 
         {/* ── Back ── */}
         <div className="shop-back">

@@ -18,7 +18,8 @@ import NotFound from './pages/NotFound'
 import './App.css'
 import CollectionPage from "./pages/CollectionPage";
 import ShopPage from "./pages/ShopPage";
-import ShopBrowsePage from "./pages/ShopBrowsePage";
+import ShopBrowsePage from "./pages/ShopBrowsePage"
+import ProductPage from "./pages/ProductPage";
 import { CartProvider } from "./contexts/CartContext";
 import { CustomerProvider } from "./contexts/CustomerContext";
 
@@ -65,6 +66,7 @@ export default function App() {
               <Route path="/collection" element={<CollectionPage />} />
               <Route path="/shop" element={<ShopPage />} />
               <Route path="/shop/browse" element={<ShopBrowsePage />} />
+              <Route path="/shop/product/:handle" element={<ProductPage />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}>
                 <Route index element={<AdminArtworks />} />
