@@ -1035,19 +1035,19 @@
    ══════════════════════════════════════════════════════════════ */
 
 html.dark .gallery-section {
-  background-color: #3E1919;
+  background-color: #172C16;
 }
 
 html.dark .gallery-eyebrow {
-  color: rgba(231, 221, 218, 0.65);
+  color: rgba(255, 255, 255, 0.65);
 }
 
 html.dark .gallery-heading {
-  color: #E7DDDA;
+  color: #fff;
 }
 
 html.dark .gallery-subheading {
-  color: rgba(231, 221, 218, 0.65);
+  color: rgba(255, 255, 255, 0.65);
 }
 
 /* Search */
