@@ -5203,7 +5203,7 @@ html.dark body.collection-page .navbar-links a:hover {
 }
 
 html.dark body.collection-page .hamburger span {
-  background: #E7DDDA;
+  background: #fff;
 }
 
 /* Dark mode logo */
@@ -5219,40 +5219,40 @@ html.dark body.collection-page .footer {
 }
 
 html.dark body.collection-page .footer-bottom {
-  border-top-color: rgba(231, 221, 218, 0.1);
+  border-top-color: rgba(255, 255, 255, 0.1);
 }
 
 html.dark body.collection-page .footer p,
 html.dark body.collection-page .footer-credits,
 html.dark body.collection-page .footer-credit-link {
-  color: rgba(231, 221, 218, 0.5) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
 }
 
 html.dark body.collection-page .footer-credit-link:hover {
-  color: #E7DDDA !important;
+  color: #fff !important;
 }
 
 html.dark body.collection-page .navbar-shop-dropdown {
-  background: #0f2010;
-  border-color: rgba(231, 221, 218, 0.15);
+  background: #2a1010;
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 html.dark body.collection-page .navbar-shop-dropdown a {
-  color: rgba(231, 221, 218, 0.85);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 html.dark body.collection-page .navbar-shop-dropdown a:hover {
-  background: rgba(231, 221, 218, 0.08);
-  color: #E7DDDA;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
 }
 
 html.dark body.collection-page .navbar-shop-dropdown a + a {
-  border-top-color: rgba(231, 221, 218, 0.1);
+  border-top-color: rgba(255, 255, 255, 0.1);
 }
 
 html.dark body.collection-page .navbar-collection-btn {
-  color: rgba(231, 221, 218, 0.9) !important;
-  border-color: rgba(231, 221, 218, 0.35) !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
 }
 
 html.dark body.collection-page .navbar-collection-btn:hover {
@@ -5276,8 +5276,8 @@ html.dark body.collection-page .navbar-collection-btn:hover {
     color: #fff;
   }
   html.dark body.collection-page .navbar-collection-btn {
-    border-color: rgba(231, 221, 218, 0.45) !important;
-    color: rgba(231, 221, 218, 0.9) !important;
+    border-color: rgba(255, 255, 255, 0.45) !important;
+    color: #fff !important;
   }
 }
 

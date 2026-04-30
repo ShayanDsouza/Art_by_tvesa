@@ -1052,13 +1052,13 @@ html.dark .gallery-subheading {
 
 /* Search */
 html.dark .gallery-search {
-  background: rgba(231, 221, 218, 0.07);
-  border-color: rgba(231, 221, 218, 0.2);
-  color: #E7DDDA;
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
 }
 
 html.dark .gallery-search::placeholder {
-  color: rgba(231, 221, 218, 0.35);
+  color: rgba(255, 255, 255, 0.35);
 }
 
 html.dark .gallery-search:focus {
@@ -1067,58 +1067,58 @@ html.dark .gallery-search:focus {
 }
 
 html.dark .gallery-search-clear::before {
-  color: #E7DDDA;
+  color: #fff;
 }
 
 /* Filter buttons */
 html.dark .gallery-filter-btn {
-  color: rgba(231, 221, 218, 0.75);
-  border-color: rgba(231, 221, 218, 0.22);
+  color: rgba(255, 255, 255, 0.75);
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 html.dark .gallery-filter-btn:hover {
-  background: rgba(231, 221, 218, 0.08);
-  border-color: rgba(231, 221, 218, 0.4);
-  color: #E7DDDA;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
 }
 
 html.dark .gallery-filter-btn--active {
   background: #5F578A;
   border-color: #5F578A;
-  color: #E7DDDA;
+  color: #fff;
 }
 
 /* Result count */
 html.dark .gallery-count {
-  color: rgba(231, 221, 218, 0.4);
+  color: rgba(255, 255, 255, 0.4);
 }
 
 /* Cards */
 html.dark .gallery-card__img-wrap {
-  background: #172C16;
+  background: #2a1010;
 }
 
 /* Layout toggle buttons */
 html.dark .layout-toggle-btn {
-  color: rgba(231, 221, 218, 0.5);
-  border-color: rgba(231, 221, 218, 0.15);
+  color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 html.dark .layout-toggle-btn:hover,
 html.dark .layout-toggle-btn--active {
-  color: #E7DDDA;
+  color: #fff;
   border-color: #5F578A;
   background: rgba(95, 87, 138, 0.18);
 }
 
 /* Back button (browse/collection pages) */
 html.dark .back-btn {
-  color: rgba(231, 221, 218, 0.7);
-  border-color: rgba(231, 221, 218, 0.25);
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 html.dark .back-btn:hover {
-  background: rgba(231, 221, 218, 0.08);
-  color: #E7DDDA;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
   border-color: #5F578A;
 }
