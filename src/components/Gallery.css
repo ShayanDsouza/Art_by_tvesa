@@ -1098,6 +1098,24 @@ html.dark .gallery-card__img-wrap {
   background: #2a1010;
 }
 
+html.dark .gallery-card__title {
+  color: #fff;
+}
+
+html.dark .gallery-card__category {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+html.dark .gallery-card__price-strip {
+  background: #2a1010;
+  color: #fff;
+}
+
+html.dark .gallery-masonry--grid .gallery-card__price-strip {
+  background: #2a1010;
+  color: #fff;
+}
+
 /* Layout toggle buttons */
 html.dark .layout-toggle-btn {
   color: rgba(255, 255, 255, 0.5);

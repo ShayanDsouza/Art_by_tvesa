@@ -5022,63 +5022,63 @@ html.dark .footer-credit-link:hover {
 
 /* ── Footer newsletter ── */
 html.dark .footer-main .newsletter-title {
-  color: rgba(228, 216, 213, 0.9);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 html.dark .footer-main .newsletter-sub {
-  color: rgba(228, 216, 213, 0.5);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 html.dark .footer-main .newsletter-input-wrap {
-  background: rgba(228, 216, 213, 0.07);
-  border-color: rgba(228, 216, 213, 0.14);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
 html.dark .footer-main .newsletter-input {
   background: transparent;
-  color: #E4D8D5;
+  color: #fff;
 }
 
 html.dark .footer-main .newsletter-input::placeholder {
-  color: rgba(228, 216, 213, 0.35);
+  color: rgba(255, 255, 255, 0.35);
 }
 
 html.dark .footer-main .newsletter-btn {
-  border-left-color: rgba(228, 216, 213, 0.14);
-  color: rgba(228, 216, 213, 0.65);
+  border-left-color: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.65);
 }
 
 html.dark .footer-main .newsletter-btn:hover {
-  background: rgba(228, 216, 213, 0.06);
-  color: #E4D8D5;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
 }
 
 html.dark .newsletter-input-wrap {
-  background: rgba(228, 216, 213, 0.07);
-  border-color: rgba(228, 216, 213, 0.14);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
 html.dark .newsletter-input {
-  color: #E4D8D5;
+  color: #fff;
   background: transparent;
 }
 
 html.dark .newsletter-input::placeholder {
-  color: rgba(228, 216, 213, 0.35);
+  color: rgba(255, 255, 255, 0.35);
 }
 
 html.dark .newsletter-btn {
-  border-left-color: rgba(228, 216, 213, 0.14);
-  color: rgba(228, 216, 213, 0.65);
+  border-left-color: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.65);
 }
 
 html.dark .newsletter-btn:hover {
-  background: rgba(228, 216, 213, 0.06);
-  color: #E4D8D5;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
 }
 
 html.dark .newsletter-socials a {
-  color: rgba(228, 216, 213, 0.45);
+  color: rgba(255, 255, 255, 0.45);
 }
 
 html.dark .newsletter-socials a:hover {
