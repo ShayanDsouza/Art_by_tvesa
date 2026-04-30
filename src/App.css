@@ -5333,7 +5333,7 @@ body.collection-page .contact-socials a:hover {
 }
 
 /* Dark mode: same rules — no overrides needed, inherits above */
-html.dark body.collection-page .contact { background: #3E1919; }
+html.dark body.collection-page .contact { background: #172C16; }
 html.dark body.collection-page .contact h2 { color: #fff; }
 html.dark body.collection-page .contact .section-overline { color: #fff; }
 html.dark body.collection-page .contact-subtitle { color: rgba(255, 255, 255, 0.75); }
