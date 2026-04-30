@@ -36,7 +36,7 @@
 
 /* ── Section wrapper ────────────────────────────────────── */
 .gallery-section {
-  background-color: #e7ddda;
+  background-color: transparent;
   padding: 6rem 2rem 6rem;
   margin-top: 0px;
   display: flex;
@@ -1035,7 +1035,7 @@
    ══════════════════════════════════════════════════════════════ */
 
 html.dark .gallery-section {
-  background-color: #3E1919;
+  background-color: transparent;
 }
 
 html.dark .gallery-eyebrow {

@@ -3657,6 +3657,9 @@ body.gallery-active .navbar {
 }
 
 /* ===== COLLECTION PAGE — MATCHING BEIGE NAVBAR & FOOTER ===== */
+body.collection-page {
+  background: #E7DDDA;
+}
 body.collection-page .navbar {
   background: #E7DDDA;
 }
