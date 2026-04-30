@@ -37,7 +37,7 @@
 /* ── Section wrapper ────────────────────────────────────── */
 .gallery-section {
   background-color: transparent;
-  padding: 6rem 2rem 6rem;
+  padding: 10rem 2rem 6rem;
   margin-top: 0px;
   display: flex;
   flex-direction: column;
