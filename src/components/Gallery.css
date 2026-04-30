@@ -1039,7 +1039,7 @@ html.dark .gallery-section {
 }
 
 html.dark .gallery-eyebrow {
-  color: rgba(255, 255, 255, 0.65);
+  color: #fff;
 }
 
 html.dark .gallery-heading {
@@ -1047,7 +1047,8 @@ html.dark .gallery-heading {
 }
 
 html.dark .gallery-subheading {
-  color: rgba(255, 255, 255, 0.65);
+  color: #fff;
+  opacity: 1;
 }
 
 /* Search */
