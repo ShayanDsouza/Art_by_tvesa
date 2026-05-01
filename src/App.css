@@ -5352,6 +5352,7 @@ body.shop-browse-page .contact {
   margin: 0;
   padding: 80px max(40px, calc(50% - 300px));
   text-align: center;
+  color: #3B0C0C;
 }
 
 body.shop-browse-page .contact .section-overline {
@@ -5366,7 +5367,7 @@ body.shop-browse-page .contact h2 {
   font-size: clamp(2.8rem, 6vw, 4rem);
   font-weight: 300;
   color: #3B0C0C;
-  opacity: 0.3;
+  opacity: 1;
   letter-spacing: -0.01em;
   margin-bottom: 16px;
 }
