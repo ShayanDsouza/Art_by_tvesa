@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import ShopCart from '../components/ShopCart'
+import Contact from '../components/Contact'
 import { useCart } from '../contexts/CartContext'
 import { getCollectionProducts, formatPrice, SHOPIFY_ORDERS_URL } from '../lib/shopify'
 
@@ -467,6 +468,9 @@ export default function ShopBrowsePage() {
           activeTab={activeTab}
           activeSubTab={activeSubTab}
         />
+
+        {/* ── Contact (commissions only) ── */}
+        {activeTab === 'commissions' && <Contact />}
 
         {/* ── Back ── */}
         <div className="shop-back">

@@ -5189,17 +5189,17 @@ html.dark .cart-empty {
    but these rules ensure contact is locked to light-mode colours regardless) */
 
 /* ── Collection / Archive page — dark mode palette ──────────────
-   maroon bg : #3E1919   evergreen header : #172C16
+   maroon bg : #3B0C0C   evergreen header : #172C16
    text      : #E7DDDA   purple accent    : #5F578A
    ─────────────────────────────────────────────────────────────── */
 html.dark body.collection-page {
-  background: #3E1919;
+  background: #3B0C0C;
   color: #fff;
 }
 
 /* Navbar: seamless maroon */
 html.dark body.collection-page .navbar {
-  background: #3E1919;
+  background: #3B0C0C;
   border-bottom: none !important;
   box-shadow: none !important;
 }
@@ -5229,7 +5229,7 @@ html.dark body.collection-page .navbar-logo-dark {
 }
 
 html.dark body.collection-page .footer {
-  background: #3E1919;
+  background: #3B0C0C;
 }
 
 html.dark body.collection-page .footer-bottom {
@@ -5278,7 +5278,7 @@ html.dark body.collection-page .navbar-collection-btn:hover {
 /* Mobile drawer: maroon bg + white text in dark mode */
 @media (max-width: 768px) {
   html.dark body.collection-page .navbar-links {
-    background: #3E1919;
+    background: #3B0C0C;
   }
   html.dark body.collection-page .navbar-links a {
     color: #fff;
@@ -5367,7 +5367,7 @@ html.dark body.shop-cards-page {
 }
 
 html.dark body.shop-cards-page .navbar {
-  background: #3E1919;
+  background: #3B0C0C;
 }
 
 html.dark body.shop-cards-page .navbar-links a {
@@ -5383,7 +5383,7 @@ html.dark body.shop-cards-page .hamburger span {
 }
 
 html.dark body.shop-cards-page .shop-main {
-  background: #3E1919;
+  background: #3B0C0C;
 }
 
 html.dark body.shop-cards-page .shop-hero-title {
@@ -5433,7 +5433,7 @@ html.dark body.shop-cards-page .shop-back-link:hover {
 }
 
 html.dark body.shop-cards-page .footer {
-  background: #3E1919;
+  background: #3B0C0C;
 }
 
 html.dark body.shop-cards-page .footer-bottom {
@@ -5442,12 +5442,12 @@ html.dark body.shop-cards-page .footer-bottom {
 
 /* ── Browse page — maroon palette matching archives dark mode ── */
 html.dark body.shop-browse-page {
-  background: #3E1919;
+  background: #3B0C0C;
 }
 
 /* Navbar seamless */
 html.dark body.shop-browse-page .navbar {
-  background: #3E1919;
+  background: #3B0C0C;
 }
 
 html.dark body.shop-browse-page .navbar-links a {
@@ -5463,7 +5463,7 @@ html.dark body.shop-browse-page .hamburger span {
 }
 
 html.dark body.shop-browse-page .browse-main {
-  background: #3E1919;
+  background: #3B0C0C;
 }
 
 html.dark body.shop-browse-page .browse-overline {
@@ -5553,7 +5553,7 @@ html.dark body.shop-browse-page .cart-trigger:hover {
 
 html.dark body.shop-browse-page .cart-trigger-count {
   background: #5F578A;
-  border-color: #3E1919;
+  border-color: #3B0C0C;
 }
 
 html.dark body.shop-browse-page .shop-back-link {
@@ -5565,7 +5565,7 @@ html.dark body.shop-browse-page .shop-back-link:hover {
 }
 
 html.dark body.shop-browse-page .footer {
-  background: #3E1919;
+  background: #3B0C0C;
   color: rgba(231, 221, 218, 0.6);
 }
 
