@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+import ShopFooter from '../components/ShopFooter'
 import { getCollectionProducts } from '../lib/shopify'
 
 const COLLECTIONS = [
@@ -100,7 +100,7 @@ export default function ShopPage() {
         </div>
 
       </main>
-      <Footer />
+      <ShopFooter />
     </>
   )
 }

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+import ShopFooter from '../components/ShopFooter'
 import ShopCart from '../components/ShopCart'
 import Contact from '../components/Contact'
 import { useCart } from '../contexts/CartContext'
@@ -480,7 +480,7 @@ export default function ShopBrowsePage() {
       </main>
 
       <ShopCart />
-      <Footer />
+      <ShopFooter />
     </>
   )
 }
