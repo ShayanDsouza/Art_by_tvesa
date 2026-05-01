@@ -18,7 +18,40 @@ function getThumbnailUrl(art) {
   return art.imageUrl || ''
 }
 
-const SLOT_W = 320   // px between artwork centres
+const ITEM_W    = 220   // px — must match .museum-strip-item width in CSS
+const EQUAL_GAP = 36    // px gap between edges of adjacent artworks
+const DRAG_SLOT = 300   // px of drag = 1 slot (sensitivity)
+
+/* Scale at a given distance from centre — mirrors applyOffset logic */
+function scaleAt(dist) {
+  return Math.max(0.55, 1.35 - dist * 0.28)
+}
+
+/* Precompute equal-gap x-positions for slot 0, 1, 2, … */
+const MAX_SLOTS = 20
+const slotPositions = (() => {
+  const pos = [0]
+  for (let k = 1; k < MAX_SLOTS; k++) {
+    pos.push(
+      pos[k - 1] +
+      scaleAt(k - 1) * ITEM_W / 2 +
+      EQUAL_GAP +
+      scaleAt(k) * ITEM_W / 2
+    )
+  }
+  return pos
+})()
+
+/* Convert fractional relative position → pixel x with equal edge gaps */
+function xFromRel(rel) {
+  const sign   = rel >= 0 ? 1 : -1
+  const absRel = Math.abs(rel)
+  const lo     = Math.floor(absRel)
+  const t      = absRel - lo
+  const xLo    = slotPositions[Math.min(lo,     MAX_SLOTS - 1)]
+  const xHi    = slotPositions[Math.min(lo + 1, MAX_SLOTS - 1)]
+  return sign * (xLo + t * (xHi - xLo))
+}
 
 export default function Gallery() {
   const [artworks, setArtworks]       = useState([])
@@ -75,7 +108,7 @@ export default function Gallery() {
     artEls.current.forEach((el, i) => {
       if (!el) return
       let rel = ((i - off) % n + n * 1.5) % n - n / 2
-      const x    = rel * SLOT_W
+      const x    = xFromRel(rel)
       const dist = Math.abs(rel)
       const scale      = Math.max(0.55, 1.35 - dist * 0.28)
       const opacity    = dist > 2.4 ? 0 : dist > 1.6 ? 0.55 : 1
@@ -128,8 +161,8 @@ export default function Gallery() {
     if (!isDragging.current) return
     const dx = e.clientX - lastXRef.current
     lastXRef.current = e.clientX
-    velocityRef.current = -dx / SLOT_W
-    applyOffset(offsetRef.current - dx / SLOT_W)
+    velocityRef.current = -dx / DRAG_SLOT
+    applyOffset(offsetRef.current - dx / DRAG_SLOT)
   }, [applyOffset])
 
   const onPointerUp = useCallback(() => {
