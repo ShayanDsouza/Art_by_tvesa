@@ -1,14 +1,52 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import { getCollectionProducts } from '../lib/shopify'
+
+const COLLECTIONS = [
+  {
+    id: 'originals',
+    handle: 'original-works',
+    title: 'Original\nPaintings',
+    desc: 'Unique, hand-crafted pieces in acrylic, oil, and mixed media. Each artwork is sold once — yours forever.',
+    link: '/shop/browse?tab=originals',
+  },
+  {
+    id: 'prints',
+    handle: 'postcards',
+    title: 'Fine Art\nPrints',
+    desc: 'High-quality fine-art prints of selected works. Bring the colour and emotion of each piece into your space.',
+    link: '/shop/browse?tab=prints',
+  },
+  {
+    id: 'commissions',
+    handle: 'commissions',
+    title: 'Commissioned\nWorks',
+    desc: 'A handpicked selection of past commissions. Each piece was made to order — explore what\'s possible.',
+    link: '/shop/browse?tab=commissions',
+  },
+]
 
 export default function ShopPage() {
+  const [images, setImages] = useState({})
+
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
     document.body.classList.add('shop-page', 'shop-cards-page')
     return () => document.body.classList.remove('shop-page', 'shop-cards-page')
+  }, [])
+
+  useEffect(() => {
+    COLLECTIONS.forEach(col => {
+      getCollectionProducts(col.handle)
+        .then(products => {
+          const img = products[0]?.image?.url
+          if (img) setImages(prev => ({ ...prev, [col.id]: img }))
+        })
+        .catch(() => {})
+    })
   }, [])
 
   return (
@@ -25,88 +63,33 @@ export default function ShopPage() {
 
       <main className="shop-main">
 
-        {/* ── Hero ── */}
+        {/* ── Header ── */}
         <section className="shop-hero">
           <span className="section-overline">Art by Tvesa</span>
-          <h1 className="shop-hero-title">The Shop</h1>
+          <h1 className="shop-hero-title">Shop Collections</h1>
           <div className="shop-hero-rule" />
-          <p className="shop-hero-sub">
-            Original works and prints — each piece made with intention.
-          </p>
         </section>
 
-        {/* ── Three editorial category panels ── */}
+        {/* ── Three image cards ── */}
         <section className="shop-categories">
-
-          <Link
-            to="/shop/browse?tab=originals"
-            className="shop-card shop-card-originals"
-          >
-            <div className="shop-card-inner">
-              <div className="shop-card-top">
-                <span className="shop-card-overline">One of a Kind</span>
-                <span className="shop-card-number">01</span>
+          {COLLECTIONS.map(col => (
+            <Link
+              key={col.id}
+              to={col.link}
+              className="shop-card"
+              style={images[col.id] ? { backgroundImage: `url(${images[col.id]})` } : {}}
+            >
+              <div className="shop-card-overlay" />
+              <div className="shop-card-inner">
+                <h2 className="shop-card-title">
+                  {col.title.split('\n').map((line, i) => (
+                    <span key={i}>{line}<br /></span>
+                  ))}
+                </h2>
+                <p className="shop-card-desc">{col.desc}</p>
               </div>
-              <div className="shop-card-body">
-                <h2 className="shop-card-title">Original<br />Artworks</h2>
-                <p className="shop-card-desc">
-                  Unique, hand-crafted pieces in acrylic, oil, and mixed media.
-                  Each artwork is sold once — yours forever.
-                </p>
-                <div className="shop-card-cta">
-                  <span>Browse Originals</span>
-                  <span className="shop-card-arrow">→</span>
-                </div>
-              </div>
-            </div>
-          </Link>
-
-          <Link
-            to="/shop/browse?tab=prints"
-            className="shop-card shop-card-prints"
-          >
-            <div className="shop-card-inner">
-              <div className="shop-card-top">
-                <span className="shop-card-overline">Reproductions</span>
-                <span className="shop-card-number">02</span>
-              </div>
-              <div className="shop-card-body">
-                <h2 className="shop-card-title">Fine Art<br />Prints</h2>
-                <p className="shop-card-desc">
-                  High-quality fine-art prints of selected works. Bring the
-                  colour and emotion of each piece into your space.
-                </p>
-                <div className="shop-card-cta">
-                  <span>Browse Prints</span>
-                  <span className="shop-card-arrow">→</span>
-                </div>
-              </div>
-            </div>
-          </Link>
-
-          <Link
-            to="/shop/browse?tab=commissions"
-            className="shop-card shop-card-commissions"
-          >
-            <div className="shop-card-inner">
-              <div className="shop-card-top">
-                <span className="shop-card-overline">Custom Work</span>
-                <span className="shop-card-number">03</span>
-              </div>
-              <div className="shop-card-body">
-                <h2 className="shop-card-title">Commissions</h2>
-                <p className="shop-card-desc">
-                  A handpicked selection of past commissions. Each piece was
-                  made to order — explore what's possible.
-                </p>
-                <div className="shop-card-cta">
-                  <span>View Commissions</span>
-                  <span className="shop-card-arrow">→</span>
-                </div>
-              </div>
-            </div>
-          </Link>
-
+            </Link>
+          ))}
         </section>
 
         {/* ── Back link ── */}
