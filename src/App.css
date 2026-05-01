@@ -639,8 +639,8 @@ body.gallery-active .navbar {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;          
-  padding-bottom: 96px;
+  justify-content: center;
+  padding: 0 0 0 0;
   transform-origin: center center;
   will-change: transform, opacity;
   transform: scale(0.35);
@@ -740,10 +740,10 @@ body.gallery-active .navbar {
 
 .carousel-viewport {
   width: 100%;
-  height: clamp(540px, 86vh, 800px);
+  height: clamp(540px, 78vh, 800px);
   perspective: 2000px;
-  perspective-origin: 50% 65%; 
-  overflow: hidden;
+  perspective-origin: 50% 50%;
+  overflow: visible;
   cursor: grab;
   display: flex;
   align-items: center;
