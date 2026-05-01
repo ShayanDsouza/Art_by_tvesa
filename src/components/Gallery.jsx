@@ -1,359 +1,235 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore'
 import { db } from '../config/firebase'
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom'
 import GalleryLoader from './GalleryLoader'
 
 const fallbackArt = [
-  { id: '1', title: 'Artwork 1', description: 'A vibrant expression of color and emotion.', medium: 'Canvas', category: 'Painting', status: 'available' },
-  { id: '2', title: 'Artwork 2', description: 'Delicate lines capturing a fleeting moment.', medium: 'Paper', category: 'Sketch', status: 'available' },
-  { id: '3', title: 'Artwork 3', description: 'Bold strokes on a warm-toned surface.', medium: 'Canvas', category: 'Painting', status: 'available' },
-  { id: '4', title: 'Artwork 4', description: 'A unique design brought to life on fabric.', medium: 'Tote Bag', category: 'Digital', status: 'available' },
-  { id: '5', title: 'Artwork 5', description: 'Intricate details drawn with care.', medium: 'Paper', category: 'Sketch', status: 'available' },
-  { id: '6', title: 'Artwork 6', description: 'Rich textures layered with meaning.', medium: 'Canvas', category: 'Painting', status: 'available' },
+  { id: '1', title: 'Artwork 1', category: 'Painting', medium: 'Acrylic' },
+  { id: '2', title: 'Artwork 2', category: 'Sketch',   medium: 'Paper'   },
+  { id: '3', title: 'Artwork 3', category: 'Painting', medium: 'Canvas'  },
+  { id: '4', title: 'Artwork 4', category: 'Digital',  medium: 'Tote Bag'},
+  { id: '5', title: 'Artwork 5', category: 'Sketch',   medium: 'Paper'   },
 ]
 
 function getThumbnailUrl(art) {
   const imgs = art.images
-  if (imgs && imgs.length > 0) {
-    return (imgs.find(img => img.isThumbnail) || imgs[0]).url
-  }
+  if (imgs && imgs.length > 0) return (imgs.find(img => img.isThumbnail) || imgs[0]).url
   return art.imageUrl || ''
 }
 
-export default function Gallery() {
-  const [artworks, setArtworks] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [rotation, setRotation] = useState(0)
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  const [imageSizes, setImageSizes] = useState({})
-  const [isDragging, setIsDragging] = useState(false)
-  const carouselRef = useRef(null)
-  const gallerySceneRef = useRef(null)
-  const galleryHeaderRef = useRef(null)
-  const galleryWrapperRef = useRef(null)
-  const dragStartRef = useRef(null)
-  const rotationRef = useRef(0)
-  const velocityRef = useRef(0)
-  const lastXRef = useRef(0)
-  const animFrameRef = useRef(null)
-  const autoRotateRef = useRef(null)
-  const zoomRafRef = useRef(null)
-  const currentScaleRef = useRef(0.35)
-  const currentRadiusRef = useRef(28)
-  const currentOpacityRef = useRef(0.1)
+const SLOT_W = 320   // px between artwork centres
 
+export default function Gallery() {
+  const [artworks, setArtworks]       = useState([])
+  const [loading, setLoading]         = useState(true)
+  const [activeIndex, setActiveIndex] = useState(0)
+
+  const wallRef         = useRef(null)
+  const carouselZoneRef = useRef(null)   // scroll-intercepting zone (artwork strip area only)
+  const artEls          = useRef([])
+  const offsetRef       = useRef(0)
+  const velocityRef     = useRef(0)
+  const animRef         = useRef(null)
+  const isDragging      = useRef(false)
+  const lastXRef        = useRef(0)
+  const artworksRef     = useRef([])
+
+  /* ── Firebase ─────────────────────────────────────────────────────── */
   useEffect(() => {
     try {
       const q = query(collection(db, 'artworks'), orderBy('order', 'asc'))
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        if (snapshot.empty) {
-          setArtworks(fallbackArt)
-        } else {
-          const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
-          docs.sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity))
-          const featured = docs.filter(a => a.featured).slice(0, 11)
-          setArtworks(featured.length > 0 ? featured : docs.slice(0, 11))
-        }
+      const unsub = onSnapshot(q, snap => {
+        if (snap.empty) { setArtworks(fallbackArt); setLoading(false); return }
+        const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+        docs.sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity))
+        const featured = docs.filter(a => a.featured).slice(0, 11)
+        setArtworks(featured.length > 0 ? featured : docs.slice(0, 11))
         setLoading(false)
       }, () => { setArtworks(fallbackArt); setLoading(false) })
-      return unsubscribe
-    } catch {
-      setArtworks(fallbackArt)
-    }
+      return unsub
+    } catch { setArtworks(fallbackArt); setLoading(false) }
   }, [])
 
-  // ── Sticky scroll-driven zoom effect ──────────────────────────────────────
+  useEffect(() => { artworksRef.current = artworks }, [artworks])
+
+  /* ── Navbar: hide while gallery is in view ────────────────────────── */
   useEffect(() => {
-    const scene = gallerySceneRef.current
-    const header = galleryHeaderRef.current
-    const wrapper = galleryWrapperRef.current
-    if (!scene || !header || !wrapper) return
-
-    const lerp = (a, b, t) => a + (b - a) * t
-    const easeOutExpo = t => t <= 0 ? 0 : t >= 1 ? 1 : 1 - Math.pow(2, -10 * t)
-
-    let targetScale   = 0.35
-    let targetRadius  = 28
-    let targetOpacity = 0.10
-
-    const tick = () => {
-      currentScaleRef.current   = lerp(currentScaleRef.current,   targetScale,   0.14)
-      currentRadiusRef.current  = lerp(currentRadiusRef.current,  targetRadius,  0.14)
-      currentOpacityRef.current = lerp(currentOpacityRef.current, targetOpacity, 0.14)
-
-      scene.style.transform    = `scale(${currentScaleRef.current.toFixed(4)})`
-      scene.style.borderRadius = `${currentRadiusRef.current.toFixed(2)}px`
-      scene.style.opacity      = currentOpacityRef.current.toFixed(4)
-
-      const stillMoving =
-        Math.abs(currentScaleRef.current   - targetScale)   > 0.0003 ||
-        Math.abs(currentRadiusRef.current  - targetRadius)  > 0.05   ||
-        Math.abs(currentOpacityRef.current - targetOpacity) > 0.002
-
-      if (stillMoving) zoomRafRef.current = requestAnimationFrame(tick)
-    }
-
-    let scrollRafPending = false
-
-    const processScroll = () => {
-      scrollRafPending = false
-      const rect = wrapper.getBoundingClientRect()
-      const scrollableHeight = wrapper.offsetHeight - window.innerHeight
-      if (scrollableHeight <= 0) return
-
-      const scrolled = Math.max(0, -rect.top)
-      const progress = Math.min(1, scrolled / scrollableHeight)
-
-      let carouselT
-      if (progress < 0.18) {
-        carouselT = 0
-      } else if (progress < 0.60) {
-        carouselT = easeOutExpo((progress - 0.18) / 0.42)
-      } else if (progress < 0.72) {
-        carouselT = 1
-      } else {
-        carouselT = easeOutExpo(1 - (progress - 0.72) / 0.28)
-      }
-
-      const headerOpacity = Math.max(0, 1 - progress / 0.14)
-      header.style.opacity = headerOpacity.toFixed(4)
-      header.style.pointerEvents = headerOpacity > 0.01 ? '' : 'none'
-
-      targetScale   = 0.35 + carouselT * 0.50
-      targetRadius  = (1 - carouselT) * 28
-      targetOpacity = 0.10 + carouselT * 0.90
-
-      if (carouselT > 0.55) {
-        document.body.classList.add('gallery-active')
-      } else {
-        document.body.classList.remove('gallery-active')
-      }
-
-      cancelAnimationFrame(zoomRafRef.current)
-      zoomRafRef.current = requestAnimationFrame(tick)
-    }
-
-    const onScroll = () => {
-      if (!scrollRafPending) {
-        scrollRafPending = true
-        requestAnimationFrame(processScroll)
-      }
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true })
-    processScroll()
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      cancelAnimationFrame(zoomRafRef.current)
-      document.body.classList.remove('gallery-active')
-    }
-  }, [])
-
-  // ── Auto-rotate carousel ──────────────────────────────────────────────────
-  useEffect(() => {
-    if (isDragging) return
-    let lastTime = performance.now()
-    const autoRotate = () => {
-      const now = performance.now()
-      const dt = now - lastTime
-      lastTime = now
-      rotationRef.current += 0.015 * (dt / 16)
-      setRotation(rotationRef.current)
-      autoRotateRef.current = requestAnimationFrame(autoRotate)
-    }
-    autoRotateRef.current = requestAnimationFrame(autoRotate)
-    return () => cancelAnimationFrame(autoRotateRef.current)
-  }, [isDragging])
-
-  // ── Wheel handler ─────────────────────────────────────────────────────────
-  useEffect(() => {
-    const el = carouselRef.current
+    const el = wallRef.current
     if (!el) return
-    const handleWheel = (e) => {
-      e.preventDefault()
-      rotationRef.current += e.deltaY * 0.1
-      setRotation(rotationRef.current)
-    }
-    el.addEventListener('wheel', handleWheel, { passive: false })
-    return () => el.removeEventListener('wheel', handleWheel)
+    const obs = new IntersectionObserver(
+      ([e]) => document.body.classList.toggle('gallery-active', e.isIntersecting),
+      { threshold: 0.5 }
+    )
+    obs.observe(el)
+    return () => { obs.disconnect(); document.body.classList.remove('gallery-active') }
   }, [])
 
-  const handlePointerDown = useCallback((e) => {
-    dragStartRef.current = e.clientX
-    setIsDragging(true)
-    lastXRef.current = e.clientX
-    velocityRef.current = 0
-    cancelAnimationFrame(animFrameRef.current)
+  /* ── Core: apply offset → DOM transforms (no React re-render) ────── */
+  const applyOffset = useCallback((off) => {
+    offsetRef.current = off
+    const arts = artworksRef.current
+    const n = arts.length
+    if (!n) return
+
+    artEls.current.forEach((el, i) => {
+      if (!el) return
+      let rel = ((i - off) % n + n * 1.5) % n - n / 2
+      const x    = rel * SLOT_W
+      const dist = Math.abs(rel)
+      const scale      = Math.max(0.55, 1.35 - dist * 0.28)
+      const opacity    = dist > 2.4 ? 0 : dist > 1.6 ? 0.55 : 1
+      // Darken side pieces — center (dist≈0) is full brightness, sides progressively dimmer
+      const brightness = Math.max(0.35, 1 - dist * 0.38)
+
+      el.style.transform = `translateX(${x.toFixed(1)}px) scale(${scale.toFixed(3)})`
+      el.style.opacity   = opacity
+      el.style.zIndex    = Math.round(20 - dist * 4)
+      el.style.filter    = `brightness(${brightness.toFixed(2)})`
+    })
+
+    const newActive = ((Math.round(off) % n) + n) % n
+    setActiveIndex(prev => prev === newActive ? prev : newActive)
   }, [])
 
-  const handlePointerMove = useCallback((e) => {
-    if (!isDragging) return
-    const dx = e.clientX - lastXRef.current
-    lastXRef.current = e.clientX
-    velocityRef.current = dx
-    rotationRef.current -= dx * 0.25
-    setRotation(rotationRef.current)
-  }, [isDragging])
-
-  const handlePointerUp = useCallback(() => {
-    setIsDragging(false)
-    const decelerate = () => {
-      velocityRef.current *= 0.94
-      if (Math.abs(velocityRef.current) > 0.1) {
-        rotationRef.current -= velocityRef.current * 0.25
-        setRotation(rotationRef.current)
-        animFrameRef.current = requestAnimationFrame(decelerate)
-      }
-    }
-    animFrameRef.current = requestAnimationFrame(decelerate)
-  }, [])
-
-  // Measure image dimensions
+  /* ── Wheel: only on carousel zone, page scrolls normally elsewhere ── */
   useEffect(() => {
-    if (!artworks.length) return
-    artworks.forEach(art => {
-      const thumbUrl = getThumbnailUrl(art)
-      if (!thumbUrl) return
-      const img = new window.Image()
-      img.onload = () => {
-        if (img.naturalWidth && img.naturalHeight) {
-          setImageSizes(prev => prev[art.id] ? prev : { ...prev, [art.id]: img.naturalWidth / img.naturalHeight })
+    const zone = carouselZoneRef.current
+    if (!zone) return
+    const onWheel = (e) => {
+      e.preventDefault()
+      cancelAnimationFrame(animRef.current)
+      velocityRef.current += e.deltaY * 0.0015
+      const tick = () => {
+        velocityRef.current *= 0.88
+        applyOffset(offsetRef.current + velocityRef.current)
+        if (Math.abs(velocityRef.current) > 0.001) {
+          animRef.current = requestAnimationFrame(tick)
+        } else {
+          velocityRef.current = 0
         }
       }
-      img.src = thumbUrl
-    })
-  }, [artworks])
+      animRef.current = requestAnimationFrame(tick)
+    }
+    zone.addEventListener('wheel', onWheel, { passive: false })
+    return () => zone.removeEventListener('wheel', onWheel)
+  }, [applyOffset])
 
-  const handleImageLoad = useCallback((e, artId) => {
-    const { naturalWidth, naturalHeight } = e.target
-    if (!naturalWidth || !naturalHeight) return
-    setImageSizes(prev => prev[artId] ? prev : { ...prev, [artId]: naturalWidth / naturalHeight })
+  /* ── Drag (on carousel zone only) ───────────────────────────────── */
+  const onPointerDown = useCallback((e) => {
+    isDragging.current  = true
+    lastXRef.current    = e.clientX
+    velocityRef.current = 0
+    cancelAnimationFrame(animRef.current)
+    e.currentTarget.setPointerCapture(e.pointerId)
   }, [])
 
-  // ── Responsive resize listener ────────────────────────────────────────────
+  const onPointerMove = useCallback((e) => {
+    if (!isDragging.current) return
+    const dx = e.clientX - lastXRef.current
+    lastXRef.current = e.clientX
+    velocityRef.current = -dx / SLOT_W
+    applyOffset(offsetRef.current - dx / SLOT_W)
+  }, [applyOffset])
+
+  const onPointerUp = useCallback(() => {
+    if (!isDragging.current) return
+    isDragging.current = false
+    const decel = () => {
+      velocityRef.current *= 0.94
+      applyOffset(offsetRef.current + velocityRef.current)
+      if (Math.abs(velocityRef.current) > 0.001) {
+        animRef.current = requestAnimationFrame(decel)
+      } else {
+        velocityRef.current = 0
+      }
+    }
+    animRef.current = requestAnimationFrame(decel)
+  }, [applyOffset])
+
+  /* ── Init ─────────────────────────────────────────────────────────── */
   useEffect(() => {
-    const onResize = () => setWindowWidth(window.innerWidth)
-    window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
-  }, [])
+    if (artworks.length > 0) applyOffset(0)
+  }, [artworks, applyOffset])
 
-  const count = artworks.length
-  const angleStep = count > 0 ? 360 / count : 0
-  const radius = windowWidth <= 480
-    ? Math.max(130, count * 28)
-    : windowWidth <= 900
-      ? Math.max(200, count * 42)
-      : Math.max(360, Math.min(count * 80, 560))
-
-  const cardHeight = windowWidth <= 480 ? 150 : windowWidth <= 900 ? 185 : 290
+  const centerArt = artworks[activeIndex] ?? null
 
   return (
     <section id="gallery" className="gallery">
+      {loading && <GalleryLoader />}
 
-      <div className="gallery-scroll-wrapper" ref={galleryWrapperRef}>
-        <div className="gallery-stage">
+      <div className="museum-wall" ref={wallRef}>
 
-          <div className="gallery-header" ref={galleryHeaderRef}>
-            <span className="section-overline">Gallery</span>
-            <h2>Selected Works</h2>
-            <p className="carousel-hint">Scroll or drag to explore &middot; Hover a piece to interact</p>
-          </div>
+        {/* ── Spotlight ── */}
+        <div className="museum-spotlight" />
 
-          {loading && <GalleryLoader />}
+        {/* ── Carousel zone: intercepts scroll + drag, covers artwork strip ── */}
+        <div
+          className="museum-carousel-zone"
+          ref={carouselZoneRef}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+        >
+          {/* Strip: origin at zone centre, items positioned via JS */}
+          <div className="museum-strip">
+            {artworks.map((art, i) => {
+              const isCenter = i === activeIndex
+              const url      = getThumbnailUrl(art)
+              const hasShop  = !!art.shopUrl
 
-          <div className="gallery-carousel-scene" ref={gallerySceneRef}>
-            <div
-              className="carousel-viewport"
-              ref={carouselRef}
-              onPointerDown={handlePointerDown}
-              onPointerMove={handlePointerMove}
-              onPointerUp={handlePointerUp}
-              onPointerCancel={handlePointerUp}
-            >
-              <div
-                className="carousel-ring"
-                style={{ transform: `rotateY(${rotation}deg)` }}
-              >
-                {artworks.map((art, i) => {
-                  const angle = i * angleStep
-                  const ratio = imageSizes[art.id] ?? 0.75
-                  const cardW = Math.round(cardHeight * ratio)
+              return (
+                <div
+                  key={art.id}
+                  className="museum-strip-item"
+                  ref={el => { artEls.current[i] = el }}
+                >
+                  {/* Inner clip: contains artwork + hover overlay */}
+                  <div className="museum-strip-inner">
+                    {url
+                      ? <img src={url} alt={art.title} className="museum-strip-img" draggable={false} />
+                      : <div className="museum-strip-placeholder" />
+                    }
 
-                  // How close is this card to facing the viewer (world-angle 0°)?
-                  const worldAngle = ((rotation + angle) % 360 + 360) % 360
-                  const distFromFront = Math.min(worldAngle, 360 - worldAngle) // 0=front, 180=back
-                  const proximity = 1 - Math.min(distFromFront / (angleStep * 1.5), 1) // 1=front, 0=away
-                  const scale = (1 + 0.28 * proximity).toFixed(4)
-
-                  const cardStyle = {
-                    transform: `rotateY(${angle}deg) translateZ(${radius}px) scale(${scale})`,
-                    width: `${cardW}px`,
-                    height: `${cardHeight}px`,
-                    left: `${-Math.round(cardW / 2)}px`,
-                    top: `${-Math.round(cardHeight / 2)}px`,
-                  }
-
-                  const thumbUrl = getThumbnailUrl(art)
-                  const isAvailable = art.status === 'available' || !art.status
-
-                  return (
-                    <div
-                      key={art.id}
-                      className="carousel-card"
-                      style={cardStyle}
-                    >
-                      <div className="carousel-face carousel-face-natural-back" />
-                      <div className="carousel-face carousel-face-front">
-                        {thumbUrl ? (
-                          <img src={thumbUrl} alt={art.title} className="carousel-card-image" draggable={false} onLoad={(e) => handleImageLoad(e, art.id)} />
-                        ) : (
-                          <div className="carousel-card-placeholder">{art.title}</div>
-                        )}
-                        <div className="carousel-card-label">
-                          <span className="carousel-card-category">{art.category}</span>
-                          <h3>{art.title}</h3>
-                        </div>
-
-                        {/* Hover overlay */}
-                        <div className="carousel-card-hover-overlay">
-                          {isAvailable && art.shopUrl ? (
-                            <a
-                              href={art.shopUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="carousel-hover-shop-btn"
-                              onPointerDown={e => e.stopPropagation()}
-                            >
-                              View in Shop
-                            </a>
-                          ) : !isAvailable ? (
-                            <span className="carousel-hover-status">
-                              {art.status === 'sold' ? 'Sold' : 'Not Available'}
-                            </span>
-                          ) : null}
-                        </div>
-                      </div>
+                    {/* Hover overlay */}
+                    <div className="museum-hover-overlay">
+                      <span className="museum-hover-title">{art.title}</span>
+                      {hasShop && (
+                        <a
+                          href={art.shopUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="museum-hover-btn"
+                          onPointerDown={e => e.stopPropagation()}
+                        >
+                          View in Shop
+                        </a>
+                      )}
                     </div>
-                  )
-                })}
-              </div>
-            </div>
-          </div>
+                  </div>
 
-          {/* Buttons sit outside the zooming scene */}
-          <div className="gallery-view-all">
-            <Link to="/collection" className="btn btn-outline gallery-btn-equal">
-              View Archives
-            </Link>
-            <Link to="/shop" className="btn btn-solid gallery-btn-equal">
-              View Shop
-            </Link>
+                  {/* Frame PNG — sits outside inner so it's not clipped */}
+                  {isCenter && (
+                    <img src="/frame.png" alt="" className="museum-frame-overlay" aria-hidden="true"
+                      onError={e => { e.target.style.display = 'none' }} />
+                  )}
+                </div>
+              )
+            })}
           </div>
+        </div>{/* .museum-carousel-zone */}
 
+        {/* ── Buttons above the green strip ── */}
+        <div className="museum-cta-row">
+          <Link to="/collection" className="museum-cta-btn museum-cta-btn--grey">View Archives</Link>
+          <Link to="/shop"       className="museum-cta-btn museum-cta-btn--green">View Shop</Link>
         </div>
-      </div>
 
+        {/* ── Green baseboard ── */}
+        <div className="museum-baseboard" />
+
+      </div>{/* .museum-wall */}
     </section>
   )
 }
