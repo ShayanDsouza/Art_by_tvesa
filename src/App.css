@@ -5343,6 +5343,55 @@ html.dark body.shop-browse-page {
   background: #3B0C0C;
 }
 
+/* ── Contact section on commissions (shop-browse) page ── */
+body.shop-browse-page .contact {
+  background: #fff;
+  max-width: 100%;
+  margin: 0;
+  padding: 80px max(40px, calc(50% - 300px));
+}
+
+body.shop-browse-page .contact .section-overline {
+  color: #5F578A;
+}
+
+body.shop-browse-page .contact h2 {
+  color: #3B0C0C;
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 300;
+  opacity: 0.25;
+}
+
+body.shop-browse-page .contact-subtitle {
+  color: rgba(59, 12, 12, 0.65);
+}
+
+body.shop-browse-page .contact-form input,
+body.shop-browse-page .contact-form textarea {
+  color: #3B0C0C;
+  border-bottom-color: rgba(59, 12, 12, 0.3);
+}
+
+body.shop-browse-page .contact-form input::placeholder,
+body.shop-browse-page .contact-form textarea::placeholder {
+  color: rgba(59, 12, 12, 0.45);
+}
+
+body.shop-browse-page .contact-form input:focus,
+body.shop-browse-page .contact-form textarea:focus {
+  border-color: rgba(59, 12, 12, 0.7);
+}
+
+body.shop-browse-page .contact-form .btn {
+  background: #D8D0CC;
+  color: #3B0C0C;
+}
+
+body.shop-browse-page .contact-form .btn:hover {
+  background: #5F578A;
+  color: #fff;
+}
+
 /* Navbar seamless */
 html.dark body.shop-browse-page .navbar {
   background: #3B0C0C;
