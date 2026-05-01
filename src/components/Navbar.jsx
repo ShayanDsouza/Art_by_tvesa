@@ -105,8 +105,8 @@ export default function Navbar() {
           onMouseEnter={() => setShopDropdownOpen(true)}
           onMouseLeave={() => setShopDropdownOpen(false)}
         >
-          <Link
-            to="/shop"
+          <a
+            href={isShop ? '/shop' : 'https://shop.artbytvesa.com'}
             className="navbar-collection-btn"
             onClick={(e) => {
               if (isShop && location.pathname === '/shop') {
@@ -118,13 +118,13 @@ export default function Navbar() {
           >
             <span className="navbar-collection-shimmer" aria-hidden="true" />
             <span className="navbar-collection-label">View Shop</span>
-          </Link>
+          </a>
 
           {shopDropdownOpen && (
             <div className="navbar-shop-dropdown">
-              <Link to="/shop" onClick={closeAll}>Shop All</Link>
-              <Link to="/shop/browse?tab=originals" onClick={closeAll}>Original Artworks</Link>
-              <Link to="/shop/browse?tab=prints" onClick={closeAll}>Prints</Link>
+              <a href="https://shop.artbytvesa.com">Shop All</a>
+              <a href="https://shop.artbytvesa.com/shop/browse?tab=originals">Original Artworks</a>
+              <a href="https://shop.artbytvesa.com/shop/browse?tab=prints">Prints</a>
             </div>
           )}
         </li>
