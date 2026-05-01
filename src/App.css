@@ -3665,6 +3665,10 @@ body.collection-page .navbar {
   border-bottom: none !important;
   box-shadow: none !important;
 }
+
+body.collection-page .navbar::after {
+  display: none;
+}
 body.collection-page .navbar-links a {
   color: #172C16;
 }
@@ -5198,6 +5202,10 @@ html.dark body.collection-page .navbar {
   background: #3E1919;
   border-bottom: none !important;
   box-shadow: none !important;
+}
+
+html.dark body.collection-page .navbar::after {
+  display: none;
 }
 
 html.dark body.collection-page .navbar-links a {
