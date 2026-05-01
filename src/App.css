@@ -3842,12 +3842,12 @@ body.collection-page .navbar-collection-btn:hover {
 }
 
 .shop-hero-title {
-  font-family: var(--font-heading);
-  font-size: clamp(2.8rem, 6vw, 5rem);
-  font-weight: 300;
+  font-family: 'Kenao', serif;
+  font-size: clamp(3.2rem, 7vw, 6rem);
+  font-weight: 400;
   color: #172C16;
   margin: 10px 0 22px;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.01em;
   line-height: 1;
 }
 
@@ -3923,13 +3923,13 @@ body.collection-page .navbar-collection-btn:hover {
 }
 
 .shop-card-title {
-  font-family: var(--font-heading);
-  font-size: clamp(1.8rem, 2.8vw, 2.6rem);
+  font-family: 'Kenao', serif;
+  font-size: clamp(2rem, 3vw, 3rem);
   font-weight: 400;
   color: #fff;
   margin: 0;
   line-height: 1.1;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.01em;
 }
 
 .shop-card-desc {
