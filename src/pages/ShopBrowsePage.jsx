@@ -400,6 +400,39 @@ export default function ShopBrowsePage() {
 
       <main className="browse-main">
 
+        {/* ── Sticky topbar: breadcrumb + actions ── */}
+        <div className="browse-sticky-topbar">
+          <nav className="browse-sticky-breadcrumb">
+            <Link to="/shop">Shop</Link>
+            <span className="browse-sticky-sep">/</span>
+            <span>{pageTitle}</span>
+          </nav>
+          <div className="browse-sticky-actions">
+            <a
+              href={SHOPIFY_ORDERS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cart-trigger"
+              aria-label="My orders"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              </svg>
+            </a>
+            <button className="cart-trigger" onClick={openCart} aria-label="Open cart">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 01-8 0"/>
+              </svg>
+              {totalQuantity > 0 && (
+                <span className="cart-trigger-count">{totalQuantity}</span>
+              )}
+            </button>
+          </div>
+        </div>
+
         {/* ── Page header ── */}
         <section className="browse-header">
           <div className="browse-header-text">

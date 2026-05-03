@@ -5442,6 +5442,33 @@ html.dark body.shop-browse-page .browse-main {
   background: #3B0C0C;
 }
 
+html.dark body.shop-browse-page .browse-sticky-topbar {
+  background: #3B0C0C;
+  border-bottom-color: rgba(231,221,218,0.08);
+}
+
+html.dark body.shop-browse-page .browse-sticky-breadcrumb,
+html.dark body.shop-browse-page .browse-sticky-breadcrumb a {
+  color: rgba(231,221,218,0.45);
+}
+
+html.dark body.shop-browse-page .browse-sticky-breadcrumb a:hover {
+  color: #E7DDDA;
+}
+
+html.dark body.shop-browse-page .browse-sticky-breadcrumb span:last-child {
+  color: rgba(231,221,218,0.7);
+}
+
+html.dark body.shop-browse-page .browse-filter-bar {
+  background: #3B0C0C;
+  border-color: rgba(231,221,218,0.1);
+}
+
+html.dark body.shop-browse-page .product-topbar {
+  background: #3B0C0C;
+}
+
 html.dark body.shop-browse-page .browse-overline {
   color: #5F578A;
 }
@@ -5597,6 +5624,51 @@ html.dark .gallery-view-all .btn-outline:hover {
 }
 
 /* ===== BROWSE FILTER / SORT BAR — Shopify style ===== */
+/* ── Sticky breadcrumb topbar (browse page) ── */
+.browse-sticky-topbar {
+  position: sticky;
+  top: 80px;
+  z-index: 50;
+  background: #EDE6E1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px 0 40px;
+  height: 46px;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+}
+
+.browse-sticky-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: #999;
+}
+
+.browse-sticky-breadcrumb a {
+  color: #999;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.browse-sticky-breadcrumb a:hover { color: #172C16; }
+
+.browse-sticky-breadcrumb span:last-child { color: #555; }
+
+.browse-sticky-sep {
+  color: #ccc;
+  user-select: none;
+}
+
+.browse-sticky-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── Filter bar sticks below the sticky topbar ── */
 .browse-filter-bar {
   display: flex;
   align-items: center;
@@ -5607,7 +5679,10 @@ html.dark .gallery-view-all .btn-outline:hover {
   border-top: 1px solid rgba(0,0,0,0.1);
   border-bottom: 1px solid rgba(0,0,0,0.1);
   margin-bottom: 0;
-  background: #fff;
+  background: #EDE6E1;
+  position: sticky;
+  top: 126px; /* 80px navbar + 46px topbar */
+  z-index: 49;
 }
 
 .browse-filter-group,
@@ -5834,6 +5909,10 @@ html.dark .gallery-view-all .btn-outline:hover {
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid rgba(0,0,0,0.07);
+  position: sticky;
+  top: 80px;
+  z-index: 50;
+  background: #EDE6E1;
 }
 
 .product-topbar-actions {
