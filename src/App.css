@@ -3830,7 +3830,7 @@ body.collection-page .navbar-collection-btn:hover {
 .shop-main {
   min-height: 100vh;
   background: #fff;
-  padding-top: 80px;
+  padding-top: 84px;
 }
 
 /* ── Hero ── */
@@ -4002,7 +4002,7 @@ body.collection-page .navbar-collection-btn:hover {
 
 /* ===== SHOP BROWSE PAGE ===== */
 .browse-main {
-  padding-top: 80px;
+  padding-top: 84px;
   background: #fff;
   min-height: 100vh;
 }
@@ -4796,16 +4796,16 @@ html.dark body.shop-browse-page .account-avatar {
   .browse-tabs { padding: 0 16px; margin-top: 20px; }
   .browse-title { font-size: clamp(1.8rem, 7vw, 3rem); }
 
-  /* Mobile navbar is 68px (48px logo + 10px×2 padding) */
-  .browse-main { padding-top: 68px; }
+  /* Mobile navbar is 88px (68px logo + 10px×2 padding) */
+  .browse-main { padding-top: 88px; }
   .browse-sticky-topbar {
     padding: 0 12px 0 16px;
     height: 50px;
-    top: 68px;
+    top: 88px;
     box-shadow: 0 1px 0 rgba(0,0,0,0.07);
   }
   .browse-filter-bar {
-    top: 118px; /* 68px navbar + 50px topbar */
+    top: 138px; /* 88px navbar + 50px topbar */
     padding: 10px 16px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
@@ -4822,15 +4822,15 @@ html.dark body.shop-browse-page .account-avatar {
   .browse-header { padding: 20px 12px 0; }
   .browse-tabs { padding: 0 12px; margin-top: 16px; }
 
-  .browse-main { padding-top: 68px; }
+  .browse-main { padding-top: 88px; }
   .browse-sticky-topbar {
     padding: 0 10px 0 12px;
     height: 50px;
-    top: 68px;
+    top: 88px;
     box-shadow: 0 1px 0 rgba(0,0,0,0.07);
   }
   .browse-filter-bar {
-    top: 118px; /* 68px navbar + 50px topbar */
+    top: 138px; /* 88px navbar + 50px topbar */
     padding: 8px 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
@@ -5658,7 +5658,7 @@ html.dark .gallery-view-all .btn-outline:hover {
 /* ── Sticky breadcrumb topbar (browse page) ── */
 .browse-sticky-topbar {
   position: sticky;
-  top: 80px;
+  top: 84px;
   z-index: 50;
   background: #E7DDDA; /* matches navbar exactly */
   display: flex;
@@ -5710,7 +5710,7 @@ html.dark .gallery-view-all .btn-outline:hover {
   border-bottom: 1px solid rgba(0,0,0,0.08);
   background: #EDE6E1;
   position: sticky;
-  top: 126px; /* 80px navbar + 46px topbar */
+  top: 130px; /* 84px navbar + 46px topbar */
   z-index: 49;
 }
 
@@ -5974,7 +5974,7 @@ html.dark .gallery-view-all .btn-outline:hover {
 
 /* ===== PRODUCT PAGE ===== */
 .product-main {
-  padding-top: 80px;
+  padding-top: 84px;
   background: #fff;
   min-height: 100vh;
 }
@@ -5985,7 +5985,7 @@ html.dark .gallery-view-all .btn-outline:hover {
   justify-content: space-between;
   border-bottom: 1px solid rgba(0,0,0,0.07);
   position: sticky;
-  top: 80px;
+  top: 84px;
   z-index: 50;
   background: #EDE6E1;
 }
@@ -6659,7 +6659,7 @@ html.dark .sf-copy {
     background: #E7DDDA;
     border-bottom: 1px solid rgba(0,0,0,0.08);
     position: sticky;
-    top: 118px; /* 68px navbar + 50px topbar */
+    top: 138px; /* 88px navbar + 50px topbar */
     z-index: 49;
   }
 
