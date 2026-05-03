@@ -5704,7 +5704,7 @@ html.dark .gallery-view-all .btn-outline:hover {
 .browse-sticky-actions {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 12px;
 }
 
 /* ── Filter bar sticks below the sticky topbar ── */
@@ -6002,7 +6002,7 @@ html.dark .gallery-view-all .btn-outline:hover {
 .product-topbar-actions {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 12px;
   padding-right: 24px;
 }
 
