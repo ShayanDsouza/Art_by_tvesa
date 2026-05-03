@@ -67,6 +67,8 @@ export default function Gallery() {
   const isDragging      = useRef(false)
   const lastXRef        = useRef(0)
   const artworksRef     = useRef([])
+  const autoRotateRef   = useRef(null)
+  const userActiveRef   = useRef(false)  // true while user is interacting
 
   /* ── Firebase ─────────────────────────────────────────────────────── */
   useEffect(() => {
@@ -125,12 +127,38 @@ export default function Gallery() {
     setActiveIndex(prev => prev === newActive ? prev : newActive)
   }, [])
 
+  /* ── Snap centre item to exact integer offset ────────────────────── */
+  const snapToNearest = useCallback(() => {
+    cancelAnimationFrame(animRef.current)
+    const target = Math.round(offsetRef.current)
+    const snap = () => {
+      const diff = target - offsetRef.current
+      if (Math.abs(diff) < 0.001) {
+        applyOffset(target)
+        return
+      }
+      applyOffset(offsetRef.current + diff * 0.12)
+      animRef.current = requestAnimationFrame(snap)
+    }
+    animRef.current = requestAnimationFrame(snap)
+  }, [applyOffset])
+
+  /* ── Pause auto-rotate on user interaction, resume after 3 s ─────── */
+  const pauseAutoRotate = useCallback(() => {
+    userActiveRef.current = true
+    clearTimeout(autoRotateRef.current)
+    autoRotateRef.current = setTimeout(() => {
+      userActiveRef.current = false
+    }, 3000)
+  }, [])
+
   /* ── Wheel: only on carousel zone, page scrolls normally elsewhere ── */
   useEffect(() => {
     const zone = carouselZoneRef.current
     if (!zone) return
     const onWheel = (e) => {
       e.preventDefault()
+      pauseAutoRotate()
       cancelAnimationFrame(animRef.current)
       velocityRef.current += e.deltaY * 0.0015
       const tick = () => {
@@ -140,22 +168,24 @@ export default function Gallery() {
           animRef.current = requestAnimationFrame(tick)
         } else {
           velocityRef.current = 0
+          snapToNearest()
         }
       }
       animRef.current = requestAnimationFrame(tick)
     }
     zone.addEventListener('wheel', onWheel, { passive: false })
     return () => zone.removeEventListener('wheel', onWheel)
-  }, [applyOffset])
+  }, [applyOffset, snapToNearest, pauseAutoRotate])
 
   /* ── Drag (on carousel zone only) ───────────────────────────────── */
   const onPointerDown = useCallback((e) => {
     isDragging.current  = true
     lastXRef.current    = e.clientX
     velocityRef.current = 0
+    pauseAutoRotate()
     cancelAnimationFrame(animRef.current)
     e.currentTarget.setPointerCapture(e.pointerId)
-  }, [])
+  }, [pauseAutoRotate])
 
   const onPointerMove = useCallback((e) => {
     if (!isDragging.current) return
@@ -175,10 +205,26 @@ export default function Gallery() {
         animRef.current = requestAnimationFrame(decel)
       } else {
         velocityRef.current = 0
+        snapToNearest()
       }
     }
     animRef.current = requestAnimationFrame(decel)
-  }, [applyOffset])
+  }, [applyOffset, snapToNearest])
+
+  /* ── Auto-rotate: slow continuous drift, pauses on interaction ────── */
+  useEffect(() => {
+    if (artworks.length === 0) return
+    const AUTO_SPEED = 0.0004   // slots per frame — very slow
+    let rafId
+    const tick = () => {
+      if (!userActiveRef.current && !isDragging.current) {
+        applyOffset(offsetRef.current + AUTO_SPEED)
+      }
+      rafId = requestAnimationFrame(tick)
+    }
+    rafId = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(rafId)
+  }, [artworks, applyOffset])
 
   /* ── Init ─────────────────────────────────────────────────────────── */
   useEffect(() => {
