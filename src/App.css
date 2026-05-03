@@ -4799,12 +4799,14 @@ html.dark body.shop-browse-page .account-avatar {
   /* Sticky topbar mobile */
   .browse-sticky-topbar {
     padding: 0 12px 0 16px;
-    height: 42px;
+    height: 50px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.07);
   }
-  /* Filter bar sticks below 42px topbar on mobile */
+  /* Filter bar sticks directly below 50px topbar on mobile */
   .browse-filter-bar {
-    top: 122px; /* 80px navbar + 42px topbar */
+    top: 130px; /* 80px navbar + 50px topbar */
     padding: 10px 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
 }
 
@@ -4814,7 +4816,7 @@ html.dark body.shop-browse-page .account-avatar {
     gap: 14px 10px;
     padding: 0 12px 48px;
   }
-  .browse-card-img-wrap { aspect-ratio: 1 / 1; }
+  .browse-card-img-wrap { aspect-ratio: 4 / 5; }
   .browse-tab { padding: 10px 12px; font-size: 0.65rem; letter-spacing: 1.5px; }
   .browse-header { padding: 20px 12px 0; }
   .browse-tabs { padding: 0 12px; margin-top: 16px; }
@@ -4822,12 +4824,14 @@ html.dark body.shop-browse-page .account-avatar {
   /* Sticky topbar mobile */
   .browse-sticky-topbar {
     padding: 0 10px 0 12px;
-    height: 40px;
+    height: 50px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.07);
   }
-  /* Filter bar top adjusted for smaller topbar */
+  /* Filter bar top adjusted */
   .browse-filter-bar {
-    top: 120px; /* 80px navbar + 40px topbar */
+    top: 130px; /* 80px navbar + 50px topbar */
     padding: 8px 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
   .browse-filter-label { display: none; }
   .browse-filter-sep { display: none; }
