@@ -18,7 +18,7 @@ function getThumbnailUrl(art) {
   return art.imageUrl || ''
 }
 
-const ITEM_W    = 220   // px — must match .museum-strip-item width in CSS
+const ITEM_W    = 260   // px — must match .museum-strip-item width in CSS
 const EQUAL_GAP = 36    // px gap between edges of adjacent artworks
 const DRAG_SLOT = 300   // px of drag = 1 slot (sensitivity)
 
