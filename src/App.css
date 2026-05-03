@@ -4003,7 +4003,8 @@ body.collection-page .navbar-collection-btn:hover {
 /* ===== SHOP BROWSE PAGE ===== */
 .browse-main {
   padding-top: 84px;
-  background: #fff;
+  /* Gradient: navbar+topbar area (#E7DDDA) then white content. 84px navbar + 46px topbar = 130px */
+  background: linear-gradient(to bottom, #E7DDDA 130px, #fff 130px);
   min-height: 100vh;
 }
 
@@ -4797,12 +4798,17 @@ html.dark body.shop-browse-page .account-avatar {
   .browse-title { font-size: clamp(1.8rem, 7vw, 3rem); }
 
   /* Mobile navbar is 68px (48px logo + 10px×2 padding) */
-  .browse-main { padding-top: 68px; }
+  .browse-main {
+    padding-top: 68px;
+    /* Gradient bridges any sub-pixel gap: top 120px = navbar+topbar color, then white */
+    background: linear-gradient(to bottom, #E7DDDA 120px, #fff 120px);
+  }
   .browse-sticky-topbar {
-    padding: 0 12px 0 16px;
+    padding: 0 20px; /* matches navbar mobile padding (10px 20px) */
     height: 50px;
     top: 68px;
-    box-shadow: 0 1px 0 rgba(0,0,0,0.07);
+    box-shadow: none;
+    border-bottom: 1px solid rgba(0,0,0,0.07);
   }
   .browse-filter-bar {
     top: 118px; /* 68px navbar + 50px topbar */
@@ -4822,12 +4828,16 @@ html.dark body.shop-browse-page .account-avatar {
   .browse-header { padding: 20px 12px 0; }
   .browse-tabs { padding: 0 12px; margin-top: 16px; }
 
-  .browse-main { padding-top: 68px; }
+  .browse-main {
+    padding-top: 68px;
+    background: linear-gradient(to bottom, #E7DDDA 120px, #fff 120px);
+  }
   .browse-sticky-topbar {
-    padding: 0 10px 0 12px;
+    padding: 0 20px; /* matches navbar mobile padding */
     height: 50px;
     top: 68px;
-    box-shadow: 0 1px 0 rgba(0,0,0,0.07);
+    box-shadow: none;
+    border-bottom: 1px solid rgba(0,0,0,0.07);
   }
   .browse-filter-bar {
     top: 118px; /* 68px navbar + 50px topbar */
@@ -5664,20 +5674,9 @@ html.dark .gallery-view-all .btn-outline:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px 0 40px;
+  padding: 0 48px; /* matches navbar padding (8px 48px) — aligns breadcrumb with logo, icons with VIEW SHOP */
   height: 46px;
   border-bottom: 1px solid rgba(0,0,0,0.07);
-}
-
-/* Extend topbar colour upward to cover any gap between fixed navbar and sticky topbar */
-.browse-sticky-topbar::before {
-  content: '';
-  position: absolute;
-  top: -10px;
-  left: 0;
-  right: 0;
-  height: 10px;
-  background: inherit;
 }
 
 .browse-sticky-breadcrumb {
@@ -5986,7 +5985,8 @@ html.dark .gallery-view-all .btn-outline:hover {
 /* ===== PRODUCT PAGE ===== */
 .product-main {
   padding-top: 84px;
-  background: #fff;
+  /* Gradient: navbar area (#E7DDDA) then topbar area (#EDE6E1) then white. Bridges any gap. */
+  background: linear-gradient(to bottom, #E7DDDA 84px, #EDE6E1 130px, #fff 130px);
   min-height: 100vh;
 }
 
@@ -6001,16 +6001,6 @@ html.dark .gallery-view-all .btn-outline:hover {
   background: #EDE6E1;
 }
 
-/* Extend topbar colour upward to cover any gap between fixed navbar and sticky topbar */
-.product-topbar::before {
-  content: '';
-  position: absolute;
-  top: -10px;
-  left: 0;
-  right: 0;
-  height: 10px;
-  background: inherit;
-}
 
 .product-topbar-actions {
   display: flex;
