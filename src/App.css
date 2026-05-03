@@ -5660,7 +5660,7 @@ html.dark .gallery-view-all .btn-outline:hover {
   position: sticky;
   top: 80px;
   z-index: 50;
-  background: #EDE6E1;
+  background: #E7DDDA; /* matches navbar exactly */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -6596,3 +6596,177 @@ html.dark .sf-bottom {
 html.dark .sf-copy {
   color: rgba(231,221,218,0.4);
 }
+
+/* ════════════════════════════════════════════════════════════
+   MOBILE FILTER / SORT BAR + BOTTOM SHEET
+════════════════════════════════════════════════════════════ */
+
+/* Mobile bar: hidden on desktop */
+.browse-mobile-bar { display: none; }
+
+@media (max-width: 768px) {
+  /* Hide desktop filter bar, show mobile buttons */
+  .browse-filter-bar { display: none; }
+
+  .browse-mobile-bar {
+    display: flex;
+    gap: 10px;
+    padding: 10px 16px;
+    background: #E7DDDA;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    position: sticky;
+    top: 118px; /* 68px navbar + 50px topbar */
+    z-index: 49;
+  }
+
+  .browse-mobile-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 10px 14px;
+    background: transparent;
+    border: 1.5px solid rgba(23,44,22,0.3);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: #172C16;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .browse-mobile-btn:hover {
+    border-color: #172C16;
+    background: rgba(23,44,22,0.04);
+  }
+
+  /* Bottom-sheet backdrop */
+  .browse-sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 200;
+    display: flex;
+    align-items: flex-end;
+    animation: sheetFadeIn 0.2s ease;
+  }
+
+  @keyframes sheetFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* Bottom sheet panel */
+  .browse-sheet {
+    width: 100%;
+    background: #fff;
+    border-radius: 18px 18px 0 0;
+    padding: 12px 20px 36px;
+    animation: sheetSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  @keyframes sheetSlideUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+
+  .browse-sheet-handle {
+    width: 36px;
+    height: 4px;
+    background: rgba(0,0,0,0.15);
+    border-radius: 2px;
+    margin: 0 auto 20px;
+  }
+
+  .browse-sheet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .browse-sheet-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: #172C16;
+  }
+
+  .browse-sheet-reset {
+    background: none;
+    border: none;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: #888;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+  }
+
+  .browse-sheet-section {
+    margin-bottom: 24px;
+  }
+
+  .browse-sheet-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: rgba(23,44,22,0.5);
+    margin: 0 0 14px;
+  }
+
+  .browse-sheet-apply {
+    width: 100%;
+    padding: 14px;
+    background: #172C16;
+    color: #EDE6E1;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.2s;
+  }
+
+  .browse-sheet-apply:hover { background: #5F578A; }
+
+  .browse-sheet-sort-option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: #333;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .browse-sheet-sort-option.active {
+    color: #172C16;
+    font-weight: 600;
+  }
+
+  .browse-sheet-sort-option:last-child { border-bottom: none; }
+}
+
+/* Dark mode sheet */
+html.dark .browse-mobile-bar { background: #3B0C0C; border-bottom-color: rgba(231,221,218,0.1); }
+html.dark .browse-mobile-btn { border-color: rgba(231,221,218,0.25); color: #E7DDDA; }
+html.dark .browse-sheet { background: #2a0a0a; }
+html.dark .browse-sheet-title { color: #E7DDDA; }
+html.dark .browse-sheet-label { color: rgba(231,221,218,0.45); }
+html.dark .browse-sheet-sort-option { color: #E7DDDA; border-bottom-color: rgba(231,221,218,0.08); }

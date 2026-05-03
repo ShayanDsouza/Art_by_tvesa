@@ -134,6 +134,7 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
   const [filterOutOfStock, setFilterOutOfStock] = useState(false)
   const [priceFrom, setPriceFrom] = useState('')
   const [priceTo, setPriceTo]     = useState('')
+  const [mobilePanel, setMobilePanel] = useState(null) // 'filter' | 'sort' | null
   const filterBarRef = useRef(null)
 
   useEffect(() => {
@@ -339,6 +340,94 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
           </span>
         </div>
       </div>
+
+      {/* ── Mobile filter/sort buttons (shown instead of desktop bar) ── */}
+      <div className="browse-mobile-bar">
+        <button className="browse-mobile-btn" onClick={() => setMobilePanel('filter')}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+          </svg>
+          Filter{(filterInStock || filterOutOfStock || priceFrom || priceTo) ? ' •' : ''}
+        </button>
+        <button className="browse-mobile-btn" onClick={() => setMobilePanel('sort')}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M11 5h10M11 9h7M11 13h4"/><path d="M3 5l4 4-4 4"/>
+          </svg>
+          {SORT_OPTIONS.find(o => o.value === sort)?.label ?? 'Sort'}
+        </button>
+      </div>
+
+      {/* ── Mobile bottom-sheet panels ── */}
+      {mobilePanel && (
+        <div className="browse-sheet-backdrop" onClick={() => setMobilePanel(null)}>
+          <div className="browse-sheet" onClick={e => e.stopPropagation()}>
+            <div className="browse-sheet-handle" />
+
+            {mobilePanel === 'filter' && (
+              <>
+                <div className="browse-sheet-header">
+                  <span className="browse-sheet-title">Filter</span>
+                  <button className="browse-sheet-reset" onClick={() => { setFilterInStock(false); setFilterOutOfStock(false); setPriceFrom(''); setPriceTo('') }}>Reset all</button>
+                </div>
+
+                <div className="browse-sheet-section">
+                  <p className="browse-sheet-label">Availability</p>
+                  <label className="browse-filter-check-row">
+                    <input type="checkbox" checked={filterInStock} onChange={e => setFilterInStock(e.target.checked)} />
+                    In stock ({inStockCount})
+                  </label>
+                  <label className="browse-filter-check-row">
+                    <input type="checkbox" checked={filterOutOfStock} onChange={e => setFilterOutOfStock(e.target.checked)} />
+                    Out of stock ({outOfStockCount})
+                  </label>
+                </div>
+
+                <div className="browse-sheet-section">
+                  <p className="browse-sheet-label">Price range</p>
+                  <div className="browse-filter-price-inputs">
+                    <div className="browse-filter-price-field">
+                      <span className="browse-filter-price-currency">₹</span>
+                      <input type="number" className="browse-filter-price-input" placeholder="From" value={priceFrom} onChange={e => setPriceFrom(e.target.value)} min="0" />
+                    </div>
+                    <div className="browse-filter-price-field">
+                      <span className="browse-filter-price-currency">₹</span>
+                      <input type="number" className="browse-filter-price-input" placeholder="To" value={priceTo} onChange={e => setPriceTo(e.target.value)} min="0" />
+                    </div>
+                  </div>
+                </div>
+
+                <button className="browse-sheet-apply" onClick={() => setMobilePanel(null)}>
+                  Show {displayed.length} result{displayed.length !== 1 ? 's' : ''}
+                </button>
+              </>
+            )}
+
+            {mobilePanel === 'sort' && (
+              <>
+                <div className="browse-sheet-header">
+                  <span className="browse-sheet-title">Sort by</span>
+                </div>
+                <div className="browse-sheet-section">
+                  {SORT_OPTIONS.map(o => (
+                    <button
+                      key={o.value}
+                      className={`browse-sheet-sort-option${sort === o.value ? ' active' : ''}`}
+                      onClick={() => { setSort(o.value); setMobilePanel(null) }}
+                    >
+                      {o.label}
+                      {sort === o.value && (
+                        <svg width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                          <polyline points="2 6 5 9 10 3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="browse-grid">
         {displayed.map(p => (
