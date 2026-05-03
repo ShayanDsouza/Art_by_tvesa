@@ -4003,8 +4003,7 @@ body.collection-page .navbar-collection-btn:hover {
 /* ===== SHOP BROWSE PAGE ===== */
 .browse-main {
   padding-top: 84px;
-  /* Gradient: navbar+topbar area (#E7DDDA) then white content. 84px navbar + 46px topbar = 130px */
-  background: linear-gradient(to bottom, #E7DDDA 130px, #fff 130px);
+  background: #fff;
   min-height: 100vh;
 }
 
@@ -4800,15 +4799,14 @@ html.dark body.shop-browse-page .account-avatar {
   /* Mobile navbar is 68px (48px logo + 10px×2 padding) */
   .browse-main {
     padding-top: 68px;
-    /* Gradient bridges any sub-pixel gap: top 120px = navbar+topbar color, then white */
-    background: linear-gradient(to bottom, #E7DDDA 120px, #fff 120px);
+    background: #fff;
   }
   .browse-sticky-topbar {
     padding: 0 20px; /* matches navbar mobile padding (10px 20px) */
     height: 50px;
     top: 68px;
-    box-shadow: none;
-    border-bottom: 1px solid rgba(0,0,0,0.07);
+    /* box-shadow fills any pixel gap above this bar + separating line below */
+    box-shadow: 0 -30px 0 30px #E7DDDA, 0 1px 0 rgba(0,0,0,0.07);
   }
   .browse-filter-bar {
     top: 118px; /* 68px navbar + 50px topbar */
@@ -4830,14 +4828,13 @@ html.dark body.shop-browse-page .account-avatar {
 
   .browse-main {
     padding-top: 68px;
-    background: linear-gradient(to bottom, #E7DDDA 120px, #fff 120px);
+    background: #fff;
   }
   .browse-sticky-topbar {
     padding: 0 20px; /* matches navbar mobile padding */
     height: 50px;
     top: 68px;
-    box-shadow: none;
-    border-bottom: 1px solid rgba(0,0,0,0.07);
+    box-shadow: 0 -30px 0 30px #E7DDDA, 0 1px 0 rgba(0,0,0,0.07);
   }
   .browse-filter-bar {
     top: 118px; /* 68px navbar + 50px topbar */
@@ -5676,7 +5673,8 @@ html.dark .gallery-view-all .btn-outline:hover {
   justify-content: space-between;
   padding: 0 48px; /* matches navbar padding (8px 48px) — aligns breadcrumb with logo, icons with VIEW SHOP */
   height: 46px;
-  border-bottom: 1px solid rgba(0,0,0,0.07);
+  /* box-shadow: upward extension fills any pixel gap between fixed navbar and this sticky bar */
+  box-shadow: 0 -30px 0 30px #E7DDDA, 0 1px 0 rgba(0,0,0,0.07);
 }
 
 .browse-sticky-breadcrumb {
@@ -5985,8 +5983,7 @@ html.dark .gallery-view-all .btn-outline:hover {
 /* ===== PRODUCT PAGE ===== */
 .product-main {
   padding-top: 84px;
-  /* Gradient: navbar area (#E7DDDA) then topbar area (#EDE6E1) then white. Bridges any gap. */
-  background: linear-gradient(to bottom, #E7DDDA 84px, #EDE6E1 130px, #fff 130px);
+  background: #fff;
   min-height: 100vh;
 }
 
@@ -5994,11 +5991,11 @@ html.dark .gallery-view-all .btn-outline:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(0,0,0,0.07);
   position: sticky;
   top: 84px;
   z-index: 50;
-  background: #EDE6E1;
+  background: #E7DDDA; /* match navbar so box-shadow bridge is seamless */
+  box-shadow: 0 -30px 0 30px #E7DDDA, 0 1px 0 rgba(0,0,0,0.07);
 }
 
 
@@ -6667,8 +6664,9 @@ html.dark .sf-copy {
   .browse-mobile-bar {
     display: flex;
     gap: 10px;
-    padding: 10px 16px;
-    background: #E7DDDA;
+    padding: 10px 20px;
+    background: #EDE6E1; /* slightly lighter than topbar — creates visual separation */
+    border-top: none;
     border-bottom: 1px solid rgba(0,0,0,0.08);
     position: sticky;
     top: 118px; /* 68px navbar + 50px topbar */
