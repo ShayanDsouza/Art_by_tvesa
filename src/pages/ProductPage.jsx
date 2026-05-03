@@ -10,6 +10,7 @@ import {
   getCollectionProducts,
   createCart,
   formatPrice,
+  SHOPIFY_ORDERS_URL,
 } from '../lib/shopify'
 
 const STORE_DOMAIN = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN
@@ -75,7 +76,7 @@ function RelatedCard({ product }) {
 export default function ProductPage() {
   const { handle } = useParams()
   const [searchParams] = useSearchParams()
-  const { addItem, openCart, loading: cartLoading } = useCart()
+  const { addItem, openCart, loading: cartLoading, totalQuantity } = useCart()
 
   const [product, setProduct]           = useState(null)
   const [status, setStatus]             = useState('loading')
@@ -152,16 +153,42 @@ export default function ProductPage() {
 
       <main className="product-main">
 
-        {/* ── Breadcrumb ── */}
-        <nav className="product-breadcrumb">
-          <Link to="/shop">Shop</Link>
-          <span> / </span>
-          <Link to={`/shop/browse?tab=${fromTab}`}>
-            {fromTab === 'originals' ? 'Original Artworks' :
-             fromTab === 'commissions' ? 'Commissions' : 'Prints'}
-          </Link>
-          {product && <><span> / </span><span>{product.title}</span></>}
-        </nav>
+        {/* ── Breadcrumb + action buttons ── */}
+        <div className="product-topbar">
+          <nav className="product-breadcrumb">
+            <Link to="/shop">Shop</Link>
+            <span> / </span>
+            <Link to={`/shop/browse?tab=${fromTab}`}>
+              {fromTab === 'originals' ? 'Original Artworks' :
+               fromTab === 'commissions' ? 'Commissions' : 'Prints'}
+            </Link>
+            {product && <><span> / </span><span>{product.title}</span></>}
+          </nav>
+          <div className="product-topbar-actions">
+            <a
+              href={SHOPIFY_ORDERS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cart-trigger"
+              aria-label="My orders"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              </svg>
+            </a>
+            <button className="cart-trigger" onClick={openCart} aria-label="Open cart">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 01-8 0"/>
+              </svg>
+              {totalQuantity > 0 && (
+                <span className="cart-trigger-count">{totalQuantity}</span>
+              )}
+            </button>
+          </div>
+        </div>
 
         {status === 'loading' && (
           <div className="product-status">Loading…</div>
