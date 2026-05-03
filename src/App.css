@@ -4796,16 +4796,16 @@ html.dark body.shop-browse-page .account-avatar {
   .browse-tabs { padding: 0 16px; margin-top: 20px; }
   .browse-title { font-size: clamp(1.8rem, 7vw, 3rem); }
 
-  /* Mobile navbar is 88px (68px logo + 10px×2 padding) */
-  .browse-main { padding-top: 88px; }
+  /* Mobile navbar is 68px (48px logo + 10px×2 padding) */
+  .browse-main { padding-top: 68px; }
   .browse-sticky-topbar {
     padding: 0 12px 0 16px;
     height: 50px;
-    top: 88px;
+    top: 68px;
     box-shadow: 0 1px 0 rgba(0,0,0,0.07);
   }
   .browse-filter-bar {
-    top: 138px; /* 88px navbar + 50px topbar */
+    top: 118px; /* 68px navbar + 50px topbar */
     padding: 10px 16px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
@@ -4822,15 +4822,15 @@ html.dark body.shop-browse-page .account-avatar {
   .browse-header { padding: 20px 12px 0; }
   .browse-tabs { padding: 0 12px; margin-top: 16px; }
 
-  .browse-main { padding-top: 88px; }
+  .browse-main { padding-top: 68px; }
   .browse-sticky-topbar {
     padding: 0 10px 0 12px;
     height: 50px;
-    top: 88px;
+    top: 68px;
     box-shadow: 0 1px 0 rgba(0,0,0,0.07);
   }
   .browse-filter-bar {
-    top: 138px; /* 88px navbar + 50px topbar */
+    top: 118px; /* 68px navbar + 50px topbar */
     padding: 8px 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
@@ -5669,6 +5669,17 @@ html.dark .gallery-view-all .btn-outline:hover {
   border-bottom: 1px solid rgba(0,0,0,0.07);
 }
 
+/* Extend topbar colour upward to cover any gap between fixed navbar and sticky topbar */
+.browse-sticky-topbar::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: inherit;
+}
+
 .browse-sticky-breadcrumb {
   display: flex;
   align-items: center;
@@ -5988,6 +5999,17 @@ html.dark .gallery-view-all .btn-outline:hover {
   top: 84px;
   z-index: 50;
   background: #EDE6E1;
+}
+
+/* Extend topbar colour upward to cover any gap between fixed navbar and sticky topbar */
+.product-topbar::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: inherit;
 }
 
 .product-topbar-actions {
@@ -6659,7 +6681,7 @@ html.dark .sf-copy {
     background: #E7DDDA;
     border-bottom: 1px solid rgba(0,0,0,0.08);
     position: sticky;
-    top: 138px; /* 88px navbar + 50px topbar */
+    top: 118px; /* 68px navbar + 50px topbar */
     z-index: 49;
   }
 
