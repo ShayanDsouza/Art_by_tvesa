@@ -79,8 +79,14 @@ export default function Gallery() {
         const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }))
         docs.sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity))
         const featured = docs.filter(a => a.featured).slice(0, 11)
-        setArtworks(featured.length > 0 ? featured : docs.slice(0, 11))
+        const list = featured.length > 0 ? featured : docs.slice(0, 11)
+        setArtworks(list)
         setLoading(false)
+        // Preload all images immediately so fast drags never show a blank frame
+        list.forEach(art => {
+          const url = getThumbnailUrl(art)
+          if (url) { const img = new Image(); img.src = url }
+        })
       }, () => { setArtworks(fallbackArt); setLoading(false) })
       return unsub
     } catch { setArtworks(fallbackArt); setLoading(false) }
@@ -267,7 +273,7 @@ export default function Gallery() {
                   {/* Inner clip: contains artwork + hover overlay */}
                   <div className="museum-strip-inner">
                     {url
-                      ? <img src={url} alt={art.title} className="museum-strip-img" draggable={false} />
+                      ? <img src={url} alt={art.title} className="museum-strip-img" draggable={false} loading="eager" fetchpriority="high" />
                       : <div className="museum-strip-placeholder" />
                     }
 
