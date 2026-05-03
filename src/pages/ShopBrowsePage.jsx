@@ -200,145 +200,100 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
 
   return (
     <>
-      {/* ── Filter / sort bar — exact Shopify style ── */}
+      {/* ── Filter / sort bar ── */}
       <div className="browse-filter-bar" ref={filterBarRef}>
-        <div className="browse-filter-group">
-          <span className="browse-filter-label">Filter:</span>
-          <div className="browse-filter-sep" />
 
-          {/* Availability button + dropdown */}
+        {/* Left: Filter button + count */}
+        <div className="browse-filter-left">
           <div className="browse-filter-item">
             <button
-              className={`browse-shopify-filter${availSelected > 0 ? ' active' : ''}`}
-              onClick={() => toggleFilter('availability')}
+              className={`browse-filter-main-btn${(availSelected > 0 || priceFrom || priceTo) ? ' active' : ''}`}
+              onClick={() => toggleFilter('filter')}
             >
-              Availability
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+              </svg>
+              Filter
               <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
                 <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
 
-            {openFilter === 'availability' && (
-              <div className="browse-filter-dropdown">
+            {openFilter === 'filter' && (
+              <div className="browse-filter-dropdown browse-filter-dropdown--combined">
+                <p className="browse-filter-dropdown-section-label">Availability</p>
                 <div className="browse-filter-dropdown-header">
                   <span className="browse-filter-selected-count">{availSelected} selected</span>
-                  <button
-                    className="browse-filter-reset"
-                    onClick={() => { setFilterInStock(false); setFilterOutOfStock(false) }}
-                  >Reset</button>
+                  <button className="browse-filter-reset" onClick={() => { setFilterInStock(false); setFilterOutOfStock(false) }}>Reset</button>
                 </div>
                 <div className="browse-filter-dropdown-divider" />
                 <label className="browse-filter-check-row">
-                  <input
-                    type="checkbox"
-                    checked={filterInStock}
-                    onChange={e => setFilterInStock(e.target.checked)}
-                  />
+                  <input type="checkbox" checked={filterInStock} onChange={e => setFilterInStock(e.target.checked)} />
                   In stock ({inStockCount})
                 </label>
                 <label className="browse-filter-check-row">
-                  <input
-                    type="checkbox"
-                    checked={filterOutOfStock}
-                    onChange={e => setFilterOutOfStock(e.target.checked)}
-                  />
+                  <input type="checkbox" checked={filterOutOfStock} onChange={e => setFilterOutOfStock(e.target.checked)} />
                   Out of stock ({outOfStockCount})
                 </label>
-              </div>
-            )}
-          </div>
 
-          {/* Price button + dropdown */}
-          <div className="browse-filter-item">
-            <button
-              className={`browse-shopify-filter${(priceFrom !== '' || priceTo !== '') ? ' active' : ''}`}
-              onClick={() => toggleFilter('price')}
-            >
-              Price
-              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
-                <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-
-            {openFilter === 'price' && (
-              <div className="browse-filter-dropdown browse-filter-dropdown--price">
+                <div className="browse-filter-dropdown-divider" style={{margin: '14px 0'}} />
+                <p className="browse-filter-dropdown-section-label">Price</p>
                 <div className="browse-filter-dropdown-header">
-                  <span className="browse-filter-price-info">
-                    The highest price is {formatPrice(maxPrice, 'INR')}
-                  </span>
-                  <button
-                    className="browse-filter-reset"
-                    onClick={() => { setPriceFrom(''); setPriceTo('') }}
-                  >Reset</button>
+                  <span className="browse-filter-price-info">Highest: {formatPrice(maxPrice, 'INR')}</span>
+                  <button className="browse-filter-reset" onClick={() => { setPriceFrom(''); setPriceTo('') }}>Reset</button>
                 </div>
                 <div className="browse-filter-dropdown-divider" />
                 <div className="browse-filter-price-inputs">
                   <div className="browse-filter-price-field">
                     <span className="browse-filter-price-currency">₹</span>
-                    <input
-                      type="number"
-                      className="browse-filter-price-input"
-                      placeholder="From"
-                      value={priceFrom}
-                      onChange={e => setPriceFrom(e.target.value)}
-                      min="0"
-                    />
+                    <input type="number" className="browse-filter-price-input" placeholder="From" value={priceFrom} onChange={e => setPriceFrom(e.target.value)} min="0" />
                   </div>
                   <div className="browse-filter-price-field">
                     <span className="browse-filter-price-currency">₹</span>
-                    <input
-                      type="number"
-                      className="browse-filter-price-input"
-                      placeholder="To"
-                      value={priceTo}
-                      onChange={e => setPriceTo(e.target.value)}
-                      min="0"
-                    />
+                    <input type="number" className="browse-filter-price-input" placeholder="To" value={priceTo} onChange={e => setPriceTo(e.target.value)} min="0" />
                   </div>
                 </div>
               </div>
             )}
           </div>
-        </div>
 
-        {/* Sort + count */}
-        <div className="browse-sort-group">
-          <span className="browse-filter-label">Sort by:</span>
-          <div className="browse-filter-sep" />
-          <div className="browse-filter-item">
-            <button
-              className="browse-shopify-filter browse-shopify-sort-btn"
-              onClick={() => toggleFilter('sort')}
-            >
-              {SORT_OPTIONS.find(o => o.value === sort)?.label ?? 'Featured'}
-              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
-                <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-
-            {openFilter === 'sort' && (
-              <div className="browse-filter-dropdown browse-sort-dropdown">
-                {SORT_OPTIONS.map(o => (
-                  <button
-                    key={o.value}
-                    className={`browse-sort-option${sort === o.value ? ' active' : ''}`}
-                    onClick={() => { setSort(o.value); setOpenFilter(null) }}
-                  >
-                    {o.value === sort && (
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className="browse-sort-check">
-                        <polyline points="2 6 5 9 10 3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    )}
-                    {o.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
           <span className="browse-product-count">
-            {displayed.length} product{displayed.length !== 1 ? 's' : ''}
+            {displayed.length} Result{displayed.length !== 1 ? 's' : ''}
           </span>
         </div>
+
+        {/* Right: Sort */}
+        <div className="browse-filter-item">
+          <button
+            className="browse-filter-main-btn"
+            onClick={() => toggleFilter('sort')}
+          >
+            Sort: {SORT_OPTIONS.find(o => o.value === sort)?.label ?? 'Featured'}
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+
+          {openFilter === 'sort' && (
+            <div className="browse-filter-dropdown browse-sort-dropdown browse-sort-dropdown--right">
+              {SORT_OPTIONS.map(o => (
+                <button
+                  key={o.value}
+                  className={`browse-sort-option${sort === o.value ? ' active' : ''}`}
+                  onClick={() => { setSort(o.value); setOpenFilter(null) }}
+                >
+                  {o.value === sort && (
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className="browse-sort-check">
+                      <polyline points="2 6 5 9 10 3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                  {o.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
       </div>
 
       {/* ── Mobile filter/sort buttons (shown instead of desktop bar) ── */}

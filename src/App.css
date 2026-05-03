@@ -5704,16 +5704,60 @@ html.dark .gallery-view-all .btn-outline:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0;
-  padding: 12px 40px;
-  border-top: 1px solid rgba(0,0,0,0.1);
-  border-bottom: 1px solid rgba(0,0,0,0.1);
-  margin-bottom: 0;
+  padding: 0 40px;
+  height: 48px;
+  border-top: 1px solid rgba(0,0,0,0.08);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
   background: #EDE6E1;
   position: sticky;
   top: 126px; /* 80px navbar + 46px topbar */
   z-index: 49;
+}
+
+.browse-filter-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* Main Filter / Sort buttons */
+.browse-filter-main-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #444;
+  cursor: pointer;
+  padding: 6px 0;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+
+.browse-filter-main-btn:hover { color: #172C16; }
+.browse-filter-main-btn.active { color: #172C16; font-weight: 600; }
+
+/* Sort dropdown anchors right */
+.browse-sort-dropdown--right {
+  right: 0;
+  left: auto;
+}
+
+/* Combined filter dropdown — wider */
+.browse-filter-dropdown--combined {
+  min-width: 260px;
+}
+
+.browse-filter-dropdown-section-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(23,44,22,0.45);
+  margin: 0 0 8px;
 }
 
 .browse-filter-group,
