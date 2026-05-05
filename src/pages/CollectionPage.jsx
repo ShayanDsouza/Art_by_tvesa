@@ -28,8 +28,8 @@ export default function CollectionPage() {
         <meta name="description" content="Browse the full archive of paintings and artworks by Tvesa Medh. Acrylic, oil, and mixed media — filter by medium, style, or search by name." />
         <meta property="og:title" content="Archives — Art by Tvesa" />
         <meta property="og:description" content="Browse the full archive of paintings and artworks by Tvesa Medh." />
-        <meta property="og:url" content="https://artbytvesa.com/collection" />
-        <link rel="canonical" href="https://artbytvesa.com/collection" />
+        <meta property="og:url" content="https://artbytvesa.com/archives" />
+        <link rel="canonical" href="https://artbytvesa.com/archives" />
       </Helmet>
       <Navbar />
       <GridGallery />

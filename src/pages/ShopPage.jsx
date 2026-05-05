@@ -94,7 +94,7 @@ export default function ShopPage() {
 
         {/* ── Back link ── */}
         <div className="shop-back">
-          <Link to="/collection" className="shop-back-link">
+          <Link to="/archives" className="shop-back-link">
             ← Back to Archives
           </Link>
         </div>

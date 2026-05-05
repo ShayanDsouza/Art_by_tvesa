@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import { HelmetProvider, Helmet } from 'react-helmet-async'
 import { AuthProvider } from './contexts/AuthContext'
@@ -63,7 +63,8 @@ export default function App() {
           <Router>
             <Routes>
               <Route path="/" element={<PublicSite />} />
-              <Route path="/collection" element={<CollectionPage />} />
+              <Route path="/archives" element={<CollectionPage />} />
+              <Route path="/collection" element={<Navigate to="/archives" replace />} />
               <Route path="/shop" element={<ShopPage />} />
               <Route path="/shop/browse" element={<ShopBrowsePage />} />
               <Route path="/shop/product/:handle" element={<ProductPage />} />

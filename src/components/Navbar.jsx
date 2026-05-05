@@ -10,7 +10,7 @@ export default function Navbar() {
   const dropRef   = useRef(null)
 
   const isHome       = location.pathname === '/'
-  const isCollection = location.pathname === '/collection'
+  const isCollection = location.pathname === '/archives'
   const isShop       = location.pathname.startsWith('/shop')
 
   /* Close mobile drawer when carousel is active */
@@ -89,7 +89,7 @@ export default function Navbar() {
 
       <ul className={`navbar-links ${menuOpen ? 'active' : ''}`}>
         <li>
-          <Link to="/collection" onClick={closeAll}>Archives</Link>
+          <Link to="/archives" onClick={closeAll}>Archives</Link>
         </li>
         <li>
           <a href="#about" onClick={(e) => { e.preventDefault(); handleHashLink('#about') }}>About</a>
