@@ -425,10 +425,13 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
               onClick={() => setCurrentPage(page => Math.max(1, page - 1))}
               disabled={currentPageSafe === 1}
             >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M15 18l-6-6 6-6"/>
+              </svg>
               Previous
             </button>
             <span className="browse-pagination-page">
-              Page {currentPageSafe} of {totalPages}
+              {currentPageSafe} / {totalPages}
             </span>
             <button
               className="browse-pagination-btn"
@@ -436,6 +439,9 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
               disabled={currentPageSafe === totalPages}
             >
               Next
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
             </button>
           </div>
         </div>
