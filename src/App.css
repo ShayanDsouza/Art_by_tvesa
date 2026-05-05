@@ -5494,6 +5494,70 @@ html.dark body.shop-browse-page {
   background: #3B0C0C;
 }
 
+/* ══════════════════════════════════════════════════════════════
+   SHOP PAGES NAVBAR — matches archives dark-mode header (#3B0C0C)
+   Applies to /shop, /shop/browse, and all product pages.
+   ══════════════════════════════════════════════════════════════ */
+body.shop-page .navbar {
+  background: #3B0C0C;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+body.shop-page .navbar::after {
+  display: none;
+}
+/* Light logo hidden, dark logo always shown on shop pages */
+body.shop-page .navbar-logo-light { display: none; }
+body.shop-page .navbar-logo-dark  { display: block; }
+
+/* Nav links */
+body.shop-page .navbar-links a {
+  color: #fff;
+}
+body.shop-page .navbar-links a:hover {
+  color: rgba(255,255,255,0.7);
+}
+/* Contact link — keep visually distinct but still readable */
+body.shop-page .navbar-links li:nth-child(3) a {
+  color: rgba(255,255,255,0.85);
+}
+
+/* View Shop button */
+body.shop-page .navbar-collection-btn {
+  color: #fff !important;
+  border-color: rgba(255,255,255,0.35) !important;
+}
+body.shop-page .navbar-collection-btn:hover {
+  background: #5F578A !important;
+  border-color: #5F578A !important;
+  color: #fff !important;
+}
+
+/* Hamburger lines */
+body.shop-page .hamburger span {
+  background: #fff;
+}
+
+/* Mobile full-screen drawer */
+@media (max-width: 768px) {
+  body.shop-page .navbar-links {
+    background: #3B0C0C;
+  }
+  body.shop-page .navbar-links a {
+    color: #fff;
+  }
+  body.shop-page .navbar-links a:hover {
+    color: rgba(255,255,255,0.7);
+  }
+  body.shop-page .navbar-links li:nth-child(3) a {
+    color: rgba(255,255,255,0.85);
+  }
+  body.shop-page .navbar-collection-btn {
+    border-color: rgba(255,255,255,0.45) !important;
+    color: #fff !important;
+  }
+}
+
 /* ── Contact section on commissions (shop-browse) page ── */
 body.shop-browse-page .contact {
   background: #fff;
