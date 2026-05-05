@@ -19,7 +19,7 @@ export default function AdminContent() {
   const [imageSaved, setImageSaved] = useState(false)
   const [collection, setCollection] = useState({
     eyebrow: 'The Gallery of Trying',
-    heading: 'The Collection',
+    heading: 'Archives',
     subheading: 'A curated selection of original works — exploring colour, form & emotion.',
   })
   const [saving, setSaving] = useState(null)

@@ -111,12 +111,12 @@ export default function GridGallery() {
       .then(snap => {
         setCollectionText(snap.exists() ? snap.data() : {
           eyebrow: "The Gallery of Trying",
-          heading: "The Collection",
+          heading: "Archives",
           subheading: "",
         })
       })
       .catch(() => {
-        setCollectionText({ eyebrow: "The Gallery of Trying", heading: "The Collection", subheading: "" })
+        setCollectionText({ eyebrow: "The Gallery of Trying", heading: "Archives", subheading: "" })
       });
   }, []);
 
