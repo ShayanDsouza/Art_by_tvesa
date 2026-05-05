@@ -4420,6 +4420,50 @@ html.dark .browse-pagination-page { color: rgba(231,221,218,0.55); }
 .browse-card-btn:hover:not(:disabled) { background: #5F578A; }
 .browse-card-btn:disabled { opacity: 0.4; cursor: default; }
 .browse-card-btn.added { background: #2a6b2a; }
+.browse-card-btn--disabled { opacity: 0.5; pointer-events: none; }
+
+/* ── Postcard pack-size selector (×3 / ×6 / ×11) ── */
+.browse-card-pack-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.browse-card-pack-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 14px;
+  background: #172C16;
+  color: #EDE6E1;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+  min-width: 56px;
+}
+
+.browse-card-pack-label {
+  font-size: 0.58rem;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  opacity: 0.75;
+  text-transform: lowercase;
+}
+
+.browse-card-pack-btn:hover:not(:disabled) {
+  background: #5F578A;
+  transform: translateY(-1px);
+}
+.browse-card-pack-btn:disabled { opacity: 0.4; cursor: default; }
+.browse-card-pack-btn.added { background: #2a6b2a; }
 
 /* ===== CART TRIGGER — inline in header ===== */
 .cart-trigger {

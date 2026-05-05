@@ -34,19 +34,22 @@ const SORT_OPTIONS = [
   { value: 'name-za',    label: 'Alphabetically, Z–A' },
 ]
 
+const POSTCARD_PACKS = [3, 6, 11]
+
 /* ─── Product card ───────────────────────────────────────── */
 function ProductCard({ product, isPostcard, activeTab, activeSubTab }) {
   const { addItem, loading } = useCart()
-  const [added, setAdded] = useState(false)
+  // null = idle; for postcards stores the qty just added; for others stores true
+  const [added, setAdded] = useState(null)
   const [hovered, setHovered] = useState(false)
 
-  const handleAdd = async (e) => {
+  const handleAdd = async (e, qty = 1) => {
     e.stopPropagation()
     e.preventDefault()
     if (!product.variant?.id) return
-    await addItem(product.variant.id)
-    setAdded(true)
-    setTimeout(() => setAdded(false), 1800)
+    await addItem(product.variant.id, qty)
+    setAdded(qty)
+    setTimeout(() => setAdded(null), 1800)
   }
 
   const showFramed = hovered && product.hoverImage
@@ -101,13 +104,36 @@ function ProductCard({ product, isPostcard, activeTab, activeSubTab }) {
 
         {/* Add to cart overlay on hover */}
         <div className="browse-card-overlay">
-          <button
-            className={`browse-card-btn${added ? ' added' : ''}`}
-            onClick={handleAdd}
-            disabled={!product.available || !product.variant?.availableForSale || loading}
-          >
-            {!product.available ? 'Sold Out' : added ? '✓ Added' : 'Add to Cart'}
-          </button>
+          {isPostcard ? (
+            /* Postcards: pick a pack of 3, 6 or 11 */
+            !product.available ? (
+              <span className="browse-card-btn browse-card-btn--disabled">Sold Out</span>
+            ) : (
+              <div className="browse-card-pack-row">
+                {POSTCARD_PACKS.map(qty => (
+                  <button
+                    key={qty}
+                    className={`browse-card-pack-btn${added === qty ? ' added' : ''}`}
+                    onClick={(e) => handleAdd(e, qty)}
+                    disabled={loading}
+                  >
+                    {added === qty ? '✓' : `×${qty}`}
+                    <span className="browse-card-pack-label">
+                      {added === qty ? 'Added' : `set of ${qty}`}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )
+          ) : (
+            <button
+              className={`browse-card-btn${added ? ' added' : ''}`}
+              onClick={(e) => handleAdd(e, 1)}
+              disabled={!product.available || !product.variant?.availableForSale || loading}
+            >
+              {!product.available ? 'Sold Out' : added ? '✓ Added' : 'Add to Cart'}
+            </button>
+          )}
         </div>
       </div>
 
