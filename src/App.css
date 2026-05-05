@@ -5786,6 +5786,16 @@ html.dark .gallery-view-all .btn-outline:hover {
   box-shadow: 0 -30px 0 30px #E7DDDA, 0 1px 0 rgba(0,0,0,0.07);
 }
 
+/* Mobile: must come AFTER the base rule above so the cascade override actually wins.
+   The base has a downward shadow (0 1px …) that bleeds over the mobile filter bar.
+   Replace it with a border-bottom which stays inside the element's layout box. */
+@media (max-width: 768px) {
+  .browse-sticky-topbar {
+    box-shadow: 0 -30px 0 30px #E7DDDA;
+    border-bottom: 1px solid rgba(0,0,0,0.07);
+  }
+}
+
 .browse-sticky-breadcrumb {
   display: flex;
   align-items: center;
