@@ -5786,11 +5786,23 @@ html.dark .gallery-view-all .btn-outline:hover {
   box-shadow: 0 -30px 0 30px #E7DDDA, 0 1px 0 rgba(0,0,0,0.07);
 }
 
-/* Mobile: must come AFTER the base rule above so the cascade override actually wins.
-   The base has a downward shadow (0 1px …) that bleeds over the mobile filter bar.
-   Replace it with a border-bottom which stays inside the element's layout box. */
+/* ALL mobile overrides must come AFTER the base rule so the cascade actually wins.
+   The base sets top:84px / height:46px / padding:0 48px — wrong on mobile.
+   Without this block the topbar ends at 130px, covering the mobile bar at 118px. */
 @media (max-width: 768px) {
   .browse-sticky-topbar {
+    top: 68px;        /* mobile navbar = 48px logo + 10px×2 padding */
+    height: 50px;
+    padding: 0 20px;
+    box-shadow: 0 -30px 0 30px #E7DDDA;
+    border-bottom: 1px solid rgba(0,0,0,0.07);
+  }
+}
+@media (max-width: 480px) {
+  .browse-sticky-topbar {
+    top: 68px;
+    height: 50px;
+    padding: 0 20px;
     box-shadow: 0 -30px 0 30px #E7DDDA;
     border-bottom: 1px solid rgba(0,0,0,0.07);
   }
