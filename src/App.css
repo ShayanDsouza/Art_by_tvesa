@@ -4059,7 +4059,7 @@ body.collection-page .navbar-collection-btn:hover {
 }
 
 .browse-overline {
-  font-size: 0.68rem;
+  font-size: 0.76rem;
   font-weight: 700;
   letter-spacing: 3.5px;
   text-transform: uppercase;
@@ -4383,7 +4383,7 @@ html.dark .browse-pagination-page { color: rgba(231,221,218,0.55); }
 }
 
 .browse-card-vendor {
-  font-size: 0.62rem;
+  font-size: 0.70rem;
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -6221,7 +6221,7 @@ html.dark .gallery-view-all .btn-outline:hover {
 }
 
 .product-vendor {
-  font-size: 0.65rem;
+  font-size: 0.73rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #888;
