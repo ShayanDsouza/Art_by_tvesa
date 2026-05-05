@@ -5593,9 +5593,9 @@ body.shop-page .cart-trigger:hover {
   }
 }
 
-/* ── Desktop filter bar — evergreen ── */
+/* ── Desktop filter bar — dark green (matches contact section) ── */
 body.shop-page .browse-filter-bar {
-  background: #172C16;
+  background: #0B180B;
   border-top-color: rgba(255,255,255,0.08);
   border-bottom-color: rgba(255,255,255,0.08);
 }
@@ -5605,9 +5605,9 @@ body.shop-page .browse-filter-main-btn.active { color: #E7DDDA; font-weight: 600
 body.shop-page .browse-filter-sep { background: rgba(255,255,255,0.15); }
 body.shop-page .browse-results-count { color: rgba(231,221,218,0.45); }
 
-/* ── Mobile filter bar — evergreen ── */
+/* ── Mobile filter bar — dark green (matches contact section) ── */
 body.shop-page .browse-mobile-bar {
-  background: #172C16;
+  background: #0B180B;
   border-bottom-color: rgba(255,255,255,0.08);
 }
 body.shop-page .browse-mobile-btn {
