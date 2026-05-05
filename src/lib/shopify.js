@@ -178,6 +178,37 @@ export async function addToCartWithAttributes(cartId, variantId, quantity = 1, a
   return cart
 }
 
+/* Add multiple lines to a new or existing cart (used by bundle builder) */
+export async function createCartWithLines(lines) {
+  const data = await shopifyFetch(`
+    ${CART_FRAGMENT}
+    mutation CartCreate($lines: [CartLineInput!]!) {
+      cartCreate(input: { lines: $lines }) {
+        cart { ...CartFields }
+        userErrors { field message }
+      }
+    }
+  `, { lines: lines.map(l => ({ merchandiseId: l.variantId, quantity: l.quantity, attributes: l.attributes || [] })) })
+  const { cart, userErrors } = data.cartCreate
+  if (userErrors.length) throw new Error(userErrors[0].message)
+  return cart
+}
+
+export async function addLinesToCart(cartId, lines) {
+  const data = await shopifyFetch(`
+    ${CART_FRAGMENT}
+    mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+      cartLinesAdd(cartId: $cartId, lines: $lines) {
+        cart { ...CartFields }
+        userErrors { field message }
+      }
+    }
+  `, { cartId, lines: lines.map(l => ({ merchandiseId: l.variantId, quantity: l.quantity, attributes: l.attributes || [] })) })
+  const { cart, userErrors } = data.cartLinesAdd
+  if (userErrors.length) throw new Error(userErrors[0].message)
+  return cart
+}
+
 export async function removeFromCart(cartId, lineId) {
   const data = await shopifyFetch(`
     ${CART_FRAGMENT}

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback } from 'react'
-import { createCart, addToCart, removeFromCart, updateCartLine } from '../lib/shopify'
+import { createCartWithAttributes, addToCartWithAttributes, removeFromCart, updateCartLine, createCartWithLines, addLinesToCart } from '../lib/shopify'
 
 const CartContext = createContext(null)
 
@@ -8,14 +8,14 @@ export function CartProvider({ children }) {
   const [cartOpen, setCartOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const addItem = useCallback(async (variantId, quantity = 1) => {
+  const addItem = useCallback(async (variantId, quantity = 1, attributes = []) => {
     setLoading(true)
     try {
       let updated
       if (!cart) {
-        updated = await createCart(variantId, quantity)
+        updated = await createCartWithAttributes(variantId, quantity, attributes)
       } else {
-        updated = await addToCart(cart.id, variantId, quantity)
+        updated = await addToCartWithAttributes(cart.id, variantId, quantity, attributes)
       }
       setCart(updated)
       setCartOpen(true)
@@ -52,6 +52,26 @@ export function CartProvider({ children }) {
     }
   }, [cart])
 
+  /* Add multiple lines at once — used by bundle builder */
+  const addItems = useCallback(async (lines) => {
+    if (!lines.length) return
+    setLoading(true)
+    try {
+      let updated
+      if (!cart) {
+        updated = await createCartWithLines(lines)
+      } else {
+        updated = await addLinesToCart(cart.id, lines)
+      }
+      setCart(updated)
+      setCartOpen(true)
+    } catch (e) {
+      console.error('Add items failed:', e)
+    } finally {
+      setLoading(false)
+    }
+  }, [cart])
+
   const openCart = useCallback(() => setCartOpen(true), [])
   const closeCart = useCallback(() => setCartOpen(false), [])
 
@@ -64,7 +84,7 @@ export function CartProvider({ children }) {
     <CartContext.Provider value={{
       cart, lines, totalQuantity, totalAmount, checkoutUrl,
       cartOpen, loading,
-      addItem, removeItem, updateItem,
+      addItem, addItems, removeItem, updateItem,
       openCart, closeCart,
     }}>
       {children}

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import Navbar from '../components/Navbar'
@@ -36,8 +36,116 @@ const SORT_OPTIONS = [
 
 const POSTCARD_PACKS = [3, 6, 11]
 
+/* ─── Postcard bundle builder overlay ───────────────────── */
+function BundleBuilder({ products, bundleSize, initialProductId, onClose }) {
+  const { addItems, loading } = useCart()
+
+  const [selection, setSelection] = useState(() =>
+    initialProductId ? { [initialProductId]: 1 } : {}
+  )
+
+  const totalSelected = Object.values(selection).reduce((s, q) => s + q, 0)
+  const remaining = bundleSize - totalSelected
+
+  const increment = (variantId, stock) => {
+    const cur = selection[variantId] || 0
+    if (totalSelected >= bundleSize) return
+    if (stock !== null && stock !== undefined && cur >= stock) return
+    setSelection(prev => ({ ...prev, [variantId]: cur + 1 }))
+  }
+
+  const decrement = (variantId) => {
+    const cur = selection[variantId] || 0
+    if (cur === 0) return
+    setSelection(prev => {
+      if (cur === 1) { const { [variantId]: _, ...rest } = prev; return rest }
+      return { ...prev, [variantId]: cur - 1 }
+    })
+  }
+
+  const handleAdd = async () => {
+    const lines = Object.entries(selection)
+      .filter(([, qty]) => qty > 0)
+      .map(([variantId, quantity]) => ({
+        variantId, quantity,
+        attributes: [{ key: '_bundle', value: `set-of-${bundleSize}` }],
+      }))
+    if (!lines.length) return
+    await addItems(lines)
+    onClose()
+  }
+
+  const available = products.filter(p => p.available && p.variant?.id)
+
+  return (
+    <div className="bundle-overlay" onClick={onClose}>
+      <div className="bundle-sheet" onClick={e => e.stopPropagation()}>
+
+        {/* Header */}
+        <div className="bundle-header">
+          <div>
+            <p className="bundle-overline">Postcard Bundle</p>
+            <h3 className="bundle-title">Choose your {bundleSize} postcards</h3>
+          </div>
+          <div className="bundle-header-right">
+            <span className={`bundle-counter${totalSelected === bundleSize ? ' complete' : ''}`}>
+              {totalSelected} / {bundleSize} selected
+            </span>
+            <button className="bundle-close" onClick={onClose} aria-label="Close">✕</button>
+          </div>
+        </div>
+
+        <p className="bundle-subtitle">Pick any combination — you can repeat designs.</p>
+
+        {/* Progress bar */}
+        <div className="bundle-progress">
+          <div className="bundle-progress-fill" style={{ width: `${(totalSelected / bundleSize) * 100}%` }} />
+        </div>
+
+        {/* Grid */}
+        <div className="bundle-grid">
+          {available.map(product => {
+            const variantId = product.variant.id
+            const qty = selection[variantId] || 0
+            const stock = product.variant.quantityAvailable
+            const canInc = totalSelected < bundleSize &&
+              (stock === null || stock === undefined || qty < stock)
+            const name = product.title.replace(/\s*[-–]\s*postcard$/i, '')
+            return (
+              <div key={product.id} className={`bundle-card${qty > 0 ? ' selected' : ''}`}>
+                <div className="bundle-card-img-wrap">
+                  {product.image && <img src={product.image.url} alt={name} loading="lazy" />}
+                  {qty > 0 && <span className="bundle-card-badge">×{qty}</span>}
+                </div>
+                <p className="bundle-card-name">{name}</p>
+                <div className="bundle-card-controls">
+                  <button className="bundle-qty-btn" onClick={() => decrement(variantId)} disabled={qty === 0}>−</button>
+                  <span className="bundle-qty-num">{qty}</span>
+                  <button className="bundle-qty-btn" onClick={() => increment(variantId, stock)} disabled={!canInc}>+</button>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Footer */}
+        <div className="bundle-footer">
+          {remaining > 0 && <p className="bundle-remaining">{remaining} more to go</p>}
+          <button
+            className="bundle-add-btn"
+            onClick={handleAdd}
+            disabled={totalSelected !== bundleSize || loading}
+          >
+            {loading ? 'Adding…' : `Add set of ${bundleSize} to Cart →`}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 /* ─── Product card ───────────────────────────────────────── */
-function ProductCard({ product, isPostcard, activeTab, activeSubTab }) {
+function ProductCard({ product, isPostcard, activeTab, activeSubTab, onPackSelect }) {
   const { addItem, loading } = useCart()
   // null = idle; for postcards stores the qty just added; for others stores true
   const [added, setAdded] = useState(null)
@@ -105,30 +213,22 @@ function ProductCard({ product, isPostcard, activeTab, activeSubTab }) {
         {/* Add to cart overlay on hover */}
         <div className="browse-card-overlay">
           {isPostcard ? (
-            /* Postcards: pick a pack of 3, 6 or 11 */
+            /* Postcards: choose a bundle size to open the builder */
             !product.available ? (
               <span className="browse-card-btn browse-card-btn--disabled">Sold Out</span>
             ) : (
               <div className="browse-card-pack-row">
-                {POSTCARD_PACKS.map(packSize => {
-                  // quantityAvailable === null means Shopify isn't tracking inventory → allow all
-                  const stock = product.variant?.quantityAvailable
-                  const inStock = stock === null || stock === undefined || packSize <= stock
-                  return (
-                    <button
-                      key={packSize}
-                      className={`browse-card-pack-btn${added === packSize ? ' added' : ''}${!inStock ? ' unavailable' : ''}`}
-                      onClick={(e) => handleAdd(e, packSize)}
-                      disabled={loading || !inStock}
-                      title={!inStock ? `Only ${stock} in stock` : `Add set of ${packSize}`}
-                    >
-                      {added === packSize ? '✓' : `×${packSize}`}
-                      <span className="browse-card-pack-label">
-                        {added === packSize ? 'Added' : !inStock ? 'low stock' : `set of ${packSize}`}
-                      </span>
-                    </button>
-                  )
-                })}
+                {POSTCARD_PACKS.map(packSize => (
+                  <button
+                    key={packSize}
+                    className="browse-card-pack-btn"
+                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); onPackSelect(packSize, product) }}
+                    disabled={loading}
+                  >
+                    ×{packSize}
+                    <span className="browse-card-pack-label">set of {packSize}</span>
+                  </button>
+                ))}
               </div>
             )
           ) : (
@@ -161,6 +261,10 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
   const PRODUCTS_PER_PAGE = 12
   const [products, setProducts]   = useState([])
   const [status, setStatus]       = useState('loading')
+  const [bundleConfig, setBundleConfig] = useState(null) // { size, initialProductId }
+  const handlePackSelect = useCallback((size, product) => {
+    setBundleConfig({ size, initialProductId: product.variant?.id })
+  }, [])
   const [sort, setSort]           = useState('featured')
   const [currentPage, setCurrentPage] = useState(1)
   const [openFilter, setOpenFilter] = useState(null) // 'availability' | 'price' | 'sort' | null
@@ -442,9 +546,19 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
             isPostcard={isPostcard}
             activeTab={activeTab}
             activeSubTab={activeSubTab}
+            onPackSelect={handlePackSelect}
           />
         ))}
       </div>
+
+      {bundleConfig && (
+        <BundleBuilder
+          products={products}
+          bundleSize={bundleConfig.size}
+          initialProductId={bundleConfig.initialProductId}
+          onClose={() => setBundleConfig(null)}
+        />
+      )}
 
       {displayed.length > PRODUCTS_PER_PAGE && (
         <div className="browse-pagination">
