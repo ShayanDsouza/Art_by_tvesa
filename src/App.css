@@ -4068,7 +4068,7 @@ body.collection-page .navbar-collection-btn:hover {
 
 .browse-title {
   font-family: 'Kenao', serif;
-  font-size: clamp(2.8rem, 5.5vw, 5rem);
+  font-size: clamp(2.2rem, 4.2vw, 3.8rem);
   font-weight: 400;
   font-style: normal;
   color: #172C16;
