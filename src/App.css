@@ -5863,16 +5863,17 @@ html.dark .gallery-view-all .btn-outline:hover {
 
 /* Combined filter dropdown — wider */
 .browse-filter-dropdown--combined {
-  min-width: 260px;
+  min-width: 280px;
 }
 
 .browse-filter-dropdown-section-label {
-  font-size: 0.65rem;
+  font-size: 0.66rem;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: rgba(23,44,22,0.45);
-  margin: 0 0 8px;
+  color: #111;
+  margin: 0 0 10px;
+  padding: 16px 16px 0;
 }
 
 .browse-filter-group,
@@ -5970,12 +5971,13 @@ html.dark .gallery-view-all .btn-outline:hover {
   left: 0;
   z-index: 300;
   background: #fff;
-  border: 1px solid rgba(0,0,0,0.12);
-  border-radius: 4px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  border: 1px solid rgba(0,0,0,0.13);
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
   min-width: 220px;
-  padding: 0;
+  padding: 0 0 16px;
   animation: dropdownIn 0.14s ease;
+  overflow: hidden;
 }
 
 /* Header row: "X selected" + Reset button */
@@ -5983,18 +5985,18 @@ html.dark .gallery-view-all .btn-outline:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px 10px;
+  padding: 6px 16px 10px;
 }
 
 .browse-filter-selected-count {
   font-size: 0.72rem;
-  color: #888;
+  color: #111;
   letter-spacing: 0.03em;
 }
 
 .browse-filter-price-info {
   font-size: 0.72rem;
-  color: #888;
+  color: #111;
   letter-spacing: 0.03em;
   flex: 1;
 }
@@ -6005,8 +6007,9 @@ html.dark .gallery-view-all .btn-outline:hover {
   padding: 0;
   font-size: 0.72rem;
   font-family: inherit;
-  color: #333;
+  color: #111;
   text-decoration: underline;
+  text-underline-offset: 2px;
   cursor: pointer;
   white-space: nowrap;
   margin-left: 8px;
@@ -6016,25 +6019,25 @@ html.dark .gallery-view-all .btn-outline:hover {
 /* Divider line */
 .browse-filter-dropdown-divider {
   height: 1px;
-  background: rgba(0,0,0,0.08);
-  margin: 0;
+  background: rgba(0,0,0,0.09);
+  margin: 4px 0;
 }
 
 /* Checkbox rows */
 .browse-filter-check-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  font-size: 0.78rem;
-  color: #333;
+  gap: 12px;
+  padding: 9px 16px;
+  font-size: 0.82rem;
+  color: #111;
   cursor: pointer;
   transition: background 0.15s;
 }
-.browse-filter-check-row:hover { background: #f7f4f2; }
+.browse-filter-check-row:hover { background: #f5f2ef; }
 .browse-filter-check-row input[type="checkbox"] {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   accent-color: #172C16;
   cursor: pointer;
   flex-shrink: 0;
@@ -6063,8 +6066,8 @@ html.dark .gallery-view-all .btn-outline:hover {
 
 .browse-filter-price-currency {
   padding: 0 8px;
-  font-size: 0.75rem;
-  color: #555;
+  font-size: 0.78rem;
+  color: #111;
   background: #f5f5f5;
   border-right: 1px solid rgba(0,0,0,0.12);
   line-height: 32px;
@@ -6077,6 +6080,7 @@ html.dark .gallery-view-all .btn-outline:hover {
 .browse-filter-price-input {
   border: none;
   outline: none;
+  color: #111;
   padding: 0 8px;
   font-size: 0.78rem;
   font-family: inherit;
