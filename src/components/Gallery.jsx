@@ -67,7 +67,7 @@ export default function Gallery() {
   const isDragging      = useRef(false)
   const lastXRef        = useRef(0)
   const artworksRef     = useRef([])
-  const autoRotateRef   = useRef(null)
+  const resumeTimerRef  = useRef(null)   // setTimeout ID that re-enables auto-rotate
   const userActiveRef   = useRef(false)  // true while user is interacting
 
   /* ── Firebase ─────────────────────────────────────────────────────── */
@@ -118,7 +118,7 @@ export default function Gallery() {
       let rel = ((i - off) % n + n * 1.5) % n - n / 2
       const x    = xFromRel(rel)
       const dist = Math.abs(rel)
-      const scale      = Math.max(0.55, 1.35 - dist * 0.28)
+      const scale      = scaleAt(dist)
       const opacity    = dist > 2.4 ? 0 : dist > 1.6 ? 0.55 : 1
       // Darken side pieces — center (dist≈0) is full brightness, sides progressively dimmer
       const brightness = Math.max(0.35, 1 - dist * 0.38)
@@ -152,8 +152,8 @@ export default function Gallery() {
   /* ── Pause auto-rotate on user interaction, resume after 3 s ─────── */
   const pauseAutoRotate = useCallback(() => {
     userActiveRef.current = true
-    clearTimeout(autoRotateRef.current)
-    autoRotateRef.current = setTimeout(() => {
+    clearTimeout(resumeTimerRef.current)
+    resumeTimerRef.current = setTimeout(() => {
       userActiveRef.current = false
     }, 3000)
   }, [])
@@ -229,7 +229,10 @@ export default function Gallery() {
       rafId = requestAnimationFrame(tick)
     }
     rafId = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(rafId)
+    return () => {
+      cancelAnimationFrame(rafId)
+      clearTimeout(resumeTimerRef.current)
+    }
   }, [artworks, applyOffset])
 
   /* ── Init ─────────────────────────────────────────────────────────── */
@@ -241,7 +244,7 @@ export default function Gallery() {
 
   return (
     <section id="gallery" className="gallery">
-      {loading && <GalleryLoader />}
+      {loading && <GalleryLoader className="gallery-loader--overlay" />}
 
       <div className="museum-wall" ref={wallRef}>
 

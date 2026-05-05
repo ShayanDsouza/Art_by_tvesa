@@ -126,9 +126,11 @@ function ProductCard({ product, isPostcard, activeTab, activeSubTab }) {
 
 /* ─── Product grid with full Shopify-style filter + sort ─── */
 function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
+  const PRODUCTS_PER_PAGE = 12
   const [products, setProducts]   = useState([])
   const [status, setStatus]       = useState('loading')
   const [sort, setSort]           = useState('featured')
+  const [currentPage, setCurrentPage] = useState(1)
   const [openFilter, setOpenFilter] = useState(null) // 'availability' | 'price' | 'sort' | null
   const [filterInStock, setFilterInStock]       = useState(false)
   const [filterOutOfStock, setFilterOutOfStock] = useState(false)
@@ -140,6 +142,7 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
   useEffect(() => {
     setStatus('loading')
     setProducts([])
+    setCurrentPage(1)
     getCollectionProducts(handle)
       .then(data => {
         setProducts(data)
@@ -158,6 +161,11 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [])
+
+  // Reset to page 1 whenever filters, sort, or collection change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [handle, sort, filterInStock, filterOutOfStock, priceFrom, priceTo])
 
   if (status === 'loading') return <div className="browse-status">Loading…</div>
   if (status === 'error')   return <div className="browse-status">Could not load products. Please try again.</div>
@@ -196,7 +204,19 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
       return 0
     })
 
-  const toggleFilter = (name) => setOpenFilter(f => f === name ? null : name)
+  const totalPages = Math.max(1, Math.ceil(displayed.length / PRODUCTS_PER_PAGE))
+  const currentPageSafe = Math.min(currentPage, totalPages)
+  const pagedProducts = displayed.slice(
+    (currentPageSafe - 1) * PRODUCTS_PER_PAGE,
+    currentPageSafe * PRODUCTS_PER_PAGE,
+  )
+  const startResult = displayed.length === 0 ? 0 : (currentPageSafe - 1) * PRODUCTS_PER_PAGE + 1
+  const endResult = Math.min(currentPageSafe * PRODUCTS_PER_PAGE, displayed.length)
+
+  const toggleFilter  = (name) => setOpenFilter(f => f === name ? null : name)
+  const filterActive  = filterInStock || filterOutOfStock || !!priceFrom || !!priceTo
+  const sortLabel     = SORT_OPTIONS.find(o => o.value === sort)?.label ?? 'Featured'
+  const resultText    = `${displayed.length} Result${displayed.length !== 1 ? 's' : ''}`
 
   return (
     <>
@@ -207,7 +227,7 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
         <div className="browse-filter-left">
           <div className="browse-filter-item">
             <button
-              className={`browse-filter-main-btn${(availSelected > 0 || priceFrom || priceTo) ? ' active' : ''}`}
+              className={`browse-filter-main-btn${filterActive ? ' active' : ''}`}
               onClick={() => toggleFilter('filter')}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -257,9 +277,7 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
             )}
           </div>
 
-          <span className="browse-product-count">
-            {displayed.length} Result{displayed.length !== 1 ? 's' : ''}
-          </span>
+          <span className="browse-product-count">{resultText}</span>
         </div>
 
         {/* Right: Sort */}
@@ -268,7 +286,7 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
             className="browse-filter-main-btn"
             onClick={() => toggleFilter('sort')}
           >
-            Sort: {SORT_OPTIONS.find(o => o.value === sort)?.label ?? 'Featured'}
+            Sort: {sortLabel}
             <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
               <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
@@ -302,13 +320,13 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
           </svg>
-          Filter{(filterInStock || filterOutOfStock || priceFrom || priceTo) ? ' •' : ''}
+          Filter{filterActive ? ' •' : ''}
         </button>
         <button className="browse-mobile-btn" onClick={() => setMobilePanel('sort')}>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M11 5h10M11 9h7M11 13h4"/><path d="M3 5l4 4-4 4"/>
           </svg>
-          {SORT_OPTIONS.find(o => o.value === sort)?.label ?? 'Sort'}
+          {sortLabel}
         </button>
       </div>
 
@@ -352,7 +370,7 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
                 </div>
 
                 <button className="browse-sheet-apply" onClick={() => setMobilePanel(null)}>
-                  Show {displayed.length} result{displayed.length !== 1 ? 's' : ''}
+                  Show {resultText}
                 </button>
               </>
             )}
@@ -385,7 +403,7 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
       )}
 
       <div className="browse-grid">
-        {displayed.map(p => (
+        {pagedProducts.map(p => (
           <ProductCard
             key={p.id}
             product={p}
@@ -395,6 +413,33 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
           />
         ))}
       </div>
+
+      {displayed.length > PRODUCTS_PER_PAGE && (
+        <div className="browse-pagination">
+          <p className="browse-pagination-summary">
+            Showing {startResult}-{endResult} of {displayed.length}
+          </p>
+          <div className="browse-pagination-controls">
+            <button
+              className="browse-pagination-btn"
+              onClick={() => setCurrentPage(page => Math.max(1, page - 1))}
+              disabled={currentPageSafe === 1}
+            >
+              Previous
+            </button>
+            <span className="browse-pagination-page">
+              Page {currentPageSafe} of {totalPages}
+            </span>
+            <button
+              className="browse-pagination-btn"
+              onClick={() => setCurrentPage(page => Math.min(totalPages, page + 1))}
+              disabled={currentPageSafe === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </>
   )
 }
