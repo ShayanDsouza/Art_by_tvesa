@@ -972,6 +972,8 @@ body.gallery-active .navbar {
 
 /* Full-area wall — fills the gallery section */
 .museum-wall {
+  --museum-baseboard-height: 90px;
+  --museum-cta-gap: 14px;
   position: absolute;
   inset: 0;
   display: flex;
@@ -1151,13 +1153,16 @@ body.gallery-active .navbar {
 /* ── CTA buttons above the green strip ───────────────────── */
 .museum-cta-row {
   position: absolute;
-  bottom: 105px;   /* sits just above the 90px baseboard */
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: calc(var(--museum-baseboard-height) + var(--museum-cta-gap));
+  left: 24px;
+  right: 24px;
   display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 20px;
   z-index: 5;
   white-space: nowrap;
+  pointer-events: none;
 }
 
 @keyframes museum-shimmer {
@@ -1167,18 +1172,22 @@ body.gallery-active .navbar {
 
 /* Shared base */
 .museum-cta-btn {
-  width: 200px;
+  flex: 0 1 216px;
+  width: 216px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 13px 0;
+  padding: 16px 0;
+  box-sizing: border-box;
+  line-height: 1;
   font-family: var(--font-body);
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   text-decoration: none;
   transition: border-color 0.25s, color 0.25s, background 0.25s;
+  pointer-events: auto;
 }
 
 /* Light grey — View Archives */
@@ -1218,7 +1227,7 @@ body.gallery-active .navbar {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 90px;
+  height: var(--museum-baseboard-height);
   background: #172C16;
   z-index: 4;
 }
@@ -3484,17 +3493,27 @@ body.gallery-active .navbar {
 
 /* ===== GALLERY MOBILE ===== */
 @media (max-width: 768px) {
-
-  .gallery-view-all {
-    bottom: 18px;
-    gap: 12px;
-    flex-wrap: nowrap;
+  .museum-strip {
+    transform: scale(0.88);
+    transform-origin: center center;
   }
-  .gallery-view-all .btn {
-    padding: 10px 22px;
-    font-size: 0.68rem;
-    letter-spacing: 1.8px;
-    width: 170px;
+
+  .museum-wall {
+    --museum-cta-gap: 12px;
+  }
+
+  .museum-cta-row {
+    left: 20px;
+    right: 20px;
+    gap: 12px;
+  }
+
+  .museum-cta-btn {
+    flex-basis: 204px;
+    width: 204px;
+    padding: 14px 24px;
+    font-size: 0.76rem;
+    letter-spacing: 1.9px;
   }
   .museum-center-frame { width: 170px; height: 215px; }
   .museum-art--near { width: 110px; height: 140px; }
@@ -3504,13 +3523,26 @@ body.gallery-active .navbar {
 }
 
 @media (max-width: 480px) {
+  .museum-strip {
+    transform: scale(0.76);
+  }
 
-  .gallery-view-all { gap: 8px; }
-  .gallery-view-all .btn {
-    padding: 8px 16px;
-    font-size: 0.62rem;
-    letter-spacing: 1.5px;
-    width: 148px;
+  .museum-wall {
+    --museum-cta-gap: 10px;
+  }
+
+  .museum-cta-row {
+    left: 16px;
+    right: 16px;
+    gap: 8px;
+  }
+
+  .museum-cta-btn {
+    flex-basis: 182px;
+    padding: 12px 18px;
+    font-size: 0.7rem;
+    letter-spacing: 1.6px;
+    width: 182px;
   }
   .museum-center-frame { width: 130px; height: 165px; }
   .museum-art--near { width: 80px;  height: 105px; }
@@ -4206,23 +4238,22 @@ body.collection-page .navbar-collection-btn:hover {
 
 .browse-card-postcard-rotator {
   position: absolute;
-  width: 200%;
-  height: 200%;
-  top: -50%;
-  left: -50%;
-  transition: none; /* instant rotation */
+  inset: 0;
+  padding: 0;
+  background: transparent;
+  transition: none;
 }
 
 .browse-card-postcard-rotator .browse-card-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   transition: none;
 }
 
-.browse-card.browse-card--postcard:hover .browse-card-postcard-rotator {
-  transform: rotate(90deg);
+.browse-card--postcard .browse-card-img-wrap {
+  background: #e9e3dd;
 }
 
 .browse-card-img.hidden {
@@ -4546,6 +4577,13 @@ html.dark body.shop-browse-page .account-avatar {
   text-transform: uppercase;
   color: #bbb;
   margin: 0;
+}
+
+.cart-line-meta {
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: #6f655d;
+  margin: 2px 0 0;
 }
 
 .cart-line-price {
@@ -5080,6 +5118,10 @@ html.dark .cart-line-price {
 
 html.dark .cart-line-variant {
   color: rgba(228, 216, 213, 0.35);
+}
+
+html.dark .cart-line-meta {
+  color: rgba(228, 216, 213, 0.65);
 }
 
 html.dark .cart-line-qty {
@@ -6169,6 +6211,152 @@ html.dark .gallery-view-all .btn-outline:hover {
 .product-variant-btn.active { background: #172C16; border-color: #172C16; color: #fff; }
 .product-variant-btn.sold-out { opacity: 0.4; cursor: not-allowed; text-decoration: line-through; }
 
+/* ── Bundle builder ── */
+.product-bundle-builder {
+  margin-bottom: 26px;
+  padding: 20px;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 18px;
+  background: #fbf8f4;
+}
+
+.product-bundle-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.product-bundle-eyebrow {
+  margin: 0 0 6px;
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8a7a69;
+}
+
+.product-bundle-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: #1e1e1e;
+}
+
+.product-bundle-count {
+  flex-shrink: 0;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #efe7df;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5d5046;
+}
+
+.product-bundle-copy {
+  margin: 0 0 18px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #5f5a55;
+}
+
+.product-bundle-status,
+.product-bundle-error {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.product-bundle-status {
+  color: #72685f;
+}
+
+.product-bundle-error {
+  margin-top: 14px;
+  color: #9d2d2d;
+}
+
+.product-bundle-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.product-bundle-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 14px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  font-family: inherit;
+}
+
+.product-bundle-card:hover:not(:disabled) {
+  border-color: rgba(23,44,22,0.5);
+  box-shadow: 0 8px 20px rgba(23,44,22,0.08);
+  transform: translateY(-1px);
+}
+
+.product-bundle-card.active {
+  border-color: #172C16;
+  box-shadow: 0 0 0 1px #172C16;
+}
+
+.product-bundle-card:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.product-bundle-card-image-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f2ede7;
+}
+
+.product-bundle-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.product-bundle-card-image--placeholder {
+  background: linear-gradient(135deg, #efe7df, #e4ddd7);
+}
+
+.product-bundle-card-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.92);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5d5046;
+}
+
+.product-bundle-card-badge--selected {
+  background: #172C16;
+  color: #fff;
+}
+
+.product-bundle-card-title {
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: #222;
+}
+
 /* ── Quantity ── */
 .product-quantity-row {
   display: flex;
@@ -6310,6 +6498,20 @@ html.dark .gallery-view-all .btn-outline:hover {
 }
 
 @media (max-width: 480px) {
+  .product-bundle-builder {
+    padding: 16px;
+  }
+
+  .product-bundle-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .product-bundle-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
   .product-related-grid { grid-template-columns: 1fr 1fr; }
   .product-related { padding: 32px 20px 48px; }
 }
@@ -6548,17 +6750,34 @@ html.dark .gallery-view-all .btn-outline:hover {
 /* ── Payment badges ── */
 .sf-payments {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
   flex-wrap: wrap;
 }
 
 .sf-pay-badge {
   display: inline-flex;
-  border-radius: 4px;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  min-width: 48px;
+  padding: 0 2px;
+  border-radius: 6px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  border: 1px solid rgba(23,44,22,0.12);
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
   line-height: 0;
+}
+
+.sf-pay-badge svg {
+  width: 52px;
+  height: 30px;
+  display: block;
+}
+
+.sf-pay-badge--banking svg {
+  width: 56px;
 }
 
 /* ── Responsive ── */
