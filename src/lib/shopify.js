@@ -68,7 +68,7 @@ export async function getCollectionProducts(handle) {
     query GetCollection($handle: String!) {
       collection(handle: $handle) {
         title
-        products(first: 12) {
+        products(first: 250) {
           edges {
             node {
               id
