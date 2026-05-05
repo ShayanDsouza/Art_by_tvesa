@@ -5564,19 +5564,20 @@ body.shop-page .browse-sticky-topbar {
   box-shadow: 0 -30px 0 30px #3B0C0C, 0 1px 0 rgba(255,255,255,0.08);
 }
 body.shop-page .browse-sticky-breadcrumb,
-body.shop-page .browse-sticky-breadcrumb a {
-  color: rgba(231,221,218,0.55);
+body.shop-page .browse-sticky-breadcrumb a,
+body.shop-page .browse-sticky-sep,
+body.shop-page .browse-sticky-breadcrumb span:last-child {
+  color: #fff;
 }
-body.shop-page .browse-sticky-breadcrumb a:hover { color: #E7DDDA; }
-body.shop-page .browse-sticky-breadcrumb span:last-child { color: rgba(231,221,218,0.9); }
+body.shop-page .browse-sticky-breadcrumb a:hover { color: rgba(255,255,255,0.7); }
 body.shop-page .cart-trigger {
-  border-color: rgba(255,255,255,0.28);
-  color: rgba(231,221,218,0.85);
+  border-color: rgba(255,255,255,0.45);
+  color: #fff;
 }
 body.shop-page .cart-trigger:hover {
-  border-color: rgba(255,255,255,0.65);
+  border-color: #fff;
   color: #fff;
-  background: rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.08);
 }
 
 /* Mobile: swap upward shadow colour to maroon */
@@ -5599,11 +5600,12 @@ body.shop-page .browse-filter-bar {
   border-top-color: rgba(255,255,255,0.08);
   border-bottom-color: rgba(255,255,255,0.08);
 }
-body.shop-page .browse-filter-main-btn { color: rgba(231,221,218,0.65); }
+body.shop-page .browse-filter-main-btn { color: #fff; }
 body.shop-page .browse-filter-main-btn:hover,
-body.shop-page .browse-filter-main-btn.active { color: #E7DDDA; font-weight: 600; }
-body.shop-page .browse-filter-sep { background: rgba(255,255,255,0.15); }
-body.shop-page .browse-results-count { color: rgba(231,221,218,0.45); }
+body.shop-page .browse-filter-main-btn.active { color: #fff; font-weight: 600; }
+body.shop-page .browse-filter-sep { background: rgba(255,255,255,0.45); }
+body.shop-page .browse-filter-label { color: #fff; }
+body.shop-page .browse-results-count { color: #fff; }
 
 /* ── Mobile filter bar — dark green (matches contact section) ── */
 body.shop-page .browse-mobile-bar {
@@ -5611,12 +5613,12 @@ body.shop-page .browse-mobile-bar {
   border-bottom-color: rgba(255,255,255,0.08);
 }
 body.shop-page .browse-mobile-btn {
-  color: rgba(231,221,218,0.8);
-  border-color: rgba(255,255,255,0.22);
+  color: #fff;
+  border-color: rgba(255,255,255,0.45);
 }
 body.shop-page .browse-mobile-btn:hover {
-  border-color: rgba(255,255,255,0.55);
-  background: rgba(255,255,255,0.05);
+  border-color: #fff;
+  background: rgba(255,255,255,0.08);
   color: #fff;
 }
 
