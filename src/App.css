@@ -5606,6 +5606,7 @@ body.shop-page .browse-filter-main-btn.active { color: #fff; font-weight: 600; }
 body.shop-page .browse-filter-sep { background: rgba(255,255,255,0.45); }
 body.shop-page .browse-filter-label { color: #fff; }
 body.shop-page .browse-results-count { color: #fff; }
+body.shop-page .browse-product-count { color: #fff; }
 
 /* ── Mobile filter bar — dark green (matches contact section) ── */
 body.shop-page .browse-mobile-bar {
