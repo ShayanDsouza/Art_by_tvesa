@@ -36,6 +36,10 @@ const CART_FRAGMENT = `
         node {
           id
           quantity
+          attributes {
+            key
+            value
+          }
           merchandise {
             ... on ProductVariant {
               id
@@ -64,7 +68,7 @@ export async function getCollectionProducts(handle) {
     query GetCollection($handle: String!) {
       collection(handle: $handle) {
         title
-        products(first: 50) {
+        products(first: 12) {
           edges {
             node {
               id
@@ -134,6 +138,10 @@ export async function getProduct(handle) {
 
 /* ─── Cart ──────────────────────────────────────────────── */
 export async function createCart(variantId, quantity = 1) {
+  return createCartWithAttributes(variantId, quantity)
+}
+
+export async function createCartWithAttributes(variantId, quantity = 1, attributes = []) {
   const data = await shopifyFetch(`
     ${CART_FRAGMENT}
     mutation CartCreate($lines: [CartLineInput!]!) {
@@ -142,7 +150,7 @@ export async function createCart(variantId, quantity = 1) {
         userErrors { field message }
       }
     }
-  `, { lines: [{ merchandiseId: variantId, quantity }] })
+  `, { lines: [{ merchandiseId: variantId, quantity, attributes }] })
 
   const { cart, userErrors } = data.cartCreate
   if (userErrors.length) throw new Error(userErrors[0].message)
@@ -150,6 +158,10 @@ export async function createCart(variantId, quantity = 1) {
 }
 
 export async function addToCart(cartId, variantId, quantity = 1) {
+  return addToCartWithAttributes(cartId, variantId, quantity)
+}
+
+export async function addToCartWithAttributes(cartId, variantId, quantity = 1, attributes = []) {
   const data = await shopifyFetch(`
     ${CART_FRAGMENT}
     mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
@@ -158,7 +170,7 @@ export async function addToCart(cartId, variantId, quantity = 1) {
         userErrors { field message }
       }
     }
-  `, { cartId, lines: [{ merchandiseId: variantId, quantity }] })
+  `, { cartId, lines: [{ merchandiseId: variantId, quantity, attributes }] })
 
   const { cart, userErrors } = data.cartLinesAdd
   if (userErrors.length) throw new Error(userErrors[0].message)
