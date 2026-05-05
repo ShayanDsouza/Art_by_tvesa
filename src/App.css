@@ -5595,7 +5595,7 @@ body.shop-page .cart-trigger:hover {
 
 /* ── Desktop filter bar — dark green (matches contact section) ── */
 body.shop-page .browse-filter-bar {
-  background: #0B180B;
+  background: #3B0C0C;
   border-top-color: rgba(255,255,255,0.08);
   border-bottom-color: rgba(255,255,255,0.08);
 }
@@ -5607,7 +5607,7 @@ body.shop-page .browse-results-count { color: rgba(231,221,218,0.45); }
 
 /* ── Mobile filter bar — dark green (matches contact section) ── */
 body.shop-page .browse-mobile-bar {
-  background: #0B180B;
+  background: #3B0C0C;
   border-bottom-color: rgba(255,255,255,0.08);
 }
 body.shop-page .browse-mobile-btn {
