@@ -4462,8 +4462,9 @@ html.dark .browse-pagination-page { color: rgba(231,221,218,0.55); }
   background: #5F578A;
   transform: translateY(-1px);
 }
-.browse-card-pack-btn:disabled { opacity: 0.4; cursor: default; }
+.browse-card-pack-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .browse-card-pack-btn.added { background: #2a6b2a; }
+.browse-card-pack-btn.unavailable { background: #555; }
 
 /* ===== CART TRIGGER — inline in header ===== */
 .cart-trigger {

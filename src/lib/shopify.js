@@ -83,6 +83,7 @@ export async function getCollectionProducts(handle) {
                   node {
                     id
                     availableForSale
+                    quantityAvailable
                     price { amount currencyCode }
                   }
                 }

@@ -110,19 +110,25 @@ function ProductCard({ product, isPostcard, activeTab, activeSubTab }) {
               <span className="browse-card-btn browse-card-btn--disabled">Sold Out</span>
             ) : (
               <div className="browse-card-pack-row">
-                {POSTCARD_PACKS.map(qty => (
-                  <button
-                    key={qty}
-                    className={`browse-card-pack-btn${added === qty ? ' added' : ''}`}
-                    onClick={(e) => handleAdd(e, qty)}
-                    disabled={loading}
-                  >
-                    {added === qty ? '✓' : `×${qty}`}
-                    <span className="browse-card-pack-label">
-                      {added === qty ? 'Added' : `set of ${qty}`}
-                    </span>
-                  </button>
-                ))}
+                {POSTCARD_PACKS.map(packSize => {
+                  // quantityAvailable === null means Shopify isn't tracking inventory → allow all
+                  const stock = product.variant?.quantityAvailable
+                  const inStock = stock === null || stock === undefined || packSize <= stock
+                  return (
+                    <button
+                      key={packSize}
+                      className={`browse-card-pack-btn${added === packSize ? ' added' : ''}${!inStock ? ' unavailable' : ''}`}
+                      onClick={(e) => handleAdd(e, packSize)}
+                      disabled={loading || !inStock}
+                      title={!inStock ? `Only ${stock} in stock` : `Add set of ${packSize}`}
+                    >
+                      {added === packSize ? '✓' : `×${packSize}`}
+                      <span className="browse-card-pack-label">
+                        {added === packSize ? 'Added' : !inStock ? 'low stock' : `set of ${packSize}`}
+                      </span>
+                    </button>
+                  )
+                })}
               </div>
             )
           ) : (
