@@ -1228,7 +1228,7 @@ body.gallery-active .navbar {
   left: 0;
   right: 0;
   height: var(--museum-baseboard-height);
-  background: #172C16;
+  background: transparent;
   z-index: 4;
 }
 
