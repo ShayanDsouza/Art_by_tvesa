@@ -109,11 +109,10 @@ export default function GridGallery() {
   useEffect(() => {
     getDoc(doc(db, "siteContent", "collection"))
       .then(snap => {
-        setCollectionText(snap.exists() ? snap.data() : {
-          eyebrow: "The Gallery of Trying",
-          heading: "Archives",
-          subheading: "",
-        })
+        const data = snap.exists() ? snap.data() : { eyebrow: "The Gallery of Trying", heading: "Archives", subheading: "" }
+        // Migrate old heading value
+        if (data.heading === 'The Collection') data.heading = 'Archives'
+        setCollectionText(data)
       })
       .catch(() => {
         setCollectionText({ eyebrow: "The Gallery of Trying", heading: "Archives", subheading: "" })
