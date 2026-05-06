@@ -251,6 +251,15 @@ export default function Gallery() {
         {/* ── Spotlight ── */}
         <div className="museum-spotlight" />
 
+        {/* ── Light fixture overlay ── */}
+        <img
+          src="/light fixture.png"
+          alt=""
+          className="museum-light-fixture"
+          aria-hidden="true"
+          draggable={false}
+        />
+
         {/* ── Carousel zone: intercepts scroll + drag, covers artwork strip ── */}
         <div
           className="museum-carousel-zone"

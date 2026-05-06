@@ -1001,6 +1001,18 @@ body.gallery-active .navbar {
   z-index: 1;
 }
 
+/* ── Light fixture: centred PNG hanging from the top of the wall ── */
+.museum-light-fixture {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(120px, 22%, 280px);
+  pointer-events: none;
+  z-index: 2;
+  display: block;
+}
+
 /* Horizontal row: far-left | near-left | center | near-right | far-right */
 /* ── Carousel zone: scroll + drag intercept, narrow band only ─── */
 .museum-carousel-zone {
