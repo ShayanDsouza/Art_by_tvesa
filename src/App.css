@@ -4371,8 +4371,8 @@ html.dark .browse-pagination-page { color: rgba(231,221,218,0.55); }
 }
 
 .browse-card-title {
-  font-family: 'Kenao', serif;
-  font-size: 1.35rem;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
   font-weight: 400;
   font-style: normal;
   color: #172C16;
