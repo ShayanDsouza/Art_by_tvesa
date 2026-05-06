@@ -993,10 +993,12 @@ body.gallery-active .navbar {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: clamp(200px, 38%, 480px);
+  width: clamp(340px, 62%, 760px);
   pointer-events: none;
   z-index: 2;
   display: block;
+  object-fit: contain;
+  object-position: top center;
 }
 
 /* Horizontal row: far-left | near-left | center | near-right | far-right */
