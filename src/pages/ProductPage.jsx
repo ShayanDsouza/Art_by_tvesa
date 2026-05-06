@@ -81,7 +81,7 @@ function RelatedCard({ product }) {
 export default function ProductPage() {
   const { handle } = useParams()
   const [searchParams] = useSearchParams()
-  const { addItem, openCart, loading: cartLoading, totalQuantity } = useCart()
+  const { addItem, openCart, loading: cartLoading, totalQuantity, lines: cartLines } = useCart()
 
   const [product, setProduct]           = useState(null)
   const [status, setStatus]             = useState('loading')
@@ -153,6 +153,17 @@ export default function ProductPage() {
   const bundleSize = getPostcardBundleSize(product)
   const isBundleProduct = Boolean(bundleSize)
   const bundleTotal = Object.values(selectedBundleCounts).reduce((a, b) => a + b, 0)
+
+  // Count how many of each postcard handle are already committed in the cart
+  // (cart lines store postcard_handles as a comma-separated list, repeated per qty)
+  const cartPostcardCounts = {}
+  cartLines.forEach(line => {
+    const attr = line.attributes?.find(a => a.key === 'postcard_handles')
+    if (!attr?.value) return
+    attr.value.split(',').filter(Boolean).forEach(h => {
+      cartPostcardCounts[h] = (cartPostcardCounts[h] || 0) + line.quantity
+    })
+  })
   const bundleReady = !isBundleProduct || bundleTotal === bundleSize
   const bundleAttributes = isBundleProduct
     ? buildPostcardBundleAttributesFromCounts(selectedBundleCounts, bundleOptions, bundleSize)
@@ -164,10 +175,11 @@ export default function ProductPage() {
       const cur = prev[handle] || 0
       const total = Object.values(prev).reduce((a, b) => a + b, 0)
       if (total >= bundleSize) return prev
-      // respect individual stock
+      // respect stock minus what's already in the cart
       const opt = bundleOptions.find(o => o.handle === handle)
       const stock = opt?.variant?.quantityAvailable
-      if (stock != null && cur >= stock) return prev
+      const inCart = cartPostcardCounts[handle] || 0
+      if (stock != null && cur + inCart >= stock) return prev
       return { ...prev, [handle]: cur + 1 }
     })
   }
@@ -368,8 +380,11 @@ export default function ProductPage() {
                       {bundleOptions.map(option => {
                         const count = selectedBundleCounts[option.handle] || 0
                         const stock = option.variant?.quantityAvailable
+                        const cartCount = cartPostcardCounts[option.handle] || 0
                         const soldOut = !option.available || !option.variant?.availableForSale
-                        const atStockLimit = !soldOut && stock != null && count >= stock
+                        // remaining = stock not yet committed to cart or current selection
+                        const remaining = stock != null ? stock - cartCount : null
+                        const atStockLimit = !soldOut && remaining != null && count >= remaining
                         const canInc = !soldOut && bundleTotal < bundleSize && !atStockLimit
 
                         return (
@@ -411,7 +426,10 @@ export default function ProductPage() {
                             <span className="product-bundle-card-title">{option.title}</span>
                             {atStockLimit && (
                               <span className="product-bundle-card-stock-msg">
-                                Only {stock} in stock
+                                {remaining <= 0
+                                  ? 'No more in stock'
+                                  : `Only ${remaining} left`}
+                                {cartCount > 0 && remaining > 0 && ` (${cartCount} in cart)`}
                               </span>
                             )}
                           </div>
