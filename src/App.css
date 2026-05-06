@@ -737,27 +737,38 @@ body.gallery-active .navbar {
 
 .about-content {
   display: flex;
-  gap: 36px;
-  align-items: flex-start;
+  gap: 70px;
+  align-items: stretch;
   max-width: 1100px;
   margin: 0 auto;
 }
 
 /* ── Photo side ── */
 .about-image {
-  flex: 0 0 380px;
-  height: 500px;
+  flex: 0 0 420px;
+  position: relative;
 }
 
-/* ── Text card side ── */
+/* decorative corner bracket */
+.about-image::before {
+  content: '';
+  position: absolute;
+  top: -18px;
+  left: -18px;
+  width: 58px;
+  height: 58px;
+  border-top: 2px solid rgba(90,70,65,0.28);
+  border-left: 2px solid rgba(90,70,65,0.28);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Text side — no card, sits on section background ── */
 .about-text {
   flex: 1;
-  height: 500px;
   box-sizing: border-box;
-  background: #FDFAF8;
-  border-radius: 10px;
-  padding: 36px 44px;
-  box-shadow: 0 4px 28px rgba(0,0,0,0.05);
+  padding: 8px 0;
+  background: transparent;
 }
 
 .about-overline {
@@ -767,26 +778,26 @@ body.gallery-active .navbar {
   font-weight: 700;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: #9B94C9;
-  margin-bottom: 12px;
+  color: #9B8880;
+  margin-bottom: 14px;
 }
 
 .about-name {
   font-family: var(--font-heading);
-  font-size: 2.6rem;
+  font-size: 3rem;
   font-weight: 400;
   font-style: italic;
   color: #2d2d2d;
-  margin-bottom: 20px;
+  margin-bottom: 28px;
   letter-spacing: -0.5px;
 }
 
 .about-text p {
-  margin-bottom: 14px;
-  color: #4a4a4a;
+  margin-bottom: 18px;
+  color: #4a4040;
   font-weight: 400;
-  line-height: 1.75;
-  font-size: 0.82rem;
+  line-height: 1.8;
+  font-size: 0.95rem;
 }
 
 .about-text p:last-of-type { margin-bottom: 0; }
@@ -804,18 +815,18 @@ body.gallery-active .navbar {
 
 .about-socials {
   display: flex;
-  gap: 16px;
-  margin-top: 20px;
+  gap: 18px;
+  margin-top: 26px;
 }
 
 .about-socials a {
-  color: #9a9a9a;
-  font-size: 1.2rem;
+  color: #5a5050;
+  font-size: 1.3rem;
   transition: color 0.2s;
   line-height: 1;
 }
 
-.about-socials a:hover { color: #4a4a4a; }
+.about-socials a:hover { color: #2d2d2d; }
 
 @media (max-width: 900px) {
   .about {
@@ -838,8 +849,7 @@ body.gallery-active .navbar {
 
   .about-text {
     width: 100%;
-    height: auto;
-    padding: 28px 24px;
+    padding: 0;
   }
 
   .about-name {
@@ -850,11 +860,8 @@ body.gallery-active .navbar {
 /* ── Dark mode ── */
 html.dark .about { background: #1e1010; }
 html.dark .about-image::before { border-color: rgba(255,255,255,0.12); }
-html.dark .about-text {
-  background: #2a1414;
-  box-shadow: 0 4px 28px rgba(0,0,0,0.25);
-}
 html.dark .about-name { color: #E7DDD9; }
+html.dark .about-overline { color: rgba(231,221,218,0.5); }
 html.dark .about-text p { color: rgba(231,221,218,0.75); }
 html.dark .about-socials a { color: rgba(231,221,218,0.4); }
 html.dark .about-socials a:hover { color: #E7DDD9; }
