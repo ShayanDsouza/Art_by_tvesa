@@ -737,38 +737,26 @@ body.gallery-active .navbar {
 
 .about-content {
   display: flex;
-  gap: 70px;
+  gap: 0;
   align-items: stretch;
   max-width: 1100px;
   margin: 0 auto;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 40px rgba(0,0,0,0.09);
 }
 
 /* ── Photo side ── */
 .about-image {
   flex: 0 0 420px;
-  position: relative;
 }
 
-/* decorative corner bracket */
-.about-image::before {
-  content: '';
-  position: absolute;
-  top: -18px;
-  left: -18px;
-  width: 58px;
-  height: 58px;
-  border-top: 2px solid rgba(90,70,65,0.28);
-  border-left: 2px solid rgba(90,70,65,0.28);
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* ── Text side — no card, sits on section background ── */
+/* ── White text card — flush against photo ── */
 .about-text {
   flex: 1;
   box-sizing: border-box;
-  padding: 8px 0;
-  background: transparent;
+  padding: 44px 52px;
+  background: #fff;
 }
 
 .about-overline {
@@ -835,21 +823,17 @@ body.gallery-active .navbar {
 
   .about-content {
     flex-direction: column;
-    gap: 28px;
   }
 
   .about-image {
     flex: none;
     width: 100%;
-    max-width: 420px;
-    height: auto;
-    aspect-ratio: 3 / 4;
-    margin: 0 auto;
+    aspect-ratio: 4 / 3;
   }
 
   .about-text {
     width: 100%;
-    padding: 0;
+    padding: 28px 24px;
   }
 
   .about-name {
@@ -859,7 +843,7 @@ body.gallery-active .navbar {
 
 /* ── Dark mode ── */
 html.dark .about { background: #1e1010; }
-html.dark .about-image::before { border-color: rgba(255,255,255,0.12); }
+html.dark .about-text { background: #2a2020; }
 html.dark .about-name { color: #E7DDD9; }
 html.dark .about-overline { color: rgba(231,221,218,0.5); }
 html.dark .about-text p { color: rgba(231,221,218,0.75); }
@@ -3809,7 +3793,6 @@ body.collection-page .navbar-collection-btn:hover {
   height: 100%;
   object-fit: cover;
   object-position: center top;
-  border-radius: 4px;
   display: block;
 }
 @media (max-width: 900px) {
