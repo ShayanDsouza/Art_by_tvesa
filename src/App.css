@@ -984,22 +984,8 @@ body.gallery-active .navbar {
 }
 .museum-wall:active { cursor: default; }
 
-/* Spotlight: warm elliptical glow from the arch above */
-.museum-spotlight {
-  position: absolute;
-  top: -10%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 55%;
-  height: 85%;
-  background:
-    radial-gradient(ellipse at 50% 0%,
-      rgba(255, 230, 170, 0.30) 0%,
-      rgba(255, 210, 120, 0.14) 28%,
-      transparent 62%);
-  pointer-events: none;
-  z-index: 1;
-}
+/* Spotlight removed — light comes from the fixture image */
+.museum-spotlight { display: none; }
 
 /* ── Light fixture: centred PNG hanging from the top of the wall ── */
 .museum-light-fixture {
@@ -1007,7 +993,7 @@ body.gallery-active .navbar {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: clamp(120px, 22%, 280px);
+  width: clamp(200px, 38%, 480px);
   pointer-events: none;
   z-index: 2;
   display: block;

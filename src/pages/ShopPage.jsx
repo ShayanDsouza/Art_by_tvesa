@@ -10,7 +10,7 @@ const COLLECTIONS = [
     title: 'Original\nPaintings',
     desc: 'Unique, hand-crafted pieces in acrylic, oil, and mixed media. Each artwork is sold once — yours forever.',
     link: '/shop/browse?tab=originals',
-    image: '/original%20(1).jpg',
+    image: '/originals.jpg',
   },
   {
     id: 'prints',
