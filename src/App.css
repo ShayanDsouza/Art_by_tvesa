@@ -4419,6 +4419,13 @@ html.dark .browse-pagination-page { color: rgba(231,221,218,0.55); }
 .browse-card-btn:disabled { opacity: 0.4; cursor: default; }
 .browse-card-btn.added { background: #2a6b2a; }
 .browse-card-btn--disabled { opacity: 0.5; pointer-events: none; }
+.browse-card-btn--choose {
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.75);
+  color: #fff;
+  letter-spacing: 0.06em;
+  pointer-events: none; /* card Link handles the click */
+}
 
 /* ===== CART TRIGGER — inline in header ===== */
 .cart-trigger {

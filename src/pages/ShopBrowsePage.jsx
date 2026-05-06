@@ -7,6 +7,7 @@ import ShopCart from '../components/ShopCart'
 import Contact from '../components/Contact'
 import { useCart } from '../contexts/CartContext'
 import { getCollectionProducts, formatPrice, SHOPIFY_ORDERS_URL } from '../lib/shopify'
+import { isPostcardBundleProduct } from '../lib/postcardBundles'
 
 const TABS = [
   { id: 'originals',   label: 'Original Artworks' },
@@ -102,13 +103,19 @@ function ProductCard({ product, isPostcard, activeTab, activeSubTab }) {
 
         {/* Add to cart overlay on hover */}
         <div className="browse-card-overlay">
-          <button
-            className={`browse-card-btn${added ? ' added' : ''}`}
-            onClick={(e) => handleAdd(e, 1)}
-            disabled={!product.available || !product.variant?.availableForSale || loading}
-          >
-            {!product.available ? 'Sold Out' : added ? '✓ Added' : 'Add to Cart'}
-          </button>
+          {isPostcardBundleProduct(product) ? (
+            <span className="browse-card-btn browse-card-btn--choose">
+              Choose postcards →
+            </span>
+          ) : (
+            <button
+              className={`browse-card-btn${added ? ' added' : ''}`}
+              onClick={(e) => handleAdd(e, 1)}
+              disabled={!product.available || !product.variant?.availableForSale || loading}
+            >
+              {!product.available ? 'Sold Out' : added ? '✓ Added' : 'Add to Cart'}
+            </button>
+          )}
         </div>
       </div>
 
