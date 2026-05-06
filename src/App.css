@@ -987,7 +987,7 @@ body.gallery-active .navbar {
 /* Spotlight removed — light comes from the fixture image */
 .museum-spotlight { display: none; }
 
-/* ── Light fixture: centred PNG hanging from the top of the wall ── */
+/* ── Light fixture: top of gallery section, above the museum wall ── */
 .museum-light-fixture {
   position: absolute;
   top: 0;
@@ -995,7 +995,7 @@ body.gallery-active .navbar {
   transform: translateX(-50%);
   width: clamp(340px, 62%, 760px);
   pointer-events: none;
-  z-index: 2;
+  z-index: 10;
   display: block;
   object-fit: contain;
   object-position: top center;

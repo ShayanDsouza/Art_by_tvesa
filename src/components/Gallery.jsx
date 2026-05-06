@@ -246,19 +246,19 @@ export default function Gallery() {
     <section id="gallery" className="gallery">
       {loading && <GalleryLoader className="gallery-loader--overlay" />}
 
+      {/* ── Light fixture: top of the section, above the wall ── */}
+      <img
+        src="/light fixture.png"
+        alt=""
+        className="museum-light-fixture"
+        aria-hidden="true"
+        draggable={false}
+      />
+
       <div className="museum-wall" ref={wallRef}>
 
-        {/* ── Spotlight ── */}
+        {/* ── Spotlight (disabled) ── */}
         <div className="museum-spotlight" />
-
-        {/* ── Light fixture overlay ── */}
-        <img
-          src="/light fixture.png"
-          alt=""
-          className="museum-light-fixture"
-          aria-hidden="true"
-          draggable={false}
-        />
 
         {/* ── Carousel zone: intercepts scroll + drag, covers artwork strip ── */}
         <div
