@@ -2,16 +2,21 @@ import { useEffect, useState } from 'react'
 import { useParams, useSearchParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+import ShopFooter from '../components/ShopFooter'
 import ShopCart from '../components/ShopCart'
 import { useCart } from '../contexts/CartContext'
 import {
   getProduct,
   getCollectionProducts,
-  createCart,
+  createCartWithAttributes,
   formatPrice,
   SHOPIFY_ORDERS_URL,
 } from '../lib/shopify'
+import {
+  buildPostcardBundleAttributesFromCounts,
+  getPostcardBundleSize,
+  isPostcardBundleProduct,
+} from '../lib/postcardBundles'
 
 const STORE_DOMAIN = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN
 
@@ -85,6 +90,10 @@ export default function ProductPage() {
   const [quantity, setQuantity]         = useState(1)
   const [added, setAdded]               = useState(false)
   const [related, setRelated]           = useState([])
+  const [bundleOptions, setBundleOptions] = useState([])
+  const [bundleStatus, setBundleStatus] = useState('idle')
+  const [selectedBundleCounts, setSelectedBundleCounts] = useState({})
+  const [bundleError, setBundleError]   = useState('')
 
   const fromTab = searchParams.get('tab') || 'originals'
   const collHandle = COLLECTION_FROM_TAB[fromTab] ?? 'original-works'
@@ -101,6 +110,10 @@ export default function ProductPage() {
     setActiveImage(0)
     setQuantity(1)
     setAdded(false)
+    setBundleOptions([])
+    setBundleStatus('idle')
+    setSelectedBundleCounts({})
+    setBundleError('')
     getProduct(handle)
       .then(p => {
         if (!p) { setStatus('not-found'); return }
@@ -112,6 +125,23 @@ export default function ProductPage() {
   }, [handle])
 
   useEffect(() => {
+    if (!product || !isPostcardBundleProduct(product)) {
+      setBundleOptions([])
+      setBundleStatus('idle')
+      return
+    }
+
+    setBundleStatus('loading')
+    getCollectionProducts('postcards')
+      .then(products => {
+        const selectable = products.filter(item => !isPostcardBundleProduct(item))
+        setBundleOptions(selectable)
+        setBundleStatus(selectable.length > 0 ? 'ok' : 'empty')
+      })
+      .catch(() => setBundleStatus('error'))
+  }, [product])
+
+  useEffect(() => {
     getCollectionProducts(collHandle)
       .then(products => {
         const filtered = products.filter(p => p.handle !== handle).slice(0, 4)
@@ -120,9 +150,50 @@ export default function ProductPage() {
       .catch(() => {})
   }, [handle, collHandle])
 
+  const bundleSize = getPostcardBundleSize(product)
+  const isBundleProduct = Boolean(bundleSize)
+  const bundleTotal = Object.values(selectedBundleCounts).reduce((a, b) => a + b, 0)
+  const bundleReady = !isBundleProduct || bundleTotal === bundleSize
+  const bundleAttributes = isBundleProduct
+    ? buildPostcardBundleAttributesFromCounts(selectedBundleCounts, bundleOptions, bundleSize)
+    : []
+
+  const incrementBundle = (handle) => {
+    setBundleError('')
+    setSelectedBundleCounts(prev => {
+      const cur = prev[handle] || 0
+      const total = Object.values(prev).reduce((a, b) => a + b, 0)
+      if (total >= bundleSize) return prev
+      // respect individual stock
+      const opt = bundleOptions.find(o => o.handle === handle)
+      const stock = opt?.variant?.quantityAvailable
+      if (stock != null && cur >= stock) return prev
+      return { ...prev, [handle]: cur + 1 }
+    })
+  }
+
+  const decrementBundle = (handle) => {
+    setBundleError('')
+    setSelectedBundleCounts(prev => {
+      const cur = prev[handle] || 0
+      if (cur === 0) return prev
+      if (cur === 1) { const { [handle]: _, ...rest } = prev; return rest }
+      return { ...prev, [handle]: cur - 1 }
+    })
+  }
+
   const handleAddToCart = async () => {
     if (!selectedVariant?.id) return
-    await addItem(selectedVariant.id, quantity)
+    if (!bundleReady) {
+      setBundleError(`Choose ${bundleSize} postcards to continue.`)
+      return
+    }
+    await addItem(selectedVariant.id, quantity, bundleAttributes)
+    if (isBundleProduct) {
+      setSelectedBundleCounts({})
+      setBundleError('')
+      setQuantity(1)
+    }
     setAdded(true)
     setTimeout(() => setAdded(false), 1800)
     openCart()
@@ -130,8 +201,12 @@ export default function ProductPage() {
 
   const handleBuyNow = async () => {
     if (!selectedVariant?.id) return
+    if (!bundleReady) {
+      setBundleError(`Choose ${bundleSize} postcards to continue.`)
+      return
+    }
     try {
-      const cart = await createCart(selectedVariant.id, quantity)
+      const cart = await createCartWithAttributes(selectedVariant.id, quantity, bundleAttributes)
       window.location.href = cart.checkoutUrl
     } catch {
       // fallback to Shopify product page
@@ -262,6 +337,90 @@ export default function ProductPage() {
                 </div>
               )}
 
+              {isBundleProduct && (
+                <div className="product-bundle-builder">
+                  <div className="product-bundle-header">
+                    <div>
+                      <p className="product-bundle-eyebrow">Postcard bundle</p>
+                      <h2 className="product-bundle-title">Choose your {bundleSize} postcards</h2>
+                    </div>
+                    <span className={`product-bundle-count${bundleTotal === bundleSize ? ' complete' : ''}`}>
+                      {bundleTotal} / {bundleSize}
+                    </span>
+                  </div>
+
+                  <p className="product-bundle-copy">
+                    Use + and − on each card to build your set. You can repeat designs.
+                  </p>
+
+                  {bundleStatus === 'loading' && (
+                    <div className="product-bundle-status">Loading postcard options…</div>
+                  )}
+                  {bundleStatus === 'error' && (
+                    <div className="product-bundle-status">Could not load postcard options. Please try again.</div>
+                  )}
+                  {bundleStatus === 'empty' && (
+                    <div className="product-bundle-status">No postcard options are available right now.</div>
+                  )}
+
+                  {bundleStatus === 'ok' && (
+                    <div className="product-bundle-grid">
+                      {bundleOptions.map(option => {
+                        const count = selectedBundleCounts[option.handle] || 0
+                        const stock = option.variant?.quantityAvailable
+                        const soldOut = !option.available || !option.variant?.availableForSale
+                        const canInc = !soldOut && bundleTotal < bundleSize &&
+                          (stock == null || count < stock)
+
+                        return (
+                          <div
+                            key={option.id}
+                            className={`product-bundle-card${count > 0 ? ' active' : ''}${soldOut ? ' disabled' : ''}`}
+                          >
+                            <div className="product-bundle-card-image-wrap">
+                              {option.image ? (
+                                <img
+                                  src={option.image.url}
+                                  alt={option.image.altText || option.title}
+                                  className="product-bundle-card-image"
+                                  loading="lazy"
+                                />
+                              ) : (
+                                <div className="product-bundle-card-image product-bundle-card-image--placeholder" />
+                              )}
+                              {soldOut && (
+                                <span className="product-bundle-card-badge">Sold out</span>
+                              )}
+                              {/* Per-card quantity counter in the corner */}
+                              <div className="product-bundle-card-counter">
+                                <button
+                                  className="product-bundle-card-qty-btn"
+                                  onClick={() => decrementBundle(option.handle)}
+                                  disabled={count === 0}
+                                  aria-label="Remove one"
+                                >−</button>
+                                <span className="product-bundle-card-qty-num">{count}</span>
+                                <button
+                                  className="product-bundle-card-qty-btn"
+                                  onClick={() => incrementBundle(option.handle)}
+                                  disabled={!canInc}
+                                  aria-label="Add one"
+                                >+</button>
+                              </div>
+                            </div>
+                            <span className="product-bundle-card-title">{option.title}</span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+
+                  {bundleError && (
+                    <p className="product-bundle-error">{bundleError}</p>
+                  )}
+                </div>
+              )}
+
               {/* Quantity */}
               <div className="product-quantity-row">
                 <span className="product-quantity-label">Quantity</span>
@@ -285,14 +444,14 @@ export default function ProductPage() {
                 <button
                   className={`product-btn-cart${added ? ' added' : ''}`}
                   onClick={handleAddToCart}
-                  disabled={!isAvailable || cartLoading}
+                  disabled={!isAvailable || cartLoading || (isBundleProduct && bundleStatus !== 'ok')}
                 >
                   {!isAvailable ? 'Sold out' : added ? '✓ Added to cart' : 'Add to cart'}
                 </button>
                 <button
                   className="product-btn-buy"
                   onClick={handleBuyNow}
-                  disabled={!isAvailable}
+                  disabled={!isAvailable || (isBundleProduct && bundleStatus !== 'ok')}
                 >
                   Buy it now
                 </button>
@@ -331,7 +490,7 @@ export default function ProductPage() {
       </main>
 
       <ShopCart />
-      <Footer />
+      <ShopFooter />
     </>
   )
 }
