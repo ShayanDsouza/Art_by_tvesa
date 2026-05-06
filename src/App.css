@@ -990,7 +990,7 @@ body.gallery-active .navbar {
 /* ── Light fixture: hangs from the top of the gallery section ── */
 .museum-light-fixture {
   position: absolute;
-  top: -28%;
+  top: -22%;
   left: 50%;
   transform: translateX(-50%);
   width: clamp(500px, 90%, 1100px);
