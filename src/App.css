@@ -993,7 +993,7 @@ body.gallery-active .navbar {
   top: -18%;
   left: 50%;
   transform: translateX(-50%);
-  width: clamp(340px, 62%, 760px);
+  width: clamp(500px, 90%, 1100px);
   pointer-events: none;
   z-index: 10;
   display: block;
