@@ -3,7 +3,8 @@ const BUNDLE_SIZES = [3, 6, 11]
 function getBundleSource(input) {
   if (typeof input === 'string') return input
   if (!input) return ''
-  return `${input.handle ?? ''} ${input.title ?? ''}`.trim()
+  // Use title only — the handle (URL slug) may be stale and contain an old number
+  return input.title ?? input.handle ?? ''
 }
 
 export function getPostcardBundleSize(input) {
