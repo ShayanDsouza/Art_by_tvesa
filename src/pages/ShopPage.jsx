@@ -1,52 +1,38 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import Navbar from '../components/Navbar'
 import ShopFooter from '../components/ShopFooter'
-import { getCollectionProducts } from '../lib/shopify'
 
 const COLLECTIONS = [
   {
     id: 'originals',
-    handle: 'original-works',
     title: 'Original\nPaintings',
     desc: 'Unique, hand-crafted pieces in acrylic, oil, and mixed media. Each artwork is sold once — yours forever.',
     link: '/shop/browse?tab=originals',
+    image: '/original%20(1).jpg',
   },
   {
     id: 'prints',
-    handle: 'postcards',
     title: 'Fine Art\nPrints',
     desc: 'High-quality fine-art prints of selected works. Bring the colour and emotion of each piece into your space.',
     link: '/shop/browse?tab=prints',
+    image: '/prints.heic',
   },
   {
     id: 'commissions',
-    handle: 'commissions',
     title: 'Commissioned\nWorks',
     desc: 'A handpicked selection of past commissions. Each piece was made to order — explore what\'s possible.',
     link: '/shop/browse?tab=commissions',
+    image: '/commissions.heic',
   },
 ]
 
 export default function ShopPage() {
-  const [images, setImages] = useState({})
-
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
     document.body.classList.add('shop-page', 'shop-cards-page')
     return () => document.body.classList.remove('shop-page', 'shop-cards-page')
-  }, [])
-
-  useEffect(() => {
-    COLLECTIONS.forEach(col => {
-      getCollectionProducts(col.handle)
-        .then(products => {
-          const img = products[0]?.image?.url
-          if (img) setImages(prev => ({ ...prev, [col.id]: img }))
-        })
-        .catch(() => {})
-    })
   }, [])
 
   return (
@@ -77,7 +63,7 @@ export default function ShopPage() {
               key={col.id}
               to={col.link}
               className="shop-card"
-              style={images[col.id] ? { backgroundImage: `url(${images[col.id]})` } : {}}
+              style={{ backgroundImage: `url(${col.image})` }}
             >
               <div className="shop-card-overlay" />
               <div className="shop-card-inner">
