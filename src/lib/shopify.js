@@ -44,9 +44,11 @@ const CART_FRAGMENT = `
             ... on ProductVariant {
               id
               title
+              quantityAvailable
               price { amount currencyCode }
               product {
                 title
+                handle
                 images(first: 1) {
                   edges { node { url altText } }
                 }

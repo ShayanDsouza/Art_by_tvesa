@@ -1,8 +1,48 @@
+import { useRef, useState } from 'react'
 import { useCart } from '../contexts/CartContext'
 import { formatPrice } from '../lib/shopify'
 
 export default function ShopCart() {
   const { cartOpen, closeCart, lines, totalAmount, checkoutUrl, removeItem, updateItem, loading } = useCart()
+
+  // Optimistic quantities: { [lineId]: number }
+  // Updated instantly on click; cleared once the debounced API call resolves.
+  const [localQtys, setLocalQtys] = useState({})
+  const debounceRefs = useRef({})
+
+  const handleQtyChange = (lineId, cartQty, delta, stock) => {
+    const current = localQtys[lineId] ?? cartQty
+    const next = current + delta
+
+    if (next < 1) {
+      // Treat as remove — cancel any pending debounce and fire immediately
+      clearTimeout(debounceRefs.current[lineId])
+      delete debounceRefs.current[lineId]
+      setLocalQtys(prev => { const { [lineId]: _, ...rest } = prev; return rest })
+      removeItem(lineId)
+      return
+    }
+
+    // Never exceed available stock
+    if (stock != null && next > stock) return
+
+    // Show new qty instantly
+    setLocalQtys(prev => ({ ...prev, [lineId]: next }))
+
+    // Debounce: only fire the API call after 600 ms of no further clicks
+    clearTimeout(debounceRefs.current[lineId])
+    debounceRefs.current[lineId] = setTimeout(async () => {
+      delete debounceRefs.current[lineId]
+      await updateItem(lineId, next)
+      // Clear optimistic value only if the user hasn't clicked again since
+      setLocalQtys(prev => {
+        if (prev[lineId] === next) {
+          const { [lineId]: _, ...rest } = prev; return rest
+        }
+        return prev
+      })
+    }, 600)
+  }
 
   return (
     <>
@@ -38,6 +78,10 @@ export default function ShopCart() {
               {lines.map(line => {
                 const { merchandise } = line
                 const image = merchandise.product.images.edges[0]?.node
+                const bundleSelection = line.attributes?.find(attr => attr.key === 'postcard_selection')?.value
+                const displayQty = localQtys[line.id] ?? line.quantity
+                const stock = merchandise.quantityAvailable ?? null
+                const atMax = stock != null && displayQty >= stock
                 return (
                   <li key={line.id} className="cart-line">
                     {image && (
@@ -53,6 +97,9 @@ export default function ShopCart() {
                         {merchandise.title !== 'Default Title' && (
                           <p className="cart-line-variant">{merchandise.title}</p>
                         )}
+                        {bundleSelection && (
+                          <p className="cart-line-meta">{bundleSelection}</p>
+                        )}
                         <p className="cart-line-price">
                           {formatPrice(merchandise.price.amount, merchandise.price.currencyCode)}
                         </p>
@@ -60,14 +107,13 @@ export default function ShopCart() {
                       <div className="cart-line-actions">
                         <div className="cart-line-qty">
                           <button
-                            onClick={() => updateItem(line.id, line.quantity - 1)}
-                            disabled={loading}
+                            onClick={() => handleQtyChange(line.id, line.quantity, -1, stock)}
                             aria-label="Decrease quantity"
                           >−</button>
-                          <span>{line.quantity}</span>
+                          <span>{displayQty}</span>
                           <button
-                            onClick={() => updateItem(line.id, line.quantity + 1)}
-                            disabled={loading}
+                            onClick={() => handleQtyChange(line.id, line.quantity, +1, stock)}
+                            disabled={atMax}
                             aria-label="Increase quantity"
                           >+</button>
                         </div>

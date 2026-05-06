@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { doc, getDoc } from 'firebase/firestore'
 import DOMPurify from 'dompurify'
+import { FaInstagram, FaPinterest } from 'react-icons/fa'
 import { db } from '../config/firebase'
 
 // Allow only safe inline formatting; strip scripts/iframes/event-handlers.
@@ -42,11 +43,19 @@ export default function About() {
           <img src={artistImageUrl} alt="Tvesa Medh" className="about-photo" />
         </div>
         <div className="about-text">
-          <span className="section-overline">Meet the Artist</span>
-          <h2>Tvesa Medh</h2>
+          <span className="about-overline">Meet the Artist</span>
+          <h2 className="about-name">Tvesa Medh</h2>
           {paragraphs.map((p, i) => (
             <p key={i} dangerouslySetInnerHTML={{ __html: sanitizeBio(p) }} />
           ))}
+          <div className="about-socials">
+            <a href="https://www.instagram.com/artbytvesa/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <FaInstagram />
+            </a>
+            <a href="https://in.pinterest.com/artbytvesa/my-art/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
+              <FaPinterest />
+            </a>
+          </div>
         </div>
       </div>
     </section>

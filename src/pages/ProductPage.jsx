@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useSearchParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
+import DOMPurify from 'dompurify'
 import Navbar from '../components/Navbar'
 import ShopFooter from '../components/ShopFooter'
 import ShopCart from '../components/ShopCart'
@@ -154,15 +155,28 @@ export default function ProductPage() {
   const isBundleProduct = Boolean(bundleSize)
   const bundleTotal = Object.values(selectedBundleCounts).reduce((a, b) => a + b, 0)
 
-  // Count how many of each postcard handle are already committed in the cart
-  // (cart lines store postcard_handles as a comma-separated list, repeated per qty)
+  // Build the set of known individual-postcard handles (loaded from collection)
+  const postcardHandleSet = new Set(bundleOptions.map(o => o.handle))
+
+  // Count how many of each postcard handle are already committed in the cart.
+  // Two sources:
+  //   1. Bundle lines  — have a `postcard_handles` attribute (comma-separated, repeated per qty)
+  //   2. Individual lines — no `postcard_handles`; use merchandise.product.handle directly
   const cartPostcardCounts = {}
   cartLines.forEach(line => {
-    const attr = line.attributes?.find(a => a.key === 'postcard_handles')
-    if (!attr?.value) return
-    attr.value.split(',').filter(Boolean).forEach(h => {
-      cartPostcardCounts[h] = (cartPostcardCounts[h] || 0) + line.quantity
-    })
+    const bundleAttr = line.attributes?.find(a => a.key === 'postcard_handles')
+    if (bundleAttr?.value) {
+      // Bundle line: handles repeated once per card × line.quantity
+      bundleAttr.value.split(',').filter(Boolean).forEach(h => {
+        cartPostcardCounts[h] = (cartPostcardCounts[h] || 0) + line.quantity
+      })
+    } else {
+      // Individual line: count it if its product is a known postcard
+      const productHandle = line.merchandise?.product?.handle
+      if (productHandle && postcardHandleSet.has(productHandle)) {
+        cartPostcardCounts[productHandle] = (cartPostcardCounts[productHandle] || 0) + line.quantity
+      }
+    }
   })
   const bundleReady = !isBundleProduct || bundleTotal === bundleSize
   const bundleAttributes = isBundleProduct
@@ -486,7 +500,10 @@ export default function ProductPage() {
               {product.descriptionHtml && (
                 <div
                   className="product-description"
-                  dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.descriptionHtml, {
+                    ALLOWED_TAGS: ['p','ul','ol','li','a','b','i','em','strong','br','h1','h2','h3','h4','blockquote'],
+                    ALLOWED_ATTR: ['href','target','rel'],
+                  }) }}
                 />
               )}
             </div>

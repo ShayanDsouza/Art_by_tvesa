@@ -4,13 +4,13 @@ import { CartProvider, useCart } from '../contexts/CartContext'
 
 // Mock the Shopify API module so no real network calls are made
 vi.mock('../lib/shopify', () => ({
-  createCart: vi.fn(),
-  addToCart: vi.fn(),
+  createCartWithAttributes: vi.fn(),
+  addToCartWithAttributes: vi.fn(),
   removeFromCart: vi.fn(),
   updateCartLine: vi.fn(),
 }))
 
-import { createCart, addToCart, removeFromCart, updateCartLine } from '../lib/shopify'
+import { createCartWithAttributes, addToCartWithAttributes, removeFromCart, updateCartLine } from '../lib/shopify'
 
 const MOCK_CART = {
   id: 'gid://shopify/Cart/abc123',
@@ -64,7 +64,7 @@ describe('CartContext', () => {
   })
 
   it('calls createCart on first addItem and opens the drawer', async () => {
-    createCart.mockResolvedValueOnce(MOCK_CART)
+    createCartWithAttributes.mockResolvedValueOnce(MOCK_CART)
 
     const { result } = renderHook(() => useCart(), { wrapper })
 
@@ -72,16 +72,16 @@ describe('CartContext', () => {
       await result.current.addItem('gid://shopify/ProductVariant/1')
     })
 
-    expect(createCart).toHaveBeenCalledWith('gid://shopify/ProductVariant/1', 1)
+    expect(createCartWithAttributes).toHaveBeenCalledWith('gid://shopify/ProductVariant/1', 1, [])
     expect(result.current.cartOpen).toBe(true)
     expect(result.current.totalQuantity).toBe(1)
     expect(result.current.lines).toHaveLength(1)
   })
 
   it('calls addToCart (not createCart) on subsequent addItem', async () => {
-    createCart.mockResolvedValueOnce(MOCK_CART)
+    createCartWithAttributes.mockResolvedValueOnce(MOCK_CART)
     const updatedCart = { ...MOCK_CART, totalQuantity: 2 }
-    addToCart.mockResolvedValueOnce(updatedCart)
+    addToCartWithAttributes.mockResolvedValueOnce(updatedCart)
 
     const { result } = renderHook(() => useCart(), { wrapper })
 
@@ -92,8 +92,25 @@ describe('CartContext', () => {
       await result.current.addItem('gid://shopify/ProductVariant/2')
     })
 
-    expect(createCart).toHaveBeenCalledTimes(1)
-    expect(addToCart).toHaveBeenCalledWith(MOCK_CART.id, 'gid://shopify/ProductVariant/2', 1)
+    expect(createCartWithAttributes).toHaveBeenCalledTimes(1)
+    expect(addToCartWithAttributes).toHaveBeenCalledWith(MOCK_CART.id, 'gid://shopify/ProductVariant/2', 1, [])
+  })
+
+  it('passes custom line attributes through addItem', async () => {
+    createCartWithAttributes.mockResolvedValueOnce(MOCK_CART)
+
+    const { result } = renderHook(() => useCart(), { wrapper })
+
+    const attributes = [
+      { key: 'bundle_type', value: 'Postcard Set of 3' },
+      { key: 'postcard_handles', value: 'dawn-raga,monsoon-window,amber-sky' },
+    ]
+
+    await act(async () => {
+      await result.current.addItem('gid://shopify/ProductVariant/1', 1, attributes)
+    })
+
+    expect(createCartWithAttributes).toHaveBeenCalledWith('gid://shopify/ProductVariant/1', 1, attributes)
   })
 
   it('opens and closes the cart drawer', async () => {
@@ -107,7 +124,7 @@ describe('CartContext', () => {
   })
 
   it('calls removeFromCart when removeItem is invoked', async () => {
-    createCart.mockResolvedValueOnce(MOCK_CART)
+    createCartWithAttributes.mockResolvedValueOnce(MOCK_CART)
     removeFromCart.mockResolvedValueOnce({ ...MOCK_CART, totalQuantity: 0, lines: { edges: [] } })
 
     const { result } = renderHook(() => useCart(), { wrapper })
@@ -134,7 +151,7 @@ describe('CartContext', () => {
 
   it('calls updateCartLine when updateItem is invoked with quantity > 0', async () => {
     const updatedCart = { ...MOCK_CART, totalQuantity: 3 }
-    createCart.mockResolvedValueOnce(MOCK_CART)
+    createCartWithAttributes.mockResolvedValueOnce(MOCK_CART)
     updateCartLine.mockResolvedValueOnce(updatedCart)
 
     const { result } = renderHook(() => useCart(), { wrapper })
