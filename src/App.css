@@ -4391,11 +4391,11 @@ html.dark .browse-pagination-page { color: rgba(231,221,218,0.55); }
 }
 
 .browse-card-price {
-  font-family: var(--font-heading);
-  font-size: 1.25rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.5rem;
   color: #172C16;
-  font-weight: 400;
-  font-style: italic;
+  font-weight: 600;
+  font-style: normal;
   margin: 6px 0 0;
   letter-spacing: 0.02em;
 }
