@@ -987,18 +987,16 @@ body.gallery-active .navbar {
 /* Spotlight removed — light comes from the fixture image */
 .museum-spotlight { display: none; }
 
-/* ── Light fixture: top of gallery section, above the museum wall ── */
+/* ── Light fixture: hangs from the top of the gallery section ── */
 .museum-light-fixture {
   position: absolute;
-  top: 0;
+  top: -18%;
   left: 50%;
   transform: translateX(-50%);
   width: clamp(340px, 62%, 760px);
   pointer-events: none;
   z-index: 10;
   display: block;
-  object-fit: contain;
-  object-position: top center;
 }
 
 /* Horizontal row: far-left | near-left | center | near-right | far-right */
