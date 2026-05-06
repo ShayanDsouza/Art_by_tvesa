@@ -369,8 +369,8 @@ export default function ProductPage() {
                         const count = selectedBundleCounts[option.handle] || 0
                         const stock = option.variant?.quantityAvailable
                         const soldOut = !option.available || !option.variant?.availableForSale
-                        const canInc = !soldOut && bundleTotal < bundleSize &&
-                          (stock == null || count < stock)
+                        const atStockLimit = !soldOut && stock != null && count >= stock
+                        const canInc = !soldOut && bundleTotal < bundleSize && !atStockLimit
 
                         return (
                           <div
@@ -409,6 +409,11 @@ export default function ProductPage() {
                               </div>
                             </div>
                             <span className="product-bundle-card-title">{option.title}</span>
+                            {atStockLimit && (
+                              <span className="product-bundle-card-stock-msg">
+                                Only {stock} in stock
+                              </span>
+                            )}
                           </div>
                         )
                       })}

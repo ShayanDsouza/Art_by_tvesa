@@ -6619,6 +6619,12 @@ html.dark .gallery-view-all .btn-outline:hover {
   color: #222;
 }
 
+.product-bundle-card-stock-msg {
+  font-size: 0.7rem;
+  color: #9d2d2d;
+  line-height: 1.3;
+}
+
 /* ── Quantity ── */
 .product-quantity-row {
   display: flex;
