@@ -1,3 +1,19 @@
+/* ===== GLACIAL INDIFFERENCE FONT ===== */
+@font-face {
+  font-family: 'Glacial Indifference';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/GlacialIndifference-Regular.woff') format('woff');
+}
+@font-face {
+  font-family: 'Glacial Indifference';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/GlacialIndifference-Bold.woff') format('woff');
+}
+
 /* ===== NAVBAR ===== */
 .navbar {
   position: fixed;
@@ -847,8 +863,10 @@ body.gallery-active .navbar {
   .about-image {
     flex: none;
     width: 100%;
+    max-width: 380px;
     height: auto;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 380 / 490;
+    margin: 0 auto;
     border-radius: 8px;
   }
 
@@ -3573,6 +3591,11 @@ html.dark .about-socials a:hover { color: #E7DDD9; }
 
 /* ===== GALLERY MOBILE ===== */
 @media (max-width: 768px) {
+  .museum-light-fixture {
+    width: clamp(300px, 90%, 600px);
+    top: -14%;
+  }
+
   .museum-strip {
     transform: scale(0.88);
     transform-origin: center center;
@@ -3603,6 +3626,11 @@ html.dark .about-socials a:hover { color: #E7DDD9; }
 }
 
 @media (max-width: 480px) {
+  .museum-light-fixture {
+    width: clamp(240px, 85%, 420px);
+    top: -10%;
+  }
+
   .museum-strip {
     transform: scale(0.76);
   }
@@ -4465,13 +4493,13 @@ html.dark .browse-pagination-page { color: rgba(231,221,218,0.55); }
 }
 
 .browse-card-price {
-  font-family: var(--font-body);
+  font-family: 'Glacial Indifference', var(--font-body);
   font-size: 0.9rem;
   color: #172C16;
-  font-weight: 500;
+  font-weight: 400;
   font-style: normal;
   margin: 6px 0 0;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
 }
 
 .browse-card-btn {
@@ -6382,7 +6410,10 @@ body.shop-page .product-breadcrumb a:hover { color: #fff; }
 }
 
 .product-price {
+  font-family: 'Glacial Indifference', var(--font-body);
   font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
   color: #222;
 }
 
