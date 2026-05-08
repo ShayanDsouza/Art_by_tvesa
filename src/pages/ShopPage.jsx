@@ -7,31 +7,27 @@ import ShopFooter from '../components/ShopFooter'
 const COLLECTIONS = [
   {
     id: 'originals',
-    title: 'Original\nPaintings',
+    title: 'Original Paintings',
     desc: [
-      'An original painting is a one-of-a-kind artwork — ideated, designed, and produced entirely by me.',
-      'Owning an original means acquiring something truly unique, with both artistic and enduring value. These works are created to be lived with, collected, and cherished over time.',
-      'Prices and sizes range from accessible pieces to highly collectible works, welcoming both new and seasoned collectors.',
+      'An original painting is a one of a kind artwork produced by the artist. It is ideated, designed and produced by me.'
     ],
     link: '/shop/browse?tab=originals',
     image: '/originals.jpg',
   },
   {
     id: 'prints',
-    title: 'Fine Art\nPrints',
+    title: 'Fine Art Prints',
     desc: [
-      'Prints are high-quality reproductions of my paintings on various surfaces — own the work you love without the original price tag.',
-      'Available as postcards, small wall prints, and collectible series. You can also sign yourself or a loved one up for a weekly or monthly postcard club.',
+      'Prints are high quality reproductions of my paintings on various surfaces, so you can own the work you love without the original price tag.'
     ],
     link: '/shop/browse?tab=prints',
     image: '/prints.jpg',
   },
   {
     id: 'commissions',
-    title: 'Commissioned\nWorks',
+    title: 'Commissions',
     desc: [
-      'If something about my style speaks to you — a place that means something, a feeling you want held on canvas, a scene you\'ve been imagining — we can work together to bring it to life.',
-      'Since this requires time and care, I only take on a small number of commissions.',
+      'If my style speaks to you and you have a specific idea in mind, we can work together to bring it to life.'
     ],
     link: '/shop/browse?tab=commissions',
     image: '/commissions.jpg',

@@ -1029,6 +1029,7 @@ html.dark .about-socials a:hover { color: #E7DDD9; }
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  z-index: 1; /* sits above light fixture when fixture is at z-index: 0 */
 }
 .museum-wall:active { cursor: default; }
 
@@ -1038,16 +1039,17 @@ html.dark .about-socials a:hover { color: #E7DDD9; }
 /* ── Light fixture: hangs from the top of the gallery section ── */
 .museum-light-fixture {
   position: absolute;
-  top: -22%;
+  top: -6%;
   left: 50%;
   transform: translateX(-50%);
-  width: clamp(500px, 90%, 1100px);
+  width: clamp(450px, 70%, 850px);
   pointer-events: none;
-  z-index: 10;
+  z-index: 0;        /* behind museum-wall (z-index: 1) */
+  opacity: 0.75;
   display: block;
 }
-/* desktop: show original, hide alt */
-.museum-light-fixture--alt { display: none; }
+/* desktop: use alt fixture only */
+.museum-light-fixture--orig { display: none; }
 
 /* Horizontal row: far-left | near-left | center | near-right | far-right */
 /* ── Carousel zone: scroll + drag intercept, narrow band only ─── */
@@ -3593,8 +3595,6 @@ html.dark .about-socials a:hover { color: #E7DDD9; }
 
 /* ===== GALLERY MOBILE ===== */
 @media (max-width: 768px) {
-  /* switch to alternate fixture on mobile */
-  .museum-light-fixture--orig { display: none; }
   .museum-light-fixture--alt  {
     display: block;
     width: 100%;
@@ -3602,6 +3602,8 @@ html.dark .about-socials a:hover { color: #E7DDD9; }
     top: 0;
     transform: translateX(-50%) scale(1.6);
     transform-origin: top center;
+    z-index: 0;       /* behind museum-wall (z-index: 1) */
+    opacity: 0.75;    /* soften so it reads as ambient glow */
   }
 
   .museum-strip {
