@@ -1,5 +1,15 @@
 {
   "rewrites": [
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    { "source": "/cart/:path*",      "destination": "https://art-by-tvesa.myshopify.com/cart/:path*" },
+    { "source": "/checkouts/:path*", "destination": "https://art-by-tvesa.myshopify.com/checkouts/:path*" },
+    { "source": "/checkout",         "destination": "https://art-by-tvesa.myshopify.com/checkout" },
+    { "source": "/payments/:path*",  "destination": "https://art-by-tvesa.myshopify.com/payments/:path*" },
+    { "source": "/account",          "destination": "https://art-by-tvesa.myshopify.com/account" },
+    { "source": "/account/:path*",   "destination": "https://art-by-tvesa.myshopify.com/account/:path*" },
+    { "source": "/orders/:path*",    "destination": "https://art-by-tvesa.myshopify.com/orders/:path*" },
+    { "source": "/challenge",        "destination": "https://art-by-tvesa.myshopify.com/challenge" },
+    { "source": "/wallets/:path*",   "destination": "https://art-by-tvesa.myshopify.com/wallets/:path*" },
+    { "source": "/services/:path*",  "destination": "https://art-by-tvesa.myshopify.com/services/:path*" },
+    { "source": "/((?!api/).*)",     "destination": "/index.html" }
   ]
 }
