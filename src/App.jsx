@@ -54,6 +54,9 @@ function PublicSite() {
   )
 }
 
+// Detect shop subdomain once at module load — no re-render needed
+const ON_SHOP_DOMAIN = window.location.hostname === 'shop.artbytvesa.com'
+
 export default function App() {
   return (
     <HelmetProvider>
@@ -62,20 +65,33 @@ export default function App() {
         <CartProvider>
           <Router>
             <Routes>
-              <Route path="/" element={<PublicSite />} />
-              <Route path="/archives" element={<CollectionPage />} />
-              <Route path="/collection" element={<Navigate to="/archives" replace />} />
-              <Route path="/shop" element={<ShopPage />} />
-              <Route path="/shop/browse" element={<ShopBrowsePage />} />
-              <Route path="/shop/product/:handle" element={<ProductPage />} />
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}>
-                <Route index element={<AdminArtworks />} />
-                <Route path="artworks" element={<AdminArtworks />} />
-                <Route path="messages" element={<AdminMessages />} />
-                <Route path="content" element={<AdminContent />} />
-              </Route>
-              <Route path="*" element={<NotFound />} />
+              {ON_SHOP_DOMAIN ? (
+                /* ── shop.artbytvesa.com: clean paths, no /shop prefix ── */
+                <>
+                  <Route path="/"                element={<ShopPage />} />
+                  <Route path="/browse"           element={<ShopBrowsePage />} />
+                  <Route path="/product/:handle"  element={<ProductPage />} />
+                  <Route path="*"                 element={<Navigate to="/" replace />} />
+                </>
+              ) : (
+                /* ── artbytvesa.com: full site ── */
+                <>
+                  <Route path="/"          element={<PublicSite />} />
+                  <Route path="/archives"  element={<CollectionPage />} />
+                  <Route path="/collection" element={<Navigate to="/archives" replace />} />
+                  <Route path="/shop"              element={<ShopPage />} />
+                  <Route path="/shop/browse"       element={<ShopBrowsePage />} />
+                  <Route path="/shop/product/:handle" element={<ProductPage />} />
+                  <Route path="/admin/login" element={<AdminLogin />} />
+                  <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}>
+                    <Route index           element={<AdminArtworks />} />
+                    <Route path="artworks" element={<AdminArtworks />} />
+                    <Route path="messages" element={<AdminMessages />} />
+                    <Route path="content"  element={<AdminContent />} />
+                  </Route>
+                  <Route path="*" element={<NotFound />} />
+                </>
+              )}
             </Routes>
           </Router>
         </CartProvider>
