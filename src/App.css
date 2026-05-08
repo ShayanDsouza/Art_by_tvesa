@@ -1287,7 +1287,7 @@ html.dark .about-socials a:hover { color: #E7DDD9; }
 
 .carousel-viewport {
   width: 100%;
-  height: clamp(540px, 86vh, 800px);
+  height: clamp(540px, 78vh, 800px);
   perspective: 2000px;
   perspective-origin: 50% 65%;
   overflow: visible;
