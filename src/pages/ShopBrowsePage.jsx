@@ -430,7 +430,7 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
           <div className="browse-pagination-controls">
             <button
               className="browse-pagination-btn"
-              onClick={() => setCurrentPage(page => Math.max(1, page - 1))}
+              onClick={() => { setCurrentPage(page => Math.max(1, page - 1)); window.scrollTo({ top: 0, behavior: 'instant' }) }}
               disabled={currentPageSafe === 1}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -443,7 +443,7 @@ function ProductGrid({ handle, isPostcard, activeTab, activeSubTab }) {
             </span>
             <button
               className="browse-pagination-btn"
-              onClick={() => setCurrentPage(page => Math.min(totalPages, page + 1))}
+              onClick={() => { setCurrentPage(page => Math.min(totalPages, page + 1)); window.scrollTo({ top: 0, behavior: 'instant' }) }}
               disabled={currentPageSafe === totalPages}
             >
               Next
