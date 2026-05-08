@@ -246,11 +246,18 @@ export default function Gallery() {
     <section id="gallery" className="gallery">
       {loading && <GalleryLoader className="gallery-loader--overlay" />}
 
-      {/* ── Light fixture: top of the section, above the wall ── */}
+      {/* ── Light fixture: original (desktop) / alternate (mobile) ── */}
       <img
         src="/light fixture.png"
         alt=""
-        className="museum-light-fixture"
+        className="museum-light-fixture museum-light-fixture--orig"
+        aria-hidden="true"
+        draggable={false}
+      />
+      <img
+        src="/alt light fixture.png"
+        alt=""
+        className="museum-light-fixture museum-light-fixture--alt"
         aria-hidden="true"
         draggable={false}
       />

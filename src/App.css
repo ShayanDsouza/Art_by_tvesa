@@ -1046,6 +1046,8 @@ html.dark .about-socials a:hover { color: #E7DDD9; }
   z-index: 10;
   display: block;
 }
+/* desktop: show original, hide alt */
+.museum-light-fixture--alt { display: none; }
 
 /* Horizontal row: far-left | near-left | center | near-right | far-right */
 /* ── Carousel zone: scroll + drag intercept, narrow band only ─── */
@@ -3591,8 +3593,11 @@ html.dark .about-socials a:hover { color: #E7DDD9; }
 
 /* ===== GALLERY MOBILE ===== */
 @media (max-width: 768px) {
-  .museum-light-fixture {
-    width: clamp(550px, 120%, 900px);
+  /* switch to alternate fixture on mobile */
+  .museum-light-fixture--orig { display: none; }
+  .museum-light-fixture--alt  {
+    display: block;
+    width: clamp(650px, 130%, 1000px);
     top: -8%;
   }
 
@@ -3626,8 +3631,8 @@ html.dark .about-socials a:hover { color: #E7DDD9; }
 }
 
 @media (max-width: 480px) {
-  .museum-light-fixture {
-    width: clamp(480px, 130%, 650px);
+  .museum-light-fixture--alt {
+    width: clamp(550px, 140%, 750px);
     top: -6%;
   }
 

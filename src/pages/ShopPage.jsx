@@ -17,14 +17,14 @@ const COLLECTIONS = [
     title: 'Fine Art\nPrints',
     desc: 'High-quality fine-art prints of selected works. Bring the colour and emotion of each piece into your space.',
     link: '/shop/browse?tab=prints',
-    image: '/prints.heic',
+    image: '/prints.jpg',
   },
   {
     id: 'commissions',
     title: 'Commissioned\nWorks',
     desc: 'A handpicked selection of past commissions. Each piece was made to order — explore what\'s possible.',
     link: '/shop/browse?tab=commissions',
-    image: '/commissions.heic',
+    image: '/commissions.jpg',
   },
 ]
 
