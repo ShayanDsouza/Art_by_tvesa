@@ -5998,7 +5998,7 @@ html.dark .gallery-view-all .btn-outline:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 40px;
+  padding: 0 80px;
   height: 48px;
   border-top: 1px solid rgba(0,0,0,0.08);
   border-bottom: 1px solid rgba(0,0,0,0.08);
