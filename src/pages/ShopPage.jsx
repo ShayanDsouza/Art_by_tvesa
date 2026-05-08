@@ -8,21 +8,31 @@ const COLLECTIONS = [
   {
     id: 'originals',
     title: 'Original\nPaintings',
-    desc: 'Unique, hand-crafted pieces in acrylic, oil, and mixed media. Each artwork is sold once — yours forever.',
+    desc: [
+      'An original painting is a one-of-a-kind artwork — ideated, designed, and produced entirely by me.',
+      'Owning an original means acquiring something truly unique, with both artistic and enduring value. These works are created to be lived with, collected, and cherished over time.',
+      'Prices and sizes range from accessible pieces to highly collectible works, welcoming both new and seasoned collectors.',
+    ],
     link: '/shop/browse?tab=originals',
     image: '/originals.jpg',
   },
   {
     id: 'prints',
     title: 'Fine Art\nPrints',
-    desc: 'High-quality fine-art prints of selected works. Bring the colour and emotion of each piece into your space.',
+    desc: [
+      'Prints are high-quality reproductions of my paintings on various surfaces — own the work you love without the original price tag.',
+      'Available as postcards, small wall prints, and collectible series. You can also sign yourself or a loved one up for a weekly or monthly postcard club.',
+    ],
     link: '/shop/browse?tab=prints',
     image: '/prints.jpg',
   },
   {
     id: 'commissions',
     title: 'Commissioned\nWorks',
-    desc: 'A handpicked selection of past commissions. Each piece was made to order — explore what\'s possible.',
+    desc: [
+      'If something about my style speaks to you — a place that means something, a feeling you want held on canvas, a scene you\'ve been imagining — we can work together to bring it to life.',
+      'Since this requires time and care, I only take on a small number of commissions.',
+    ],
     link: '/shop/browse?tab=commissions',
     image: '/commissions.jpg',
   },
@@ -72,7 +82,9 @@ export default function ShopPage() {
                     <span key={i}>{line}<br /></span>
                   ))}
                 </h2>
-                <p className="shop-card-desc">{col.desc}</p>
+                {col.desc.map((p, i) => (
+                  <p key={i} className="shop-card-desc">{p}</p>
+                ))}
               </div>
             </Link>
           ))}

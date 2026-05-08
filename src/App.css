@@ -4080,6 +4080,9 @@ body.collection-page .navbar-collection-btn:hover {
   max-width: 280px;
   margin: 0;
 }
+.shop-card-desc + .shop-card-desc {
+  margin-top: 10px;
+}
 
 /* Mobile */
 @media (max-width: 768px) {

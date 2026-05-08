@@ -8,7 +8,6 @@ const STORE_DOMAIN = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN
 
 const STUDIO_LINKS = [
   { label: 'Home',     to: '/' },
-  { label: 'Shop',     to: '/shop' },
   { label: 'Archives', to: '/archives' },
   { label: 'About',    to: '/#about' },
   { label: 'Contact',  to: '/#contact' },
