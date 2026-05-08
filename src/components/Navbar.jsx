@@ -50,10 +50,17 @@ export default function Navbar() {
     <nav className="navbar">
       <div className="navbar-brand">
         <div className="navbar-logo-wrap">
+          {window.location.hostname === 'shop.artbytvesa.com' ? (
+            <a href="https://artbytvesa.com" className="navbar-logo">
+              <img src="/logo.png"           alt="Art by Tvesa" className="navbar-logo-img navbar-logo-light" />
+              <img src="/dark_mode_logo.png" alt="Art by Tvesa" className="navbar-logo-img navbar-logo-dark" />
+            </a>
+          ) : (
           <Link to="/" className="navbar-logo" onClick={closeAll}>
             <img src="/logo.png"           alt="Art by Tvesa" className="navbar-logo-img navbar-logo-light" />
             <img src="/dark_mode_logo.png" alt="Art by Tvesa" className="navbar-logo-img navbar-logo-dark" />
           </Link>
+          )}
         </div>
         {/* Dark mode toggle only on the Archives page */}
         {isCollection && <DarkModeToggle />}
