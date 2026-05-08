@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react'
 import { doc, getDoc } from 'firebase/firestore'
+import DOMPurify from 'dompurify'
+import { FaInstagram, FaPinterest } from 'react-icons/fa'
 import { db } from '../config/firebase'
+
+// Allow only safe inline formatting; strip scripts/iframes/event-handlers.
+const PURIFY_CONFIG = {
+  ALLOWED_TAGS: ['a', 'b', 'i', 'em', 'strong', 'br'],
+  ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
+}
+
+function sanitizeBio(html) {
+  return DOMPurify.sanitize(html, PURIFY_CONFIG)
+}
 
 const DEFAULT_BIO = `Hi, I'm Tvesa, thanks for being here! I'm an aspiring Criminologist and part-time artist that works primarily with acrylic and oil paints. I also enjoy the occasional tattoo-style ink work, watercolour and digital messing around.
 
@@ -10,28 +22,40 @@ If you are curious about my academic work, check out my <a href="https://www.lin
 
 export default function About() {
   const [bio, setBio] = useState(DEFAULT_BIO)
+  const [artistImageUrl, setArtistImageUrl] = useState('/meet_artist.jpg')
 
   useEffect(() => {
     getDoc(doc(db, 'siteContent', 'about'))
-      .then(snap => { if (snap.exists() && snap.data().bio) setBio(snap.data().bio) })
+      .then(snap => {
+        if (!snap.exists()) return
+        if (snap.data().bio) setBio(snap.data().bio)
+        if (snap.data().artistImageUrl) setArtistImageUrl(snap.data().artistImageUrl)
+      })
       .catch(() => {})
   }, [])
 
-  // Split by double newline into paragraphs
   const paragraphs = bio.split('\n\n').filter(Boolean)
 
   return (
     <section id="about" className="about">
       <div className="about-content">
         <div className="about-image">
-          <img src="/meet_artist.jpg" alt="Tvesa Medh" className="about-photo" />
+          <img src={artistImageUrl} alt="Tvesa Medh" className="about-photo" />
         </div>
         <div className="about-text">
-          <span className="section-overline">Meet the Artist</span>
-          <h2>Tvesa Medh</h2>
+          <span className="about-overline">Meet the Artist</span>
+          <h2 className="about-name">Tvesa Medh</h2>
           {paragraphs.map((p, i) => (
-            <p key={i} dangerouslySetInnerHTML={{ __html: p }} />
+            <p key={i} dangerouslySetInnerHTML={{ __html: sanitizeBio(p) }} />
           ))}
+          <div className="about-socials">
+            <a href="https://www.instagram.com/artbytvesa/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <FaInstagram />
+            </a>
+            <a href="https://in.pinterest.com/artbytvesa/my-art/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
+              <FaPinterest />
+            </a>
+          </div>
         </div>
       </div>
     </section>

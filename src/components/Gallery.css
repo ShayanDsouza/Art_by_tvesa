@@ -36,8 +36,8 @@
 
 /* ── Section wrapper ────────────────────────────────────── */
 .gallery-section {
-  background-color: #e7ddda;
-  padding: 6rem 2rem 6rem;
+  background-color: transparent;
+  padding: 10rem 2rem 6rem;
   margin-top: 0px;
   display: flex;
   flex-direction: column;
@@ -55,7 +55,7 @@
   align-items: center;
   gap: 12px;
   text-align: center;
-  margin-bottom: 4.5rem;
+  margin-bottom: 5.5rem;
   position: relative;
   z-index: 1;
   width: 100%;
@@ -88,7 +88,7 @@
   max-width: 900px;
   line-height: 1.6;
   opacity: 0.8;
-  margin: 0 auto 1.5rem;
+  margin: 0 auto 1.75rem;
   text-align: center;
 }
 
@@ -145,10 +145,16 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #172c16;
+  color: transparent;
   opacity: 0.5;
-  font-size: 0.8rem;
+  font-size: 0;
   transition: opacity 0.15s;
+}
+
+.gallery-search-clear::before {
+  content: '\00d7';
+  font-size: 0.8rem;
+  color: #172c16;
 }
 
 .gallery-search-clear:hover {
@@ -206,7 +212,7 @@
 /* ── Grid (Pinterest-style masonry) ───────────────────── */
 .gallery-masonry {
   columns: 4;
-  column-gap: 1.25rem;
+  column-gap: 0.9rem;
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
@@ -223,7 +229,7 @@
   transition: opacity 0.5s ease, transform 0.5s ease;
   display: inline-block; /* required for CSS columns masonry */
   break-inside: avoid;
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.9rem;
 }
 
 .gallery-card--visible {
@@ -304,6 +310,41 @@
   font-weight: 600;
 }
 
+.gallery-hover-shop-btn {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 18px;
+  background: transparent;
+  color: #E7DDDA;
+  font-family: "Raleway", sans-serif;
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid rgba(231, 221, 218, 0.75);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  align-self: flex-start;
+}
+
+.gallery-hover-shop-btn:hover {
+  background: rgba(231, 221, 218, 0.15);
+  border-color: #E7DDDA;
+}
+
+.gallery-hover-status {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 18px;
+  color: rgba(231, 221, 218, 0.8);
+  font-family: "Raleway", sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  border: 1px solid rgba(231, 221, 218, 0.4);
+}
+
 
 /* ── Skeleton ───────────────────────────────────────── */
 .gallery-skeleton-grid {
@@ -339,6 +380,14 @@
   justify-content: center;
   padding: 80px 0 100px;
   gap: 28px;
+}
+
+.gallery-loader--overlay {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  z-index: 6;
+  pointer-events: none;
 }
 
 .gallery-loader-brush {
@@ -400,6 +449,10 @@
 }
 
 @media (max-width: 768px) {
+  .gallery-section {
+    padding-top: 7rem;
+  }
+
   .gallery-masonry,
   .gallery-skeleton-grid {
     columns: 3;
@@ -418,7 +471,7 @@
 
 @media (max-width: 640px) {
   .gallery-section {
-    padding: 4rem 1rem 4rem;
+    padding: 7rem 1rem 4rem;
     margin-top: 0px;
   }
 
@@ -431,7 +484,7 @@
 
 @media (max-width: 480px) {
   .gallery-section {
-    padding: 3rem 0.75rem 3rem;
+    padding: 7rem 0.75rem 3rem;
   }
 
   .gallery-header {
@@ -464,11 +517,24 @@
 
   .gallery-filters {
     gap: 0.5rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    width: 100%;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .gallery-filters::-webkit-scrollbar {
+    display: none;
   }
 
   .gallery-filter-btn {
     padding: 0.4rem 0.9rem;
     font-size: 0.7rem;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 }
 
@@ -744,4 +810,359 @@
   .lightbox-nav--next {
     right: 5px;
   }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   LAYOUT TOGGLE
+   ════════════════════════════════════════════════════════════════ */
+
+.layout-toggle {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 1rem;
+  margin: 0 0 2rem;
+}
+
+.layout-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 16px;
+  min-width: 124px;
+  border: 1px solid rgba(23, 44, 22, 0.25);
+  border-radius: 4px;
+  background: transparent;
+  font-family: "Raleway", sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(23, 44, 22, 0.55);
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.layout-toggle-btn:hover {
+  border-color: rgba(23, 44, 22, 0.45);
+  color: rgba(23, 44, 22, 0.85);
+  background: rgba(23, 44, 22, 0.05);
+}
+
+.layout-toggle-btn--active {
+  background: #172c16;
+  color: #e7ddda;
+  border-color: #172c16;
+}
+
+.layout-toggle-btn--active:hover {
+  background: #1f3d1e;
+  border-color: #1f3d1e;
+  color: #e7ddda;
+}
+
+@media (max-width: 768px) {
+  .layout-toggle {
+    justify-content: center;
+    gap: 8px;
+    margin: 0 0 1rem;
+    padding: 0 0.75rem;
+  }
+
+  .layout-toggle-btn {
+    min-width: 132px;
+    padding: 9px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .layout-toggle {
+    width: 100%;
+    max-width: 420px;
+    padding: 0 0.25rem;
+  }
+
+  .layout-toggle-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 10px 12px;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    gap: 6px;
+  }
+
+  .layout-toggle-btn span:last-child {
+    display: inline;
+  }
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   GRID LAYOUT
+   ════════════════════════════════════════════════════════════════ */
+
+.gallery-masonry--grid {
+  columns: unset !important;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.gallery-masonry--grid .gallery-card {
+  display: block;
+  margin-bottom: 0;
+  break-inside: unset;
+}
+
+.gallery-masonry--grid .gallery-card__img-wrap {
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+}
+
+.gallery-masonry--grid .gallery-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.gallery-masonry--grid .gallery-card__price-badge,
+.gallery-masonry--grid .gallery-card__sold-badge {
+  display: none;
+}
+
+/* Masonry keeps the badge on-image instead of using the full-width strip */
+.gallery-masonry:not(.gallery-masonry--grid) .gallery-card__price-badge,
+.gallery-masonry:not(.gallery-masonry--grid) .gallery-card__sold-badge {
+  display: inline-flex;
+}
+
+.gallery-card__price-strip {
+  display: none;
+}
+
+/* Shared strip: below image, high-contrast white text */
+.gallery-masonry--grid .gallery-card__price-strip {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  background: #172c16;
+  color: #ffffff;
+  font-family: "Raleway", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+  border-radius: 0 0 8px 8px;
+  /* Crisp text rendering — no blur, no aliasing tricks */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.gallery-masonry--grid .gallery-card__price-strip--sold {
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(59, 12, 12, 0.8);
+}
+
+@media (max-width: 768px) {
+  .gallery-masonry--grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    padding: 0 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-masonry--grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    padding: 0;
+  }
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   PRICE & SOLD BADGES — crisp, no backdrop-filter blur
+   ════════════════════════════════════════════════════════════════ */
+
+/* Masonry: bottom-left rectangle, aligned with carousel badge treatment */
+.gallery-card__sold-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  left: auto;
+  top: auto;
+  background: rgba(59, 12, 12, 0.96);
+  color: #ffffff;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 6px 11px;
+  border-radius: 4px;
+  z-index: 3;
+  transform: translate3d(0, 0, 0.01px);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+}
+
+/* Masonry: bottom-left rectangle, aligned with carousel badge treatment */
+.gallery-card__price-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  left: auto;
+  top: auto;
+  background: #1a5c1e;
+  color: #ffffff;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 6px 11px;
+  border-radius: 4px;
+  z-index: 3;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  transform: translate3d(0, 0, 0.01px);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+}
+
+/* Price value in modal detail rows */
+.carousel-back-price {
+  color: #6fcf6f;
+  font-weight: 600;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   DARK MODE — Archive / Collection page
+   Palette:
+     bg (maroon)  : #3B0C0C
+     header/btn   : #172C16  (evergreen)
+     text         : #E7DDDA  (dust-grey)
+     accent       : #5F578A  (dusty-grape / purple)
+   ══════════════════════════════════════════════════════════════ */
+
+html.dark .gallery-section {
+  background-color: transparent;
+}
+
+html.dark .gallery-eyebrow {
+  color: #fff;
+}
+
+html.dark .gallery-heading {
+  color: #fff;
+}
+
+html.dark .gallery-subheading {
+  color: #fff;
+  opacity: 1;
+}
+
+/* Search */
+html.dark .gallery-search {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+html.dark .gallery-search::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+html.dark .gallery-search:focus {
+  border-color: #5F578A;
+  box-shadow: 0 0 0 3px rgba(95, 87, 138, 0.25);
+}
+
+html.dark .gallery-search-clear::before {
+  color: #fff;
+}
+
+/* Filter buttons */
+html.dark .gallery-filter-btn {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+html.dark .gallery-filter-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #fff;
+}
+
+html.dark .gallery-filter-btn--active {
+  background: #5F578A;
+  border-color: #5F578A;
+  color: #fff;
+}
+
+/* Result count */
+html.dark .gallery-count {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Cards */
+html.dark .gallery-card__img-wrap {
+  background: #2a1010;
+}
+
+html.dark .gallery-card__title {
+  color: #fff;
+}
+
+html.dark .gallery-card__category {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+html.dark .gallery-card__price-strip {
+  background: #2a1010;
+  color: #fff;
+}
+
+html.dark .gallery-masonry--grid .gallery-card__price-strip {
+  background: #2a1010;
+  color: #fff;
+}
+
+/* Layout toggle buttons */
+html.dark .layout-toggle-btn {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+html.dark .layout-toggle-btn:hover,
+html.dark .layout-toggle-btn--active {
+  color: #fff;
+  border-color: #5F578A;
+  background: rgba(95, 87, 138, 0.18);
+}
+
+/* Back button (browse/collection pages) */
+html.dark .back-btn {
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+html.dark .back-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-color: #5F578A;
 }

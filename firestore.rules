@@ -2,14 +2,12 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Server-side admin check using verified Firebase Auth token
+    // Admin check via Firebase Custom Claim — no emails hardcoded in source.
+    // Run scripts/set-admin-claims.js once per admin to grant access.
     function isAdmin() {
       return request.auth != null
           && request.auth.token.email_verified == true
-          && request.auth.token.email in [
-               'dsouza.shayan@gmail.com',
-               'aravpradosh06427@gmail.com'
-             ];
+          && request.auth.token.admin == true;
     }
 
     // ── Artworks ────────────────────────────────────────────────────────────
@@ -23,18 +21,15 @@ service cloud.firestore {
                     && request.resource.data.title.size() <= 200
                     && request.resource.data.description is string
                     && request.resource.data.description.size() <= 2000
-                    && request.resource.data.status in ['available', 'sold']
-                    && request.resource.data.imageUrl is string;
+                    && request.resource.data.status in ['available', 'sold', 'not_for_sale'];
 
       allow update: if isAdmin()
-                    && request.resource.data.keys().hasOnly(['title', 'description', 'status', 'imageUrl', 'medium', 'category', 'order'])
                     && request.resource.data.title is string
                     && request.resource.data.title.size() >= 1
                     && request.resource.data.title.size() <= 200
                     && request.resource.data.description is string
                     && request.resource.data.description.size() <= 2000
-                    && request.resource.data.status in ['available', 'sold']
-                    && request.resource.data.imageUrl is string;
+                    && request.resource.data.status in ['available', 'sold', 'not_for_sale'];
 
       allow delete: if isAdmin();
     }
@@ -55,6 +50,13 @@ service cloud.firestore {
                     && request.resource.data.read == false;
 
       allow read, update, delete: if isAdmin();
+    }
+
+    // ── Site Content ─────────────────────────────────────────────────────────
+    // Public reads (bio, artist photo, collection header); only admins can write.
+    match /siteContent/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
     // ── Default deny ─────────────────────────────────────────────────────────

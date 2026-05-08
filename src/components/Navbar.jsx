@@ -1,21 +1,24 @@
-import { useState } from 'react'
-import { Link, useLocation, useNavigate } from "react-router-dom";
-
-function scrollToGalleryZoomed(e) {
-  e.preventDefault()
-  const gallery = document.querySelector('#gallery')
-  const wrapper = document.querySelector('.gallery-scroll-wrapper')
-  if (!gallery || !wrapper) return
-  const scrollableHeight = wrapper.offsetHeight - window.innerHeight
-  const targetScrollY = gallery.offsetTop + 0.64 * scrollableHeight
-  window.scrollTo({ top: targetScrollY, behavior: 'smooth' })
-}
+import { useState, useEffect } from 'react'
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import DarkModeToggle from './DarkModeToggle'
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const location = useLocation()
-  const navigate = useNavigate()
-  const isCollection = location.pathname === '/collection'
+  const location  = useLocation()
+  const navigate  = useNavigate()
+
+  const isCollection = location.pathname === '/archives'
+
+  /* Close mobile drawer when carousel is active */
+  useEffect(() => {
+    const syncMenu = () => {
+      if (document.body.classList.contains('gallery-active')) setMenuOpen(false)
+    }
+    const obs = new MutationObserver(syncMenu)
+    obs.observe(document.body, { attributes: true, attributeFilter: ['class'] })
+    syncMenu()
+    return () => obs.disconnect()
+  }, [])
 
   const handleHashLink = (hash) => {
     setMenuOpen(false)
@@ -23,23 +26,10 @@ export default function Navbar() {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
     } else {
-      // Not on a page that has this section — go home first
       navigate('/')
-      // After navigation, scroll on next tick
       setTimeout(() => {
         document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth' })
       }, 100)
-    }
-  }
-
-  const handleGallery = (e) => {
-    e.preventDefault()
-    setMenuOpen(false)
-    if (location.pathname === '/') {
-      scrollToGalleryZoomed(e)
-    } else {
-      // Navigate home, then scroll to gallery
-      window.location.href = '/#gallery'
     }
   }
 
@@ -54,21 +44,20 @@ export default function Navbar() {
     }
   }
 
-  const handleCollectionClick = (e) => {
-    setMenuOpen(false)
-    // If already on collection page, just scroll to top
-    if (isCollection) {
-      e.preventDefault()
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-    // Otherwise let the <Link> navigate normally — CollectionPage will scrollTo(0) on mount
-  }
+  const closeAll = () => setMenuOpen(false)
 
   return (
     <nav className="navbar">
-      <Link to="/" className="navbar-logo" onClick={() => setMenuOpen(false)}>
-        <img src="/logo.png" alt="Art by Tvesa" className="navbar-logo-img" />
-      </Link>
+      <div className="navbar-brand">
+        <div className="navbar-logo-wrap">
+          <Link to="/" className="navbar-logo" onClick={closeAll}>
+            <img src="/logo.png"           alt="Art by Tvesa" className="navbar-logo-img navbar-logo-light" />
+            <img src="/dark_mode_logo.png" alt="Art by Tvesa" className="navbar-logo-img navbar-logo-dark" />
+          </Link>
+        </div>
+        {/* Dark mode toggle only on the Archives page */}
+        {isCollection && <DarkModeToggle />}
+      </div>
 
       <button
         className={`hamburger ${menuOpen ? 'open' : ''}`}
@@ -82,23 +71,13 @@ export default function Navbar() {
 
       <ul className={`navbar-links ${menuOpen ? 'active' : ''}`}>
         <li>
-          <a href="#gallery" onClick={handleGallery}>Gallery</a>
+          <Link to="/archives" onClick={closeAll}>Archives</Link>
         </li>
         <li>
           <a href="#about" onClick={(e) => { e.preventDefault(); handleHashLink('#about') }}>About</a>
         </li>
         <li>
           <a href="#contact" onClick={handleContact}>Contact</a>
-        </li>
-        <li>
-          <Link
-            to="/collection"
-            className="navbar-collection-btn"
-            onClick={handleCollectionClick}
-          >
-            <span className="navbar-collection-shimmer" aria-hidden="true" />
-            <span className="navbar-collection-label">Full Collection</span>
-          </Link>
         </li>
       </ul>
     </nav>

@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
-import { db } from '../config/firebase'
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
+import { db, storage } from '../config/firebase'
 
 const DEFAULT_BIO = `Hi, I'm Tvesa, thanks for being here! I'm an aspiring Criminologist and part-time artist that works primarily with acrylic and oil paints. I also enjoy the occasional tattoo-style ink work, watercolour and digital messing around.
 
@@ -10,23 +11,69 @@ If you are curious about my academic work, check out my <a href="https://www.lin
 
 export default function AdminContent() {
   const [bio, setBio] = useState(DEFAULT_BIO)
+  const [artistImageUrl, setArtistImageUrl] = useState('/meet_artist.jpg')
+  const [imagePreview, setImagePreview] = useState(null)
+  const [imageFile, setImageFile] = useState(null)
+  const [imageUploading, setImageUploading] = useState(false)
+  const [imageProgress, setImageProgress] = useState(0)
+  const [imageSaved, setImageSaved] = useState(false)
   const [collection, setCollection] = useState({
     eyebrow: 'The Gallery of Trying',
-    heading: 'The Collection',
+    heading: 'Archives',
     subheading: 'A curated selection of original works — exploring colour, form & emotion.',
   })
   const [saving, setSaving] = useState(null)
   const [saved, setSaved] = useState(null)
+  const fileInputRef = useRef(null)
 
   useEffect(() => {
-    getDoc(doc(db, 'siteContent', 'about')).then(s => { if (s.exists() && s.data().bio) setBio(s.data().bio) })
-    getDoc(doc(db, 'siteContent', 'collection')).then(s => { if (s.exists()) setCollection(c => ({ ...c, ...s.data() })) })
+    getDoc(doc(db, 'siteContent', 'about')).then(s => {
+      if (s.exists()) {
+        if (s.data().bio) setBio(s.data().bio)
+        if (s.data().artistImageUrl) setArtistImageUrl(s.data().artistImageUrl)
+      }
+    })
+    getDoc(doc(db, 'siteContent', 'collection')).then(s => {
+      if (s.exists()) setCollection(c => ({ ...c, ...s.data() }))
+    })
   }, [])
+
+  const handleImagePick = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    setImageFile(file)
+    setImagePreview(URL.createObjectURL(file))
+    setImageSaved(false)
+  }
+
+  const handleImageUpload = () => {
+    if (!imageFile) return
+    setImageUploading(true)
+    setImageProgress(0)
+
+    const storageRef = ref(storage, 'about/artist-photo')
+    const task = uploadBytesResumable(storageRef, imageFile)
+
+    task.on('state_changed',
+      snap => setImageProgress(Math.round(snap.bytesTransferred / snap.totalBytes * 100)),
+      err => { console.error(err); setImageUploading(false) },
+      async () => {
+        const url = await getDownloadURL(task.snapshot.ref)
+        await setDoc(doc(db, 'siteContent', 'about'), { artistImageUrl: url }, { merge: true })
+        setArtistImageUrl(url)
+        setImageFile(null)
+        setImagePreview(null)
+        setImageUploading(false)
+        setImageSaved(true)
+        setTimeout(() => setImageSaved(false), 2500)
+      }
+    )
+  }
 
   const save = async (section) => {
     setSaving(section)
     try {
-      if (section === 'about') await setDoc(doc(db, 'siteContent', 'about'), { bio })
+      if (section === 'about') await setDoc(doc(db, 'siteContent', 'about'), { bio }, { merge: true })
       if (section === 'collection') await setDoc(doc(db, 'siteContent', 'collection'), collection)
       setSaved(section)
       setTimeout(() => setSaved(null), 2500)
@@ -37,6 +84,46 @@ export default function AdminContent() {
   return (
     <div className="admin-content-editor">
       <h1 className="admin-page-title">Site Content</h1>
+
+      {/* ── Artist Photo ── */}
+      <div className="admin-content-section">
+        <h2 className="admin-content-heading">About — Artist Photo</h2>
+        <div className="admin-artist-photo-row">
+          <img
+            src={imagePreview || artistImageUrl}
+            alt="Artist"
+            className="admin-artist-photo-preview"
+          />
+          <div className="admin-artist-photo-actions">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              onChange={handleImagePick}
+            />
+            <button
+              className="admin-content-save-btn"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={imageUploading}
+            >
+              Choose Photo
+            </button>
+            {imageFile && !imageUploading && (
+              <button className="admin-content-save-btn" onClick={handleImageUpload}>
+                Upload &amp; Save
+              </button>
+            )}
+            {imageUploading && (
+              <div className="admin-artist-photo-progress">
+                <div className="admin-artist-photo-bar" style={{ width: `${imageProgress}%` }} />
+                <span>{imageProgress}%</span>
+              </div>
+            )}
+            {imageSaved && <span className="admin-content-saved-label">✓ Saved</span>}
+          </div>
+        </div>
+      </div>
 
       {/* ── About / Bio ── */}
       <div className="admin-content-section">
