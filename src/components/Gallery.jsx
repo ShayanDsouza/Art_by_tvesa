@@ -295,9 +295,20 @@ export default function Gallery() {
                       : <div className="museum-strip-placeholder" />
                     }
 
-                    {/* Hover overlay — title only, no shop link */}
+                    {/* Hover overlay */}
                     <div className="museum-hover-overlay">
                       <span className="museum-hover-title">{art.title}</span>
+                      {art.shopUrl && (
+                        <a
+                          href={art.shopUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="museum-hover-btn"
+                          onPointerDown={e => e.stopPropagation()}
+                        >
+                          View in Shop
+                        </a>
+                      )}
                     </div>
                   </div>
 
@@ -315,6 +326,7 @@ export default function Gallery() {
         {/* ── Buttons above the green strip ── */}
         <div className="museum-cta-row">
           <Link to="/archives" className="museum-cta-btn museum-cta-btn--grey">View Archives</Link>
+          <Link to="/shop" className="museum-cta-btn museum-cta-btn--green">View Shop</Link>
         </div>
 
         {/* ── Green baseboard ── */}

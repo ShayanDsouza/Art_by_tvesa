@@ -55,7 +55,17 @@ function ArtworkCard({ artwork }) {
             <p className="gallery-card__category">{artwork.category}</p>
           )}
 
-          {statusLabel ? (
+          {isAvailable && artwork.shopUrl ? (
+            <a
+              href={artwork.shopUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="gallery-hover-shop-btn"
+              onClick={e => e.stopPropagation()}
+            >
+              View in Shop
+            </a>
+          ) : statusLabel ? (
             <span className="gallery-hover-status">{statusLabel}</span>
           ) : null}
         </div>
