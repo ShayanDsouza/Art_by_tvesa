@@ -1,16 +1,4 @@
 {
-  "redirects": [
-    { "source": "/cart/:path*",      "destination": "https://art-by-tvesa.myshopify.com/cart/:path*",      "permanent": false },
-    { "source": "/checkouts/:path*", "destination": "https://art-by-tvesa.myshopify.com/checkouts/:path*", "permanent": false },
-    { "source": "/checkout",         "destination": "https://art-by-tvesa.myshopify.com/checkout",         "permanent": false },
-    { "source": "/payments/:path*",  "destination": "https://art-by-tvesa.myshopify.com/payments/:path*",  "permanent": false },
-    { "source": "/account",          "destination": "https://art-by-tvesa.myshopify.com/account",          "permanent": false },
-    { "source": "/account/:path*",   "destination": "https://art-by-tvesa.myshopify.com/account/:path*",   "permanent": false },
-    { "source": "/orders/:path*",    "destination": "https://art-by-tvesa.myshopify.com/orders/:path*",    "permanent": false },
-    { "source": "/challenge",        "destination": "https://art-by-tvesa.myshopify.com/challenge",        "permanent": false },
-    { "source": "/wallets/:path*",   "destination": "https://art-by-tvesa.myshopify.com/wallets/:path*",   "permanent": false },
-    { "source": "/services/:path*",  "destination": "https://art-by-tvesa.myshopify.com/services/:path*",  "permanent": false }
-  ],
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
