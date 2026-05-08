@@ -4197,9 +4197,9 @@ body.collection-page .navbar-collection-btn:hover {
 
 .browse-tab {
   padding: 12px 36px;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 2.5px;
+  letter-spacing: 2px;
   text-transform: uppercase;
   color: rgba(23,44,22,0.45);
   background: none;
@@ -5998,7 +5998,7 @@ html.dark .gallery-view-all .btn-outline:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 80px;
+  padding: 0 40px;
   height: 48px;
   border-top: 1px solid rgba(0,0,0,0.08);
   border-bottom: 1px solid rgba(0,0,0,0.08);
