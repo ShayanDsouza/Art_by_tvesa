@@ -3592,8 +3592,8 @@ html.dark .about-socials a:hover { color: #E7DDD9; }
 /* ===== GALLERY MOBILE ===== */
 @media (max-width: 768px) {
   .museum-light-fixture {
-    width: clamp(300px, 90%, 600px);
-    top: -14%;
+    width: clamp(500px, 110%, 900px);
+    top: -22%;
   }
 
   .museum-strip {
@@ -3627,8 +3627,8 @@ html.dark .about-socials a:hover { color: #E7DDD9; }
 
 @media (max-width: 480px) {
   .museum-light-fixture {
-    width: clamp(240px, 85%, 420px);
-    top: -10%;
+    width: clamp(500px, 130%, 700px);
+    top: -22%;
   }
 
   .museum-strip {
