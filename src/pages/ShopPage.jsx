@@ -4,6 +4,9 @@ import { Helmet } from 'react-helmet-async'
 import Navbar from '../components/Navbar'
 import ShopFooter from '../components/ShopFooter'
 
+const ON_SHOP_DOMAIN = window.location.hostname === 'shop.artbytvesa.com'
+const BROWSE_BASE = ON_SHOP_DOMAIN ? '/browse' : '/shop/browse'
+
 const COLLECTIONS = [
   {
     id: 'originals',
@@ -11,7 +14,7 @@ const COLLECTIONS = [
     desc: [
       'An original painting is a one of a kind artwork produced by the artist. It is ideated, designed and produced by me.'
     ],
-    link: '/shop/browse?tab=originals',
+    link: `${BROWSE_BASE}?tab=originals`,
     image: '/originals.jpg',
   },
   {
@@ -20,7 +23,7 @@ const COLLECTIONS = [
     desc: [
       'Prints are high quality reproductions of my paintings on various surfaces, so you can own the work you love without the original price tag.'
     ],
-    link: '/shop/browse?tab=prints',
+    link: `${BROWSE_BASE}?tab=prints`,
     image: '/prints.jpg',
   },
   {
@@ -29,7 +32,7 @@ const COLLECTIONS = [
     desc: [
       'If my style speaks to you and you have a specific idea in mind, we can work together to bring it to life.'
     ],
-    link: '/shop/browse?tab=commissions',
+    link: `${BROWSE_BASE}?tab=commissions`,
     image: '/commissions.jpg',
   },
 ]
@@ -87,11 +90,13 @@ export default function ShopPage() {
         </section>
 
         {/* ── Back link ── */}
-        <div className="shop-back">
-          <Link to="/archives" className="shop-back-link">
-            ← Back to Archives
-          </Link>
-        </div>
+        {!ON_SHOP_DOMAIN && (
+          <div className="shop-back">
+            <Link to="/archives" className="shop-back-link">
+              ← Back to Archives
+            </Link>
+          </div>
+        )}
 
       </main>
       <ShopFooter />
