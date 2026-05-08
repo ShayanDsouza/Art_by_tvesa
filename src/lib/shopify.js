@@ -1,10 +1,13 @@
 const STORE_DOMAIN = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN
 
-// Shopify-hosted customer account pages (no custom auth needed)
-export const SHOPIFY_ACCOUNT_URL    = `https://${STORE_DOMAIN}/account`
-export const SHOPIFY_LOGIN_URL      = `https://${STORE_DOMAIN}/account/login`
-export const SHOPIFY_ORDERS_URL     = `https://${STORE_DOMAIN}/account/orders`
-export const SHOPIFY_PROFILE_URL    = `https://${STORE_DOMAIN}/account/profile`
+// Customer-facing Shopify pages must always land on the actual myshopify domain,
+// never the React app's domain, regardless of which domain is used for API calls.
+const SHOPIFY_PUBLIC_DOMAIN = import.meta.env.VITE_SHOPIFY_PUBLIC_DOMAIN || STORE_DOMAIN
+
+export const SHOPIFY_ACCOUNT_URL    = `https://${SHOPIFY_PUBLIC_DOMAIN}/account`
+export const SHOPIFY_LOGIN_URL      = `https://${SHOPIFY_PUBLIC_DOMAIN}/account/login`
+export const SHOPIFY_ORDERS_URL     = `https://${SHOPIFY_PUBLIC_DOMAIN}/account/orders`
+export const SHOPIFY_PROFILE_URL    = `https://${SHOPIFY_PUBLIC_DOMAIN}/account/profile`
 const STOREFRONT_TOKEN = import.meta.env.VITE_SHOPIFY_STOREFRONT_TOKEN
 const API_VERSION = '2025-01'
 
