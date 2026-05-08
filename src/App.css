@@ -3597,8 +3597,8 @@ html.dark .about-socials a:hover { color: #E7DDD9; }
   .museum-light-fixture--orig { display: none; }
   .museum-light-fixture--alt  {
     display: block;
-    width: clamp(650px, 130%, 1000px);
-    top: -8%;
+    width: clamp(800px, 150%, 1100px);
+    top: 0%;
   }
 
   .museum-strip {
@@ -3632,8 +3632,8 @@ html.dark .about-socials a:hover { color: #E7DDD9; }
 
 @media (max-width: 480px) {
   .museum-light-fixture--alt {
-    width: clamp(550px, 140%, 750px);
-    top: -6%;
+    width: clamp(700px, 150%, 900px);
+    top: 0%;
   }
 
   .museum-strip {
