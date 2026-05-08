@@ -143,6 +143,16 @@ export async function getProduct(handle) {
 }
 
 /* ─── Cart ──────────────────────────────────────────────── */
+export async function retrieveCart(cartId) {
+  const data = await shopifyFetch(`
+    ${CART_FRAGMENT}
+    query CartRetrieve($cartId: ID!) {
+      cart(id: $cartId) { ...CartFields }
+    }
+  `, { cartId })
+  return data.cart ?? null
+}
+
 export async function createCart(variantId, quantity = 1) {
   return createCartWithAttributes(variantId, quantity)
 }
