@@ -56,7 +56,7 @@ export default function ShopFooter() {
         <div className="sf-brand">
           <img src="/footer logo.png" alt="Art by Tvesa" className="sf-logo" />
           <p className="sf-tagline">
-            Original paintings and fine-art prints by Tvesa Medh — each piece made with intention and love.
+            Original paintings and fine-art prints by Tvesa Medh. Each piece made with intention and love.
           </p>
         </div>
 

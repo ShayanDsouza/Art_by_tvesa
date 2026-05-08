@@ -38,10 +38,8 @@ export default function Hero() {
   const scrollToGallery = (e) => {
     e.preventDefault()
     const gallery = document.querySelector('#gallery')
-    const wrapper = document.querySelector('.gallery-scroll-wrapper')
-    if (gallery && wrapper) {
-      const scrollableHeight = wrapper.offsetHeight - window.innerHeight
-      window.scrollTo({ top: gallery.offsetTop + 0.66 * scrollableHeight, behavior: 'auto' })
+    if (gallery) {
+      gallery.scrollIntoView({ behavior: 'smooth' })
     }
   }
 

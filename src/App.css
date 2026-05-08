@@ -3597,8 +3597,11 @@ html.dark .about-socials a:hover { color: #E7DDD9; }
   .museum-light-fixture--orig { display: none; }
   .museum-light-fixture--alt  {
     display: block;
-    width: clamp(800px, 150%, 1100px);
-    top: 0%;
+    width: 100%;
+    height: auto;
+    top: 0;
+    transform: translateX(-50%) scale(1.6);
+    transform-origin: top center;
   }
 
   .museum-strip {
@@ -3632,8 +3635,7 @@ html.dark .about-socials a:hover { color: #E7DDD9; }
 
 @media (max-width: 480px) {
   .museum-light-fixture--alt {
-    width: clamp(700px, 150%, 900px);
-    top: 0%;
+    /* inherits height: 100%; width: auto from 768px rule */
   }
 
   .museum-strip {
@@ -6157,6 +6159,12 @@ html.dark .gallery-view-all .btn-outline:hover {
   padding: 0 0 16px;
   animation: dropdownIn 0.14s ease;
   overflow: hidden;
+}
+
+/* Sort dropdown overrides base left:0 — must use higher specificity */
+.browse-filter-dropdown.browse-sort-dropdown {
+  left: auto;
+  right: 0;
 }
 
 /* Header row: "X selected" + Reset button */
