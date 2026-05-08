@@ -35,6 +35,10 @@ const SORT_OPTIONS = [
   { value: 'name-za',    label: 'Alphabetically, Z–A' },
 ]
 
+const ON_SHOP_DOMAIN = window.location.hostname === 'shop.artbytvesa.com'
+const SHOP_BASE    = ON_SHOP_DOMAIN ? ''       : '/shop'
+const PRODUCT_BASE = ON_SHOP_DOMAIN ? '/product' : '/shop/product'
+
 /* ─── Product card ───────────────────────────────────────── */
 function ProductCard({ product, isPostcard, activeTab, activeSubTab }) {
   const { addItem, loading } = useCart()
@@ -52,7 +56,7 @@ function ProductCard({ product, isPostcard, activeTab, activeSubTab }) {
   }
 
   const showFramed = hovered && product.hoverImage
-  const productUrl = `/shop/product/${product.handle}?tab=${activeTab}${activeTab === 'prints' ? `&sub=${activeSubTab}` : ''}`
+  const productUrl = `${PRODUCT_BASE}/${product.handle}?tab=${activeTab}${activeTab === 'prints' ? `&sub=${activeSubTab}` : ''}`
   // Prints use contain so full artwork shows; originals/commissions use cover to fill the frame
   const useContain = !isPostcard && activeTab === 'prints'
 
@@ -506,7 +510,7 @@ export default function ShopBrowsePage() {
         {/* ── Sticky topbar: breadcrumb + actions ── */}
         <div className="browse-sticky-topbar">
           <nav className="browse-sticky-breadcrumb">
-            <Link to="/shop">Shop</Link>
+            <Link to={`${SHOP_BASE}/`}>Shop</Link>
             <span className="browse-sticky-sep">/</span>
             <span>{pageTitle}</span>
           </nav>
@@ -586,7 +590,7 @@ export default function ShopBrowsePage() {
 
         {/* ── Back ── */}
         <div className="shop-back">
-          <Link to="/shop" className="shop-back-link">← Back to Shop</Link>
+          <Link to={`${SHOP_BASE}/`} className="shop-back-link">← Back to Shop</Link>
         </div>
 
       </main>

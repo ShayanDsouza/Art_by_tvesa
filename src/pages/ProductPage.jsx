@@ -19,7 +19,10 @@ import {
   isPostcardBundleProduct,
 } from '../lib/postcardBundles'
 
-const STORE_DOMAIN = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN
+const STORE_DOMAIN  = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN
+const ON_SHOP_DOMAIN = window.location.hostname === 'shop.artbytvesa.com'
+const BROWSE_BASE   = ON_SHOP_DOMAIN ? '/browse'  : '/shop/browse'
+const PRODUCT_BASE  = ON_SHOP_DOMAIN ? '/product' : '/shop/product'
 
 const COLLECTION_FROM_TAB = {
   originals:   'original-works',
@@ -57,7 +60,7 @@ function ShareBtn({ title }) {
 /* ─── Related product card ───────────────────────────────── */
 function RelatedCard({ product }) {
   return (
-    <Link to={`/shop/product/${product.handle}`} className="product-related-card">
+    <Link to={`${PRODUCT_BASE}/${product.handle}`} className="product-related-card">
       {product.image ? (
         <img
           src={product.image.url}
@@ -259,7 +262,7 @@ export default function ProductPage() {
           <nav className="product-breadcrumb">
             <Link to="/shop">Shop</Link>
             <span> / </span>
-            <Link to={`/shop/browse?tab=${fromTab}`}>
+            <Link to={`${BROWSE_BASE}?tab=${fromTab}`}>
               {fromTab === 'originals' ? 'Original Artworks' :
                fromTab === 'commissions' ? 'Commissions' : 'Prints'}
             </Link>
@@ -522,7 +525,7 @@ export default function ProductPage() {
         )}
 
         <div className="shop-back">
-          <Link to={`/shop/browse?tab=${fromTab}`} className="shop-back-link">
+          <Link to={`${BROWSE_BASE}?tab=${fromTab}`} className="shop-back-link">
             ← Back
           </Link>
         </div>
