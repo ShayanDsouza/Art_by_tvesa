@@ -3834,6 +3834,7 @@ body.collection-page .navbar-links li:nth-child(3) a {
 body.collection-page .hamburger span {
   background: #172C16;
 }
+/* Mobile/Default */
 body.collection-page .navbar-logo-wrap,
 body.collection-page .navbar-links,
 body.collection-page .hamburger {
@@ -3841,6 +3842,16 @@ body.collection-page .hamburger {
 }
 body.collection-page .navbar-logo-wrap {
   transform: translate(-8px, -8px);
+}
+
+/* Desktop: Move navbar items further up to match standard pages distance from top */
+@media (min-width: 769px) {
+  body.collection-page .navbar-links {
+    transform: translateY(-38px);
+  }
+  body.collection-page .navbar-logo-wrap {
+    transform: translate(-8px, -38px);
+  }
 }
 @media (max-width: 768px) {
   body.collection-page .navbar-logo-wrap {
