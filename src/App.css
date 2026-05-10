@@ -495,7 +495,7 @@ body.gallery-active .navbar {
   }
 
   body.collection-page .navbar-logo-wrap {
-    transform: translate(-47px, -8px);
+    transform: translate(-47px, 4px);
   }
 
   body.collection-page .navbar-links {
@@ -3837,14 +3837,14 @@ body.collection-page .hamburger span {
 body.collection-page .navbar-logo-wrap,
 body.collection-page .navbar-links,
 body.collection-page .hamburger {
-  transform: translateY(-8px);
+  transform: translateY(4px);
 }
 body.collection-page .navbar-logo-wrap {
-  transform: translate(-8px, -8px);
+  transform: translate(-8px, 4px);
 }
 @media (max-width: 768px) {
   body.collection-page .navbar-logo-wrap {
-    transform: translate(-47px, -8px);
+    transform: translate(-47px, 4px);
   }
 
   body.collection-page .navbar-links {
@@ -5130,6 +5130,7 @@ html.dark body.shop-browse-page .account-avatar {
   flex-shrink: 0;
   margin-left: -50px;   /* pull lamp past the navbar's 48px left padding to sit near the edge */
   margin-top: -18px;    /* nudge upward so lamp head peeks above the navbar baseline */
+  margin-bottom: -24px; /* Pull bottom of navbar up to reduce overall height */
   transition: opacity 0.2s, transform 0.2s;
 }
 
