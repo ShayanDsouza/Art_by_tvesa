@@ -153,7 +153,7 @@ body.gallery-active .navbar {
 
 .navbar-logo-wrap {
   flex-shrink: 0;
-  margin-top: -10px;
+  margin-top: -18px;
 }
 
 .navbar-region {
@@ -350,7 +350,7 @@ body.gallery-active .navbar {
   display: flex;
   list-style: none;
   gap: 40px;
-  margin-top: -10px;
+  margin-top: -18px;
 }
 
 .navbar-links a {
@@ -391,7 +391,7 @@ body.gallery-active .navbar {
   border: none;
   cursor: pointer;
   padding: 4px;
-  margin-top: -10px;
+  margin-top: -18px;
 }
 
 .hamburger span {
