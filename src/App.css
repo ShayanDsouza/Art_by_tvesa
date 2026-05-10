@@ -5063,14 +5063,14 @@ html.dark body.shop-browse-page .account-avatar {
   }
   .browse-sticky-topbar {
     padding: 0 20px; /* matches navbar mobile padding (10px 20px) */
-    height: 50px;
+    height: 64px;
     top: 68px;
     /* upward shadow bridges gap below fixed navbar; border-bottom is layout-safe (no bleed) */
     box-shadow: 0 -30px 0 30px #E7DDDA;
     border-bottom: 1px solid rgba(0,0,0,0.07);
   }
   .browse-filter-bar {
-    top: 118px; /* 68px navbar + 50px topbar */
+    top: 132px; /* 68px navbar + 64px topbar */
     padding: 10px 16px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
@@ -5100,13 +5100,13 @@ html.dark body.shop-browse-page .account-avatar {
   }
   .browse-sticky-topbar {
     padding: 0 20px; /* matches navbar mobile padding */
-    height: 50px;
+    height: 64px;
     top: 68px;
     box-shadow: 0 -30px 0 30px #E7DDDA;
     border-bottom: 1px solid rgba(0,0,0,0.07);
   }
   .browse-filter-bar {
-    top: 118px; /* 68px navbar + 50px topbar */
+    top: 132px; /* 68px navbar + 64px topbar */
     padding: 8px 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
@@ -5987,18 +5987,18 @@ html.dark .gallery-view-all .btn-outline:hover {
   align-items: center;
   justify-content: space-between;
   padding: 0 48px; /* matches navbar padding (8px 48px) — aligns breadcrumb with logo, icons with VIEW SHOP */
-  height: 46px;
+  height: 62px;
   /* box-shadow: upward extension fills any pixel gap between fixed navbar and this sticky bar */
   box-shadow: 0 -30px 0 30px #E7DDDA, 0 1px 0 rgba(0,0,0,0.07);
 }
 
 /* ALL mobile overrides must come AFTER the base rule so the cascade actually wins.
-   The base sets top:84px / height:46px / padding:0 48px — wrong on mobile.
-   Without this block the topbar ends at 130px, covering the mobile bar at 118px. */
+   The base sets top:84px / height:62px / padding:0 48px — wrong on mobile.
+   Without this block the topbar ends at 146px, covering the mobile bar at 132px. */
 @media (max-width: 768px) {
   .browse-sticky-topbar {
     top: 68px;        /* mobile navbar = 48px logo + 10px×2 padding */
-    height: 50px;
+    height: 64px;
     padding: 0 20px;
     box-shadow: 0 -30px 0 30px #E7DDDA;
     border-bottom: 1px solid rgba(0,0,0,0.07);
@@ -6007,7 +6007,7 @@ html.dark .gallery-view-all .btn-outline:hover {
 @media (max-width: 480px) {
   .browse-sticky-topbar {
     top: 68px;
-    height: 50px;
+    height: 64px;
     padding: 0 20px;
     box-shadow: 0 -30px 0 30px #E7DDDA;
     border-bottom: 1px solid rgba(0,0,0,0.07);
@@ -6018,7 +6018,7 @@ html.dark .gallery-view-all .btn-outline:hover {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.72rem;
+  font-size: 0.9rem;
   letter-spacing: 0.06em;
   color: #999;
 }
@@ -6055,7 +6055,7 @@ html.dark .gallery-view-all .btn-outline:hover {
   border-bottom: 1px solid rgba(0,0,0,0.08);
   background: #EDE6E1;
   position: sticky;
-  top: 130px; /* 84px navbar + 46px topbar */
+  top: 146px; /* 84px navbar + 62px topbar */
   z-index: 49;
 }
 
