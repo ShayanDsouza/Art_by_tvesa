@@ -101,8 +101,6 @@ export default function ProductPage() {
 
   const fromTab = searchParams.get('tab') || 'originals'
   const collHandle = COLLECTION_FROM_TAB[fromTab] ?? 'original-works'
-  // Postcards/prints are square images; use a square frame so they fill without bars
-  const isPrint = fromTab === 'prints' || fromTab === 'postcards'
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
@@ -311,7 +309,7 @@ export default function ProductPage() {
 
             {/* ── Image gallery ── */}
             <div className="product-gallery">
-              <div className={`product-gallery-main${isPrint ? ' product-gallery-main--print' : ''}`}>
+              <div className="product-gallery-main">
                 {images[activeImage] ? (
                   <img
                     src={images[activeImage].url}
