@@ -5048,6 +5048,13 @@ html.dark body.shop-browse-page .account-avatar {
   .browse-header { padding: 24px 16px 0; }
   .browse-tabs { padding: 0 16px; margin-top: 20px; }
   .browse-title { font-size: clamp(1.8rem, 7vw, 3rem); }
+  .browse-card-btn--choose {
+    font-size: 0.58rem;
+    letter-spacing: 1px;
+    white-space: normal;
+    line-height: 1.4;
+    padding: 8px 6px;
+  }
 
   /* Mobile navbar is 68px (48px logo + 10px×2 padding) */
   .browse-main {
@@ -5079,6 +5086,13 @@ html.dark body.shop-browse-page .account-avatar {
   .browse-tab { padding: 10px 12px; font-size: 0.65rem; letter-spacing: 1.5px; }
   .browse-header { padding: 20px 12px 0; }
   .browse-tabs { padding: 0 12px; margin-top: 16px; }
+  .browse-card-btn--choose {
+    font-size: 0.55rem;
+    letter-spacing: 0.5px;
+    white-space: normal;
+    line-height: 1.4;
+    padding: 7px 4px;
+  }
 
   .browse-main {
     padding-top: 68px;
