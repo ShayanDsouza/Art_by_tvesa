@@ -5084,6 +5084,7 @@ html.dark body.shop-browse-page .account-avatar {
   cursor: pointer;
   padding: 0;
   flex-shrink: 0;
+  margin-left: -38px;   /* pull lamp past the navbar's 48px left padding to sit near the edge */
   transition: opacity 0.2s, transform 0.2s;
 }
 
@@ -5093,7 +5094,7 @@ html.dark body.shop-browse-page .account-avatar {
 }
 
 .dark-mode-toggle-img {
-  width: 72px;
+  width: 100px;
   height: auto;
   object-fit: contain;
   display: block;
