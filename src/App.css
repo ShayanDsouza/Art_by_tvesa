@@ -4234,7 +4234,7 @@ body.collection-page .navbar-collection-btn:hover {
 
 .browse-tab {
   padding: 12px 36px;
-  font-size: 0.68rem;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -5083,7 +5083,7 @@ html.dark body.shop-browse-page .account-avatar {
     padding: 0 12px 48px;
   }
   .browse-card-img-wrap { aspect-ratio: 4 / 5; }
-  .browse-tab { padding: 10px 12px; font-size: 0.65rem; letter-spacing: 1.5px; }
+  .browse-tab { padding: 10px 12px; font-size: 0.78rem; letter-spacing: 1.5px; }
   .browse-header { padding: 20px 12px 0; }
   .browse-tabs { padding: 0 12px; margin-top: 16px; }
   .browse-card-btn--choose {
