@@ -9,6 +9,35 @@
    ========================================================= */
 
 
+/* ── Decorative lamp (archives page, fixed top-left) ──────────────── */
+.gallery-lamp-wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 140px;
+  z-index: 101;        /* above navbar so the lantern head is fully visible */
+  pointer-events: none;
+}
+
+.gallery-lamp {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.gallery-lamp--dark {
+  display: none;
+}
+
+html.dark .gallery-lamp--light {
+  display: none;
+}
+
+html.dark .gallery-lamp--dark {
+  display: block;
+}
+
+
 /* ── Back Navigation ─────────────────────────────────────────────── */
 
 .collection-nav {
