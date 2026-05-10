@@ -14,8 +14,8 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 140px;
-  z-index: 101;        /* above navbar so the lantern head is fully visible */
+  width: 260px;
+  z-index: 99;         /* behind navbar (100) so it peeks from beneath, above gallery content */
   pointer-events: none;
 }
 
