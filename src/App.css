@@ -494,11 +494,11 @@ body.gallery-active .navbar {
 
   /* Lamp + logo adjustments for mobile */
   .dark-mode-toggle {
-    margin-left: -4px !important;
+    margin-left: -7px !important;
   }
 
   .navbar-logo-wrap {
-    margin-left: -16px;  /* slide logo left, closer to the lamp */
+    transform: translateX(-20px);
   }
 
   .navbar-region-trigger {
