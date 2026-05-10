@@ -1,15 +1,18 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import DarkModeToggle from './DarkModeToggle'
 
 const ON_SHOP_DOMAIN = window.location.hostname === 'shop.artbytvesa.com'
 
 export default function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen]             = useState(false)
+  const [shopDropdownOpen, setShopDropdownOpen] = useState(false)
   const location  = useLocation()
   const navigate  = useNavigate()
+  const dropRef   = useRef(null)
 
   const isCollection = location.pathname === '/archives'
+  const isShop       = location.pathname.startsWith('/shop')
 
   /* Close mobile drawer when carousel is active */
   useEffect(() => {
@@ -46,11 +49,27 @@ export default function Navbar() {
     }
   }
 
-  const closeAll = () => setMenuOpen(false)
+  /* Close shop dropdown on outside click */
+  useEffect(() => {
+    const handler = (e) => {
+      if (dropRef.current && !dropRef.current.contains(e.target)) {
+        setShopDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const closeAll = () => {
+    setMenuOpen(false)
+    setShopDropdownOpen(false)
+  }
 
   return (
     <nav className="navbar">
       <div className="navbar-brand">
+        {/* Lamp toggle — left of logo on Archives page */}
+        {isCollection && <DarkModeToggle />}
         <div className="navbar-logo-wrap">
           {window.location.hostname === 'shop.artbytvesa.com' ? (
             <a href="https://artbytvesa.com" className="navbar-logo">
@@ -64,8 +83,6 @@ export default function Navbar() {
           </Link>
           )}
         </div>
-        {/* Dark mode toggle only on the Archives page */}
-        {isCollection && <DarkModeToggle />}
       </div>
 
       <button
@@ -97,6 +114,38 @@ export default function Navbar() {
             : <a href="#contact" onClick={handleContact}>Contact</a>
           }
         </li>
+
+        {/* ── Shop button with dropdown ── */}
+        <li
+          className="navbar-shop-item"
+          ref={dropRef}
+          onMouseEnter={() => setShopDropdownOpen(true)}
+          onMouseLeave={() => setShopDropdownOpen(false)}
+        >
+          <Link
+            to={ON_SHOP_DOMAIN ? '/' : '/shop'}
+            className="navbar-collection-btn"
+            onClick={(e) => {
+              if (!ON_SHOP_DOMAIN && isShop && location.pathname === '/shop') {
+                e.preventDefault()
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+              }
+              closeAll()
+            }}
+          >
+            <span className="navbar-collection-shimmer" aria-hidden="true" />
+            <span className="navbar-collection-label">View Shop</span>
+          </Link>
+
+          {shopDropdownOpen && (
+            <div className="navbar-shop-dropdown">
+              <Link to={ON_SHOP_DOMAIN ? '/' : '/shop'} onClick={closeAll}>Shop All</Link>
+              <Link to={ON_SHOP_DOMAIN ? '/browse?tab=originals' : '/shop/browse?tab=originals'} onClick={closeAll}>Original Artworks</Link>
+              <Link to={ON_SHOP_DOMAIN ? '/browse?tab=prints' : '/shop/browse?tab=prints'} onClick={closeAll}>Prints</Link>
+            </div>
+          )}
+        </li>
+
       </ul>
     </nav>
   )
