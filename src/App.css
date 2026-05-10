@@ -6373,6 +6373,11 @@ body.shop-page .product-breadcrumb a:hover { color: #fff; }
   overflow: hidden;
 }
 
+/* Prints / postcards: square container — fills perfectly for square Shopify product images */
+.product-gallery-main--print {
+  aspect-ratio: 1 / 1;
+}
+
 .product-gallery-img {
   width: 100%;
   height: 100%;
