@@ -5078,8 +5078,8 @@ html.dark body.shop-browse-page .account-avatar {
   background: none;
   border: none;
   border-radius: 0;
-  width: 80px;
-  height: 80px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -5095,10 +5095,16 @@ html.dark body.shop-browse-page .account-avatar {
 }
 
 .dark-mode-toggle-img {
-  width: 76px;
-  height: 76px;
+  width: 28px;
+  height: 28px;
   object-fit: contain;
   display: block;
+}
+
+.navbar-darkmode-li {
+  display: flex;
+  align-items: center;
+  list-style: none;
 }
 
 html.dark .dark-mode-toggle:hover {
