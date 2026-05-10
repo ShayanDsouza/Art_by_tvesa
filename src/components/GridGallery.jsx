@@ -135,12 +135,6 @@ export default function GridGallery() {
   return (
     <section className="gallery-section">
 
-      {/* Decorative lamp — fixed top-left, always visible while scrolling */}
-      <div className="gallery-lamp-wrap" aria-hidden="true">
-        <img src="/new lamp light mode.png" alt="" className="gallery-lamp gallery-lamp--light" />
-        <img src="/new lamp dark mode.png"  alt="" className="gallery-lamp gallery-lamp--dark"  />
-      </div>
-
       {/* Header */}
       <div className="gallery-header">
         {collectionText && <>

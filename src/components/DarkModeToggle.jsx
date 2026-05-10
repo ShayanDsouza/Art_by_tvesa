@@ -27,7 +27,7 @@ export default function DarkModeToggle() {
       title={dark ? 'Light mode' : 'Dark mode'}
     >
       <img
-        src={dark ? '/lamp without light.png' : '/lamp with light.png'}
+        src={dark ? '/new lamp dark mode.png' : '/new lamp light mode.png'}
         alt={dark ? 'Switch to light mode' : 'Switch to dark mode'}
         className="dark-mode-toggle-img"
       />
