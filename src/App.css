@@ -494,7 +494,7 @@ body.gallery-active .navbar {
 
   /* Lamp + logo adjustments for mobile */
   .dark-mode-toggle {
-    margin-left: 0px;  /* sit at the natural left padding edge on mobile */
+    margin-left: -4px !important;
   }
 
   .navbar-logo-wrap {
