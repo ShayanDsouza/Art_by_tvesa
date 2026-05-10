@@ -5600,79 +5600,79 @@ html.dark body.shop-browse-page {
    Applies to /shop, /shop/browse, and all product pages.
    ══════════════════════════════════════════════════════════════ */
 body.shop-page .navbar {
-  background: #E7DDDA;
-  border-bottom: initial;
-  box-shadow: initial;
+  background: #3B0C0C;
+  border-bottom: none !important;
+  box-shadow: none !important;
 }
 body.shop-page .navbar::after {
-  display: block;
+  display: none;
 }
-/* Light logo hidden, dark logo always shown on shop pages */
-body.shop-page .navbar-logo-light { display: block; }
-body.shop-page .navbar-logo-dark  { display: none; }
+/* Dark logo shown, light logo hidden on shop pages */
+body.shop-page .navbar-logo-light { display: none; }
+body.shop-page .navbar-logo-dark  { display: block; }
 
-/* Nav links */
+/* Nav links — white on maroon */
 body.shop-page .navbar-links a {
-  color: #172C16;
+  color: #fff;
 }
 body.shop-page .navbar-links a:hover {
-  color: #5F578A;
+  color: rgba(255,255,255,0.7);
 }
-/* Contact link — keep visually distinct but still readable */
+/* Contact link */
 body.shop-page .navbar-links li:nth-child(3) a {
-  color: #8B1A1A;
+  color: #fff;
 }
 
 /* View Shop button */
 body.shop-page .navbar-collection-btn {
-  color: #172C16 !important;
-  border-color: rgba(23, 44, 22, 0.45) !important;
+  color: #fff !important;
+  border-color: rgba(255,255,255,0.35) !important;
 }
 body.shop-page .navbar-collection-btn:hover {
-  background: #172C16 !important;
-  border-color: rgba(23, 44, 22, 0.8) !important;
+  background: #5F578A !important;
+  border-color: #5F578A !important;
   color: #fff !important;
 }
 
-/* View Shop dropdown — maroon background to match navbar */
+/* View Shop dropdown — dark on maroon */
 body.shop-page .navbar-shop-dropdown {
-  background: #fff;
-  border-color: rgba(23, 44, 22, 0.12);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  background: #2a1010;
+  border-color: rgba(255,255,255,0.15);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
 body.shop-page .navbar-shop-dropdown a {
-  color: #2a2a2a;
+  color: rgba(255,255,255,0.85);
 }
 body.shop-page .navbar-shop-dropdown a:hover {
-  background: #f4f0ec;
-  color: #172C16;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
 }
 body.shop-page .navbar-shop-dropdown a + a {
-  border-top-color: rgba(0, 0, 0, 0.06);
+  border-top-color: rgba(255,255,255,0.1);
 }
 
-/* Hamburger lines */
+/* Hamburger lines — white */
 body.shop-page .hamburger span {
-  background: #172C16;
+  background: #fff;
 }
 
 /* Mobile full-screen drawer */
 @media (max-width: 768px) {
   body.shop-page .navbar-links {
-    background: #E7DDDA;
+    background: #3B0C0C;
   }
   body.shop-page .navbar-links a {
-    color: #172C16;
+    color: #fff;
   }
   body.shop-page .navbar-links a:hover {
-    color: #5F578A;
+    color: rgba(255,255,255,0.7);
   }
   body.shop-page .navbar-links li:nth-child(3) a {
-    color: #8B1A1A;
+    color: #fff;
   }
   body.shop-page .navbar-collection-btn {
-    border-color: rgba(23, 44, 22, 0.45) !important;
-    color: #172C16 !important;
+    border-color: rgba(255,255,255,0.35) !important;
+    color: #fff !important;
   }
 }
 
