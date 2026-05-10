@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import DarkModeToggle from './DarkModeToggle'
 
+const ON_SHOP_DOMAIN = window.location.hostname === 'shop.artbytvesa.com'
+
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location  = useLocation()
@@ -78,13 +80,22 @@ export default function Navbar() {
 
       <ul className={`navbar-links ${menuOpen ? 'active' : ''}`}>
         <li>
-          <Link to="/archives" onClick={closeAll}>Archives</Link>
+          {ON_SHOP_DOMAIN
+            ? <a href="https://artbytvesa.com/archives" onClick={closeAll}>Archives</a>
+            : <Link to="/archives" onClick={closeAll}>Archives</Link>
+          }
         </li>
         <li>
-          <a href="#about" onClick={(e) => { e.preventDefault(); handleHashLink('#about') }}>About</a>
+          {ON_SHOP_DOMAIN
+            ? <a href="https://artbytvesa.com/#about" onClick={closeAll}>About</a>
+            : <a href="#about" onClick={(e) => { e.preventDefault(); handleHashLink('#about') }}>About</a>
+          }
         </li>
         <li>
-          <a href="#contact" onClick={handleContact}>Contact</a>
+          {ON_SHOP_DOMAIN
+            ? <a href="https://artbytvesa.com/#contact" onClick={closeAll}>Contact</a>
+            : <a href="#contact" onClick={handleContact}>Contact</a>
+          }
         </li>
       </ul>
     </nav>
