@@ -494,7 +494,7 @@ body.gallery-active .navbar {
 
   /* Lamp + logo adjustments for mobile */
   .dark-mode-toggle {
-    margin-left: -10px;  /* less aggressive pull — mobile padding is only 20px */
+    margin-left: 0px;  /* sit at the natural left padding edge on mobile */
   }
 
   .navbar-logo-wrap {
