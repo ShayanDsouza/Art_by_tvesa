@@ -492,6 +492,15 @@ body.gallery-active .navbar {
     height: 48px;
   }
 
+  /* Lamp + logo adjustments for mobile */
+  .dark-mode-toggle {
+    margin-left: -10px;  /* less aggressive pull — mobile padding is only 20px */
+  }
+
+  .navbar-logo-wrap {
+    margin-left: -16px;  /* slide logo left, closer to the lamp */
+  }
+
   .navbar-region-trigger {
     max-width: min(58vw, 230px);
     padding: 7px 10px 7px 8px;
