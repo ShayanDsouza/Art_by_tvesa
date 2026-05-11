@@ -4997,13 +4997,13 @@ html.dark body.shop-browse-page .account-avatar {
   font-family: var(--font-heading);
   font-size: 1.6rem;
   font-weight: 600;
-  color: #5F578A;
+  color: #1a1a1a;
   margin: 0;
 }
 
 .newsletter-success-sub {
-  font-size: 0.9rem;
-  color: #7a72aa;
+  font-size: 0.95rem;
+  color: #444;
   margin: 0;
   max-width: 380px;
   line-height: 1.6;
