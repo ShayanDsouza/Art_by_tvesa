@@ -7145,13 +7145,16 @@ body.shop-page .product-breadcrumb a:hover { color: #fff; }
   line-height: 0;
 }
 
-.sf-pay-badge svg {
+.sf-pay-badge svg,
+.sf-pay-badge img {
   width: 52px;
   height: 30px;
   display: block;
+  object-fit: contain;
 }
 
-.sf-pay-badge--banking svg {
+.sf-pay-badge--banking svg,
+.sf-pay-badge--banking img {
   width: 56px;
 }
 
