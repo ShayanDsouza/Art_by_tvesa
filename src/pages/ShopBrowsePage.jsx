@@ -75,7 +75,7 @@ function ProductCard({ product, isPostcard, activeTab, activeSubTab }) {
                 <img
                   src={product.image.url}
                   alt={product.image.altText || product.title}
-                  className={`browse-card-img${showFramed ? ' hidden' : ''}`}
+                  className={`browse-card-img${activeSubTab === 'posters' ? ' browse-card-img--fit' : ''}${showFramed ? ' hidden' : ''}`}
                   loading="lazy"
                 />
               </div>
@@ -484,7 +484,7 @@ export default function ShopBrowsePage() {
     activeTab === 'commissions' ? COLLECTION_HANDLES.commissions :
     COLLECTION_HANDLES[activeSubTab] ?? COLLECTION_HANDLES.postcards
 
-  const isPostcard = activeTab === 'prints' && activeSubTab === 'postcards'
+  const isPostcard = activeTab === 'prints'
 
   const pageTitle =
     activeTab === 'originals'   ? 'Original Artworks' :

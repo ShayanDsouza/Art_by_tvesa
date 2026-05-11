@@ -62,7 +62,8 @@ function ShareBtn({ title }) {
 function RelatedCard({ product }) {
   const [hovered, setHovered] = useState(false)
   
-  const isPostcard = product.productType === 'Postcards' || product.tags?.includes('Postcard') || product.tags?.includes('Postcards')
+  const isPoster = product.productType === 'Posters' || product.tags?.includes('Poster') || product.tags?.includes('Posters')
+  const isPostcard = product.productType === 'Postcards' || product.tags?.includes('Postcard') || product.tags?.includes('Postcards') || isPoster
   const isPrint = product.productType === 'Prints' || product.tags?.includes('Prints')
   
   const showFramed = hovered && product.hoverImage
@@ -83,7 +84,7 @@ function RelatedCard({ product }) {
                 <img
                   src={product.image.url}
                   alt={product.image.altText || product.title}
-                  className={`browse-card-img${showFramed ? ' hidden' : ''}`}
+                  className={`browse-card-img${isPoster ? ' browse-card-img--fit' : ''}${showFramed ? ' hidden' : ''}`}
                   loading="lazy"
                 />
               </div>

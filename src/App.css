@@ -4423,6 +4423,11 @@ html.dark .browse-pagination-page { color: rgba(231,221,218,0.55); }
   background: #f5f2ef;
 }
 
+.browse-card-img.browse-card-img--fit {
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
 /* Ensure the img-wrap for contain prints has a matching background */
 .browse-card:has(.browse-card-img--contain) .browse-card-img-wrap {
   background: #f5f2ef;
