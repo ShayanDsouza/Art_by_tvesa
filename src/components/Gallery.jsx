@@ -281,6 +281,7 @@ export default function Gallery() {
             {artworks.map((art, i) => {
               const isCenter = i === activeIndex
               const url      = getThumbnailUrl(art)
+              const hasShop  = !!art.shopUrl
 
               return (
                 <div
@@ -295,9 +296,20 @@ export default function Gallery() {
                       : <div className="museum-strip-placeholder" />
                     }
 
-                    {/* Hover overlay — title only, no shop link */}
+                    {/* Hover overlay */}
                     <div className="museum-hover-overlay">
                       <span className="museum-hover-title">{art.title}</span>
+                      {hasShop && (
+                        <a
+                          href={art.shopUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="museum-hover-btn"
+                          onPointerDown={e => e.stopPropagation()}
+                        >
+                          View in Shop
+                        </a>
+                      )}
                     </div>
                   </div>
 
@@ -315,6 +327,7 @@ export default function Gallery() {
         {/* ── Buttons above the green strip ── */}
         <div className="museum-cta-row">
           <Link to="/archives" className="museum-cta-btn museum-cta-btn--grey">View Archives</Link>
+          <a href="https://shop.artbytvesa.com" className="museum-cta-btn museum-cta-btn--green">View Shop</a>
         </div>
 
         {/* ── Green baseboard ── */}
