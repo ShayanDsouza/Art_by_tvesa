@@ -489,6 +489,19 @@ body.gallery-active .navbar {
     height: 48px;
   }
 
+  /* Lamp + logo adjustments for mobile archives */
+  body.collection-page .dark-mode-toggle {
+    margin-left: -18px !important;
+  }
+
+  body.collection-page .navbar-logo-wrap {
+    transform: translate(-47px, 4px);
+  }
+
+  body.collection-page .navbar-links {
+    transform: none;
+  }
+
   .navbar-region-trigger {
     max-width: min(58vw, 230px);
     padding: 7px 10px 7px 8px;
@@ -3821,6 +3834,23 @@ body.collection-page .navbar-links li:nth-child(3) a {
 body.collection-page .hamburger span {
   background: #172C16;
 }
+body.collection-page .navbar-logo-wrap,
+body.collection-page .navbar-links,
+body.collection-page .hamburger {
+  transform: translateY(4px);
+}
+body.collection-page .navbar-logo-wrap {
+  transform: translate(-8px, 4px);
+}
+@media (max-width: 768px) {
+  body.collection-page .navbar-logo-wrap {
+    transform: translate(-47px, 4px);
+  }
+
+  body.collection-page .navbar-links {
+    transform: none;
+  }
+}
 body.collection-page .footer {
   background: #E7DDDA;
   color: rgba(23, 44, 22, 0.7);
@@ -4204,7 +4234,7 @@ body.collection-page .navbar-collection-btn:hover {
 
 .browse-tab {
   padding: 12px 36px;
-  font-size: 0.68rem;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -4423,7 +4453,7 @@ html.dark .browse-pagination-page { color: rgba(231,221,218,0.55); }
 .browse-card-postcard-rotator .browse-card-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
   transition: none;
 }
@@ -5018,6 +5048,13 @@ html.dark body.shop-browse-page .account-avatar {
   .browse-header { padding: 24px 16px 0; }
   .browse-tabs { padding: 0 16px; margin-top: 20px; }
   .browse-title { font-size: clamp(1.8rem, 7vw, 3rem); }
+  .browse-card-btn--choose {
+    font-size: 0.58rem;
+    letter-spacing: 1px;
+    white-space: normal;
+    line-height: 1.4;
+    padding: 8px 6px;
+  }
 
   /* Mobile navbar is 68px (48px logo + 10px×2 padding) */
   .browse-main {
@@ -5026,14 +5063,14 @@ html.dark body.shop-browse-page .account-avatar {
   }
   .browse-sticky-topbar {
     padding: 0 20px; /* matches navbar mobile padding (10px 20px) */
-    height: 50px;
+    height: 64px;
     top: 68px;
     /* upward shadow bridges gap below fixed navbar; border-bottom is layout-safe (no bleed) */
     box-shadow: 0 -30px 0 30px #E7DDDA;
     border-bottom: 1px solid rgba(0,0,0,0.07);
   }
   .browse-filter-bar {
-    top: 118px; /* 68px navbar + 50px topbar */
+    top: 132px; /* 68px navbar + 64px topbar */
     padding: 10px 16px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
@@ -5046,9 +5083,16 @@ html.dark body.shop-browse-page .account-avatar {
     padding: 0 12px 48px;
   }
   .browse-card-img-wrap { aspect-ratio: 4 / 5; }
-  .browse-tab { padding: 10px 12px; font-size: 0.65rem; letter-spacing: 1.5px; }
+  .browse-tab { padding: 10px 12px; font-size: 0.78rem; letter-spacing: 1.5px; }
   .browse-header { padding: 20px 12px 0; }
   .browse-tabs { padding: 0 12px; margin-top: 16px; }
+  .browse-card-btn--choose {
+    font-size: 0.55rem;
+    letter-spacing: 0.5px;
+    white-space: normal;
+    line-height: 1.4;
+    padding: 7px 4px;
+  }
 
   .browse-main {
     padding-top: 68px;
@@ -5056,13 +5100,13 @@ html.dark body.shop-browse-page .account-avatar {
   }
   .browse-sticky-topbar {
     padding: 0 20px; /* matches navbar mobile padding */
-    height: 50px;
+    height: 64px;
     top: 68px;
     box-shadow: 0 -30px 0 30px #E7DDDA;
     border-bottom: 1px solid rgba(0,0,0,0.07);
   }
   .browse-filter-bar {
-    top: 118px; /* 68px navbar + 50px topbar */
+    top: 132px; /* 68px navbar + 64px topbar */
     padding: 8px 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
@@ -5078,14 +5122,15 @@ html.dark body.shop-browse-page .account-avatar {
   background: none;
   border: none;
   border-radius: 0;
-  width: 80px;
-  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   padding: 0;
   flex-shrink: 0;
+  margin-left: -50px;   /* pull lamp past the navbar's 48px left padding to sit near the edge */
+  margin-top: -18px;    /* nudge upward so lamp head peeks above the navbar baseline */
+  margin-bottom: -24px; /* Pull bottom of navbar up to reduce overall height */
   transition: opacity 0.2s, transform 0.2s;
 }
 
@@ -5095,8 +5140,8 @@ html.dark body.shop-browse-page .account-avatar {
 }
 
 .dark-mode-toggle-img {
-  width: 76px;
-  height: 76px;
+  width: 130px;
+  height: auto;
   object-fit: contain;
   display: block;
 }
@@ -5125,41 +5170,41 @@ html.dark body {
 }
 
 /* ── Navbar ── */
-html.dark .navbar {
+html.dark body.collection-page .navbar {
   background: #142614;
 }
 
-html.dark .navbar-links a {
+html.dark body.collection-page .navbar-links a {
   color: rgba(228, 216, 213, 0.75);
 }
 
-html.dark .navbar-links a:hover,
-html.dark .navbar-links a.active {
+html.dark body.collection-page .navbar-links a:hover,
+html.dark body.collection-page .navbar-links a.active {
   color: #E4D8D5;
 }
 
-html.dark .navbar-links a::after {
+html.dark body.collection-page .navbar-links a::after {
   background: #9B93CC;
 }
 
-html.dark .navbar-collection-btn {
+html.dark body.collection-page .navbar-collection-btn {
   color: #E4D8D5 !important;
   border-color: rgba(228, 216, 213, 0.35) !important;
 }
 
-html.dark .navbar-collection-btn:hover {
+html.dark body.collection-page .navbar-collection-btn:hover {
   background: #5F578A !important;
   border-color: #5F578A !important;
   color: #fff !important;
   box-shadow: 0 0 10px rgba(90, 158, 88, 0.45), 0 0 22px rgba(90, 158, 88, 0.25) !important;
 }
 
-html.dark .hamburger span {
+html.dark body.collection-page .hamburger span {
   background: #E4D8D5;
 }
 
 /* ── Navbar border ── */
-html.dark .navbar {
+html.dark body.collection-page .navbar {
   border-bottom: 1px solid rgba(228, 216, 213, 0.07);
 }
 
@@ -5473,19 +5518,19 @@ html.dark body.shop-cards-page {
 }
 
 html.dark body.shop-cards-page .navbar {
-  background: #3B0C0C;
+  background: #E7DDDA;
 }
 
 html.dark body.shop-cards-page .navbar-links a {
-  color: rgba(231, 221, 218, 0.75);
+  color: #172C16;
 }
 
 html.dark body.shop-cards-page .navbar-links a:hover {
-  color: #E7DDDA;
+  color: #5F578A;
 }
 
 html.dark body.shop-cards-page .hamburger span {
-  background: #E7DDDA;
+  background: #172C16;
 }
 
 html.dark body.shop-cards-page .shop-main {
@@ -5563,20 +5608,20 @@ body.shop-page .navbar {
 body.shop-page .navbar::after {
   display: none;
 }
-/* Light logo hidden, dark logo always shown on shop pages */
+/* Dark logo shown, light logo hidden on shop pages */
 body.shop-page .navbar-logo-light { display: none; }
 body.shop-page .navbar-logo-dark  { display: block; }
 
-/* Nav links */
+/* Nav links — white on maroon */
 body.shop-page .navbar-links a {
   color: #fff;
 }
 body.shop-page .navbar-links a:hover {
   color: rgba(255,255,255,0.7);
 }
-/* Contact link — keep visually distinct but still readable */
+/* Contact link */
 body.shop-page .navbar-links li:nth-child(3) a {
-  color: rgba(255,255,255,0.85);
+  color: #fff;
 }
 
 /* View Shop button */
@@ -5590,24 +5635,24 @@ body.shop-page .navbar-collection-btn:hover {
   color: #fff !important;
 }
 
-/* View Shop dropdown — maroon background to match navbar */
+/* View Shop dropdown — dark on maroon */
 body.shop-page .navbar-shop-dropdown {
-  background: #3B0C0C;
-  border-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  background: #2a1010;
+  border-color: rgba(255,255,255,0.15);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
 body.shop-page .navbar-shop-dropdown a {
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255,255,255,0.85);
 }
 body.shop-page .navbar-shop-dropdown a:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255,255,255,0.08);
   color: #fff;
 }
 body.shop-page .navbar-shop-dropdown a + a {
-  border-top-color: rgba(255, 255, 255, 0.12);
+  border-top-color: rgba(255,255,255,0.1);
 }
 
-/* Hamburger lines */
+/* Hamburger lines — white */
 body.shop-page .hamburger span {
   background: #fff;
 }
@@ -5624,10 +5669,10 @@ body.shop-page .hamburger span {
     color: rgba(255,255,255,0.7);
   }
   body.shop-page .navbar-links li:nth-child(3) a {
-    color: rgba(255,255,255,0.85);
+    color: #fff;
   }
   body.shop-page .navbar-collection-btn {
-    border-color: rgba(255,255,255,0.45) !important;
+    border-color: rgba(255,255,255,0.35) !important;
     color: #fff !important;
   }
 }
@@ -5732,19 +5777,19 @@ html.dark body.shop-browse-page .contact-form textarea:focus { border-color: rgb
 
 /* Navbar seamless */
 html.dark body.shop-browse-page .navbar {
-  background: #3B0C0C;
+  background: #E7DDDA;
 }
 
 html.dark body.shop-browse-page .navbar-links a {
-  color: rgba(231, 221, 218, 0.75);
+  color: #172C16;
 }
 
 html.dark body.shop-browse-page .navbar-links a:hover {
-  color: #E7DDDA;
+  color: #5F578A;
 }
 
 html.dark body.shop-browse-page .hamburger span {
-  background: #E7DDDA;
+  background: #172C16;
 }
 
 html.dark body.shop-browse-page .browse-main {
@@ -5943,18 +5988,18 @@ html.dark .gallery-view-all .btn-outline:hover {
   align-items: center;
   justify-content: space-between;
   padding: 0 48px; /* matches navbar padding (8px 48px) — aligns breadcrumb with logo, icons with VIEW SHOP */
-  height: 46px;
+  height: 62px;
   /* box-shadow: upward extension fills any pixel gap between fixed navbar and this sticky bar */
   box-shadow: 0 -30px 0 30px #E7DDDA, 0 1px 0 rgba(0,0,0,0.07);
 }
 
 /* ALL mobile overrides must come AFTER the base rule so the cascade actually wins.
-   The base sets top:84px / height:46px / padding:0 48px — wrong on mobile.
-   Without this block the topbar ends at 130px, covering the mobile bar at 118px. */
+   The base sets top:84px / height:62px / padding:0 48px — wrong on mobile.
+   Without this block the topbar ends at 146px, covering the mobile bar at 132px. */
 @media (max-width: 768px) {
   .browse-sticky-topbar {
     top: 68px;        /* mobile navbar = 48px logo + 10px×2 padding */
-    height: 50px;
+    height: 64px;
     padding: 0 20px;
     box-shadow: 0 -30px 0 30px #E7DDDA;
     border-bottom: 1px solid rgba(0,0,0,0.07);
@@ -5963,7 +6008,7 @@ html.dark .gallery-view-all .btn-outline:hover {
 @media (max-width: 480px) {
   .browse-sticky-topbar {
     top: 68px;
-    height: 50px;
+    height: 64px;
     padding: 0 20px;
     box-shadow: 0 -30px 0 30px #E7DDDA;
     border-bottom: 1px solid rgba(0,0,0,0.07);
@@ -5974,7 +6019,8 @@ html.dark .gallery-view-all .btn-outline:hover {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.72rem;
+  font-family: 'Glacial Indifference', var(--font-body);
+  font-size: 0.9rem;
   letter-spacing: 0.06em;
   color: #999;
 }
@@ -6011,7 +6057,7 @@ html.dark .gallery-view-all .btn-outline:hover {
   border-bottom: 1px solid rgba(0,0,0,0.08);
   background: #EDE6E1;
   position: sticky;
-  top: 130px; /* 84px navbar + 46px topbar */
+  top: 146px; /* 84px navbar + 62px topbar */
   z-index: 49;
 }
 
@@ -6369,14 +6415,15 @@ body.shop-page .product-breadcrumb a:hover { color: #fff; }
   width: 100%;
   aspect-ratio: 3 / 4;
   background: #f5f3f0;
-  border-radius: 4px;
+  border-radius: 12px;
   overflow: hidden;
 }
 
 .product-gallery-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
   display: block;
 }
 
@@ -6396,7 +6443,7 @@ body.shop-page .product-breadcrumb a:hover { color: #fff; }
   width: 72px;
   height: 72px;
   border: 2px solid transparent;
-  border-radius: 3px;
+  border-radius: 8px;
   overflow: hidden;
   padding: 0;
   background: #f5f3f0;
@@ -7087,25 +7134,29 @@ body.shop-page .product-breadcrumb a:hover { color: #fff; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 30px;
-  min-width: 48px;
-  padding: 0 2px;
-  border-radius: 6px;
+  width: 56px;
+  height: 34px;
+  padding: 0px;
+  border-radius: 4px;
   overflow: hidden;
   border: 1px solid rgba(23,44,22,0.12);
   background: #fff;
   box-shadow: 0 1px 2px rgba(0,0,0,0.06);
   line-height: 0;
+  flex-shrink: 0;
 }
 
-.sf-pay-badge svg {
-  width: 52px;
-  height: 30px;
+.sf-pay-badge svg,
+.sf-pay-badge img {
+  width: 100%;
+  height: 100%;
   display: block;
+  object-fit: contain;
+  transform: scale(1.15);
 }
 
-.sf-pay-badge--banking svg {
-  width: 56px;
+.sf-pay-badge--banking {
+  width: 62px;
 }
 
 /* ── Responsive ── */

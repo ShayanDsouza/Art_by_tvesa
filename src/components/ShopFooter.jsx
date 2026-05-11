@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { subscribeToNewsletter } from '../lib/shopify'
-import { FaInstagram, FaPinterest, FaCcVisa, FaCcMastercard, FaCcPaypal, FaCcAmex } from 'react-icons/fa'
+import { FaInstagram, FaPinterest } from 'react-icons/fa'
 import { HiOutlineMail } from 'react-icons/hi'
 
 const STORE_DOMAIN = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN
@@ -20,12 +20,27 @@ const SUPPORT_LINKS = [
   { label: 'FAQs',              href: `https://${STORE_DOMAIN}/pages/faqs` },
 ]
 
+/* ── Accurate coloured SVG payment badges ── */
 const PaymentIcons = () => (
   <div className="sf-payments">
-    <FaCcVisa   className="sf-pay-icon" title="Visa"            aria-label="Visa" />
-    <FaCcMastercard className="sf-pay-icon" title="Mastercard"  aria-label="Mastercard" />
-    <FaCcPaypal className="sf-pay-icon" title="PayPal"          aria-label="PayPal" />
-    <FaCcAmex   className="sf-pay-icon" title="American Express" aria-label="American Express" />
+    <span className="sf-pay-badge" title="Visa" aria-label="Visa">
+      <img src="/payment-icons/visa.svg" alt="Visa" />
+    </span>
+    <span className="sf-pay-badge" title="Mastercard" aria-label="Mastercard">
+      <img src="/payment-icons/mastercard.svg" alt="Mastercard" />
+    </span>
+    <span className="sf-pay-badge" title="American Express" aria-label="American Express">
+      <img src="/payment-icons/amex.svg" alt="American Express" />
+    </span>
+    <span className="sf-pay-badge" title="Diners Club" aria-label="Diners Club">
+      <img src="/payment-icons/diners.svg" alt="Diners Club" />
+    </span>
+    <span className="sf-pay-badge" title="Maestro" aria-label="Maestro">
+      <img src="/payment-icons/maestro.svg" alt="Maestro" />
+    </span>
+    <span className="sf-pay-badge sf-pay-badge--banking" title="RuPay" aria-label="RuPay">
+      <img src="/payment-icons/rupay.svg" alt="RuPay" />
+    </span>
   </div>
 )
 

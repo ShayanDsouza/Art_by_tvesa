@@ -12,7 +12,8 @@ const COLLECTIONS = [
     id: 'originals',
     title: 'Original Paintings',
     desc: [
-      'An original painting is a one of a kind artwork produced by the artist. It is ideated, designed and produced by me.'
+      'An original painting is a one of a kind artwork produced by the artist. It is ideated, designed and produced by me.                        ',
+      '                          ',
     ],
     link: `${BROWSE_BASE}?tab=originals`,
     image: '/originals.jpg',
@@ -30,7 +31,8 @@ const COLLECTIONS = [
     id: 'commissions',
     title: 'Commissions',
     desc: [
-      'If my style speaks to you and you have a specific idea in mind, we can work together to bring it to life.'
+      'If my style speaks to you and you have a specific idea in mind, we can work together to bring it to life.',
+      '                          ',
     ],
     link: `${BROWSE_BASE}?tab=commissions`,
     image: '/commissions.jpg',

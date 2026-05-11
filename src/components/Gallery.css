@@ -9,6 +9,7 @@
    ========================================================= */
 
 
+
 /* ── Back Navigation ─────────────────────────────────────────────── */
 
 .collection-nav {
@@ -37,7 +38,7 @@
 /* ── Section wrapper ────────────────────────────────────── */
 .gallery-section {
   background-color: transparent;
-  padding: 10rem 2rem 6rem;
+  padding: 15rem 2rem 6rem;
   margin-top: 0px;
   display: flex;
   flex-direction: column;
@@ -81,7 +82,7 @@
 }
 
 .gallery-subheading {
-  font-style: italic;
+  font-style: normal;
   color: #3b0c0c;
   font-size: 1.1rem;
   width: 90%;
@@ -450,7 +451,7 @@
 
 @media (max-width: 768px) {
   .gallery-section {
-    padding-top: 7rem;
+    padding-top: 13rem;
   }
 
   .gallery-masonry,
@@ -471,7 +472,7 @@
 
 @media (max-width: 640px) {
   .gallery-section {
-    padding: 7rem 1rem 4rem;
+    padding: 13rem 1rem 4rem;
     margin-top: 0px;
   }
 
@@ -484,7 +485,7 @@
 
 @media (max-width: 480px) {
   .gallery-section {
-    padding: 7rem 0.75rem 3rem;
+    padding: 13rem 0.75rem 3rem;
   }
 
   .gallery-header {
@@ -517,24 +518,15 @@
 
   .gallery-filters {
     gap: 0.5rem;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    justify-content: flex-start;
+    flex-wrap: wrap;
+    justify-content: center;
     width: 100%;
-    padding-bottom: 4px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .gallery-filters::-webkit-scrollbar {
-    display: none;
   }
 
   .gallery-filter-btn {
     padding: 0.4rem 0.9rem;
     font-size: 0.7rem;
     white-space: nowrap;
-    flex-shrink: 0;
   }
 }
 
