@@ -4995,18 +4995,10 @@ html.dark body.shop-browse-page .account-avatar {
 
 .newsletter-success-title {
   font-family: var(--font-heading);
-  font-size: 1.6rem;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
   font-weight: 600;
-  color: #1a1a1a;
+  color: #5F578A;
   margin: 0;
-}
-
-.newsletter-success-sub {
-  font-size: 0.95rem;
-  color: #444;
-  margin: 0;
-  max-width: 380px;
-  line-height: 1.6;
 }
 
 .newsletter-error {
