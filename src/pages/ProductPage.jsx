@@ -23,6 +23,7 @@ const STORE_DOMAIN  = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN
 const ON_SHOP_DOMAIN = window.location.hostname === 'shop.artbytvesa.com'
 const BROWSE_BASE   = ON_SHOP_DOMAIN ? '/browse'  : '/shop/browse'
 const PRODUCT_BASE  = ON_SHOP_DOMAIN ? '/product' : '/shop/product'
+const SHOP_BASE     = ON_SHOP_DOMAIN ? ''         : '/shop'
 
 const COLLECTION_FROM_TAB = {
   originals:   'original-works',
@@ -303,7 +304,7 @@ export default function ProductPage() {
         {/* ── Breadcrumb + action buttons ── */}
         <div className="product-topbar">
           <nav className="product-breadcrumb">
-            <Link to="/shop">Shop</Link>
+            <Link to={`${SHOP_BASE}/`}>Shop</Link>
             <span> / </span>
             <Link to={`${BROWSE_BASE}?tab=${fromTab}`}>
               {fromTab === 'originals' ? 'Original Artworks' :

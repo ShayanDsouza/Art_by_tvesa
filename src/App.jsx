@@ -54,6 +54,15 @@ function PublicSite() {
   )
 }
 
+function ExternalRedirect() {
+  useEffect(() => {
+    // Replace the local domain with shop.artbytvesa.com and strip /shop prefix
+    const newPath = window.location.pathname.replace(/^\/shop/, '') || '/'
+    window.location.replace(`https://shop.artbytvesa.com${newPath}${window.location.search}`)
+  }, [])
+  return null
+}
+
 // Detect shop subdomain once at module load — no re-render needed
 const ON_SHOP_DOMAIN = window.location.hostname === 'shop.artbytvesa.com'
 
@@ -79,9 +88,8 @@ export default function App() {
                   <Route path="/"          element={<PublicSite />} />
                   <Route path="/archives"  element={<CollectionPage />} />
                   <Route path="/collection" element={<Navigate to="/archives" replace />} />
-                  <Route path="/shop"              element={<ShopPage />} />
-                  <Route path="/shop/browse"       element={<ShopBrowsePage />} />
-                  <Route path="/shop/product/:handle" element={<ProductPage />} />
+                  {/* Redirect /shop paths to subdomain */}
+                  <Route path="/shop/*"            element={<ExternalRedirect />} />
                   <Route path="/admin/login" element={<AdminLogin />} />
                   <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}>
                     <Route index           element={<AdminArtworks />} />

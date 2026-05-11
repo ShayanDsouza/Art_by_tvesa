@@ -501,7 +501,7 @@ export default function ShopBrowsePage() {
             ? 'Commission a custom artwork by Tvesa Medh.'
             : 'Browse fine-art prints and reproductions by Tvesa Medh. High-quality prints of selected original works.'
         } />
-        <link rel="canonical" href="https://artbytvesa.com/shop/browse" />
+        <link rel="canonical" href="https://shop.artbytvesa.com/browse" />
       </Helmet>
       <Navbar />
 
