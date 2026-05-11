@@ -59,24 +59,67 @@ function ShareBtn({ title }) {
 
 /* ─── Related product card ───────────────────────────────── */
 function RelatedCard({ product }) {
+  const [hovered, setHovered] = useState(false)
+  
+  const isPostcard = product.productType === 'Postcards' || product.tags?.includes('Postcard') || product.tags?.includes('Postcards')
+  const isPrint = product.productType === 'Prints' || product.tags?.includes('Prints')
+  
+  const showFramed = hovered && product.hoverImage
+  const useContain = isPrint && !showFramed
+
   return (
-    <Link to={`${PRODUCT_BASE}/${product.handle}`} className="product-related-card">
-      {product.image ? (
-        <img
-          src={product.image.url}
-          alt={product.image.altText || product.title}
-          className="product-related-img"
-          loading="lazy"
-        />
-      ) : (
-        <div className="product-related-img-placeholder" />
-      )}
-      <p className="product-related-title">{product.title}</p>
-      {product.variant && (
-        <p className="product-related-price">
-          {formatPrice(product.variant.price.amount, product.variant.price.currencyCode)}
-        </p>
-      )}
+    <Link 
+      to={`${PRODUCT_BASE}/${product.handle}`} 
+      className={`browse-card${isPostcard ? ' browse-card--postcard' : ''}`}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className="browse-card-img-wrap">
+        {product.image ? (
+          <>
+            {isPostcard ? (
+              <div className="browse-card-postcard-rotator">
+                <img
+                  src={product.image.url}
+                  alt={product.image.altText || product.title}
+                  className={`browse-card-img${showFramed ? ' hidden' : ''}`}
+                  loading="lazy"
+                />
+              </div>
+            ) : (
+              <img
+                src={product.image.url}
+                alt={product.image.altText || product.title}
+                className={`browse-card-img${useContain ? ' browse-card-img--contain' : ''}${showFramed ? ' hidden' : ''}`}
+                loading="lazy"
+              />
+            )}
+            {product.hoverImage && (
+              <img
+                src={product.hoverImage.url}
+                alt={`${product.title} - framed`}
+                className={`browse-card-img browse-card-img-hover${showFramed ? ' visible' : ''}`}
+                loading="lazy"
+              />
+            )}
+          </>
+        ) : (
+          <div className="browse-card-img-placeholder" />
+        )}
+
+        {!product.availableForSale && (
+          <span className="browse-card-sold-badge">Sold out</span>
+        )}
+      </div>
+
+      <div className="browse-card-info">
+        <p className="browse-card-title">{product.title}</p>
+        {product.variant && (
+          <p className="browse-card-price">
+            {formatPrice(product.variant.price.amount, product.variant.price.currencyCode)}
+          </p>
+        )}
+      </div>
     </Link>
   )
 }
