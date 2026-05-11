@@ -122,26 +122,47 @@ export default function Navbar() {
           onMouseEnter={() => setShopDropdownOpen(true)}
           onMouseLeave={() => setShopDropdownOpen(false)}
         >
-          <Link
-            to={ON_SHOP_DOMAIN ? '/' : '/shop'}
-            className="navbar-collection-btn"
-            onClick={(e) => {
-              if (!ON_SHOP_DOMAIN && isShop && location.pathname === '/shop') {
-                e.preventDefault()
-                window.scrollTo({ top: 0, behavior: 'smooth' })
-              }
-              closeAll()
-            }}
-          >
-            <span className="navbar-collection-shimmer" aria-hidden="true" />
-            <span className="navbar-collection-label">View Shop</span>
-          </Link>
+          {ON_SHOP_DOMAIN ? (
+            <Link
+              to="/"
+              className="navbar-collection-btn"
+              onClick={(e) => {
+                if (isShop && location.pathname === '/') {
+                  e.preventDefault()
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                }
+                closeAll()
+              }}
+            >
+              <span className="navbar-collection-shimmer" aria-hidden="true" />
+              <span className="navbar-collection-label">View Shop</span>
+            </Link>
+          ) : (
+            <a
+              href="https://shop.artbytvesa.com"
+              className="navbar-collection-btn"
+              onClick={closeAll}
+            >
+              <span className="navbar-collection-shimmer" aria-hidden="true" />
+              <span className="navbar-collection-label">View Shop</span>
+            </a>
+          )}
 
           {shopDropdownOpen && (
             <div className="navbar-shop-dropdown">
-              <Link to={ON_SHOP_DOMAIN ? '/' : '/shop'} onClick={closeAll}>Shop All</Link>
-              <Link to={ON_SHOP_DOMAIN ? '/browse?tab=originals' : '/shop/browse?tab=originals'} onClick={closeAll}>Original Artworks</Link>
-              <Link to={ON_SHOP_DOMAIN ? '/browse?tab=prints' : '/shop/browse?tab=prints'} onClick={closeAll}>Prints</Link>
+              {ON_SHOP_DOMAIN ? (
+                <>
+                  <Link to="/" onClick={closeAll}>Shop All</Link>
+                  <Link to="/browse?tab=originals" onClick={closeAll}>Original Artworks</Link>
+                  <Link to="/browse?tab=prints" onClick={closeAll}>Prints</Link>
+                </>
+              ) : (
+                <>
+                  <a href="https://shop.artbytvesa.com" onClick={closeAll}>Shop All</a>
+                  <a href="https://shop.artbytvesa.com/browse?tab=originals" onClick={closeAll}>Original Artworks</a>
+                  <a href="https://shop.artbytvesa.com/browse?tab=prints" onClick={closeAll}>Prints</a>
+                </>
+              )}
             </div>
           )}
         </li>

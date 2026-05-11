@@ -49,12 +49,12 @@ export default function ShopPage() {
   return (
     <>
       <Helmet>
-        <title>Shop — Art by Tvesa</title>
-        <meta name="description" content="Shop original paintings and fine-art prints by Tvesa Medh. One-of-a-kind artworks in acrylic, oil, and mixed media, plus high-quality reproductions." />
+        <title>Shop | Art by Tvesa</title>
+        <meta name="description" content="Shop original artworks and fine art prints by Tvesa Medh. Discover a curated collection of aesthetic pieces to elevate your space." />
         <meta property="og:title" content="Shop — Art by Tvesa" />
         <meta property="og:description" content="Shop original paintings and fine-art prints by Tvesa Medh." />
-        <meta property="og:url" content="https://artbytvesa.com/shop" />
-        <link rel="canonical" href="https://artbytvesa.com/shop" />
+        <meta property="og:url" content="https://shop.artbytvesa.com" />
+        <link rel="canonical" href="https://shop.artbytvesa.com" />
       </Helmet>
       <Navbar />
 
