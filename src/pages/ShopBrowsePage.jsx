@@ -75,7 +75,7 @@ function ProductCard({ product, isPostcard, activeTab, activeSubTab }) {
                 <img
                   src={product.image.url}
                   alt={product.image.altText || product.title}
-                  className={`browse-card-img${activeSubTab === 'posters' ? ' browse-card-img--fit' : ''}${showFramed ? ' hidden' : ''}`}
+                  className={`browse-card-img${showFramed ? ' hidden' : ''}`}
                   loading="lazy"
                 />
               </div>

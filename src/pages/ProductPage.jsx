@@ -84,7 +84,7 @@ function RelatedCard({ product }) {
                 <img
                   src={product.image.url}
                   alt={product.image.altText || product.title}
-                  className={`browse-card-img${isPoster ? ' browse-card-img--fit' : ''}${showFramed ? ' hidden' : ''}`}
+                  className={`browse-card-img${showFramed ? ' hidden' : ''}`}
                   loading="lazy"
                 />
               </div>
