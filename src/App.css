@@ -7134,28 +7134,28 @@ body.shop-page .product-breadcrumb a:hover { color: #fff; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 30px;
-  min-width: 48px;
-  padding: 0 2px;
-  border-radius: 6px;
+  width: 56px;
+  height: 34px;
+  padding: 4px;
+  border-radius: 4px;
   overflow: hidden;
   border: 1px solid rgba(23,44,22,0.12);
   background: #fff;
   box-shadow: 0 1px 2px rgba(0,0,0,0.06);
   line-height: 0;
+  flex-shrink: 0;
 }
 
 .sf-pay-badge svg,
 .sf-pay-badge img {
-  width: 52px;
-  height: 30px;
+  width: 100%;
+  height: 100%;
   display: block;
   object-fit: contain;
 }
 
-.sf-pay-badge--banking svg,
-.sf-pay-badge--banking img {
-  width: 56px;
+.sf-pay-badge--banking {
+  width: 62px;
 }
 
 /* ── Responsive ── */
