@@ -356,6 +356,16 @@ export async function getShopPolicy(policyKey) {
   return data.shop?.[policyKey] ?? null
 }
 
+// Fetch any Shopify page by handle (Online Store → Pages)
+export async function getShopPage(handle) {
+  const data = await shopifyFetch(`
+    query GetShopPage($handle: String!) {
+      page(handle: $handle) { title body }
+    }
+  `, { handle })
+  return data.page ?? null
+}
+
 /* ─── Helpers ───────────────────────────────────────────── */
 export function formatPrice(amount, currencyCode = 'INR') {
   return new Intl.NumberFormat('en-IN', {

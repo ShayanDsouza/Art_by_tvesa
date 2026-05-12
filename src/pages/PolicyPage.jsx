@@ -4,7 +4,7 @@ import DOMPurify from 'dompurify'
 import Navbar from '../components/Navbar'
 import ShopCart from '../components/ShopCart'
 import ShopFooter from '../components/ShopFooter'
-import { getShopPolicy } from '../lib/shopify'
+import { getShopPolicy, getShopPage } from '../lib/shopify'
 
 // Maps route → Shopify Storefront API field name + fallback title
 const POLICY_CONFIG = {
@@ -14,11 +14,11 @@ const POLICY_CONFIG = {
   shippingPolicy: { title: 'Shipping Policy' },
 }
 
-export default function PolicyPage({ policyKey }) {
+export default function PolicyPage({ policyKey, pageHandle }) {
   const [policy, setPolicy]   = useState(null)
   const [status, setStatus]   = useState('loading') // 'loading' | 'ok' | 'error'
 
-  const config = POLICY_CONFIG[policyKey] ?? { title: 'Policy' }
+  const config = POLICY_CONFIG[policyKey] ?? { title: pageHandle ? 'FAQs' : 'Policy' }
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
@@ -29,13 +29,13 @@ export default function PolicyPage({ policyKey }) {
   useEffect(() => {
     setStatus('loading')
     setPolicy(null)
-    getShopPolicy(policyKey)
-      .then(p => {
-        setPolicy(p)
-        setStatus('ok')
-      })
+    const fetch = pageHandle
+      ? getShopPage(pageHandle)
+      : getShopPolicy(policyKey)
+    fetch
+      .then(p => { setPolicy(p); setStatus('ok') })
       .catch(() => setStatus('error'))
-  }, [policyKey])
+  }, [policyKey, pageHandle])
 
   const title = policy?.title || config.title
 
