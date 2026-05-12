@@ -4002,6 +4002,34 @@ body.collection-page .navbar-collection-btn:hover {
   line-height: 1.4;
 }
 
+/* Bio live preview */
+.admin-bio-preview {
+  margin-top: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.admin-bio-preview-label {
+  background: #f4f0eb;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b5e5e;
+  margin: 0;
+  border-bottom: 1px solid #ddd;
+}
+.admin-bio-preview-body {
+  padding: 0.9rem 1rem;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: #333;
+}
+.admin-bio-preview-body p { margin: 0 0 0.75rem; }
+.admin-bio-preview-body p:last-child { margin-bottom: 0; }
+.admin-bio-preview-body a { color: #6b3e3e; text-decoration: underline; }
+
 /* ===== SHOP PAGE ===== */
 .shop-main {
   min-height: 100vh;

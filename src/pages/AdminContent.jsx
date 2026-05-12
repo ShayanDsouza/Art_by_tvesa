@@ -1,8 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
+import DOMPurify from 'dompurify'
 import { db, storage } from '../config/firebase'
 import { useAuth } from '../contexts/AuthContext'
+
+const BIO_PURIFY_CONFIG = {
+  ALLOWED_TAGS: ['a', 'b', 'i', 'em', 'strong', 'br'],
+  ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
+}
 
 const MAX_IMAGE_SIZE = 10 * 1024 * 1024
 const IMAGE_TYPES_BY_EXTENSION = {
@@ -192,6 +198,20 @@ export default function AdminContent() {
         >
           {saving === 'about' ? 'Saving…' : saved === 'about' ? '✓ Saved' : 'Save Bio'}
         </button>
+
+        {/* Live preview — mirrors how the public site renders the bio */}
+        {bio.trim() && (
+          <div className="admin-bio-preview">
+            <p className="admin-bio-preview-label">Preview</p>
+            <div className="admin-bio-preview-body">
+              {bio.split('\n\n').filter(Boolean).map((para, i) => (
+                <p key={i} dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(para, BIO_PURIFY_CONFIG)
+                }} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ── Collection Page ── */}
