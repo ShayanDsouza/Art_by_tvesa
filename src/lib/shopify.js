@@ -343,6 +343,19 @@ export async function subscribeToNewsletter(email, name = '') {
   return true
 }
 
+/* ─── Shop policies ─────────────────────────────────────── */
+// policyKey: 'privacyPolicy' | 'termsOfService' | 'refundPolicy' | 'shippingPolicy'
+export async function getShopPolicy(policyKey) {
+  const data = await shopifyFetch(`
+    query GetShopPolicy {
+      shop {
+        ${policyKey} { title body }
+      }
+    }
+  `)
+  return data.shop?.[policyKey] ?? null
+}
+
 /* ─── Helpers ───────────────────────────────────────────── */
 export function formatPrice(amount, currencyCode = 'INR') {
   return new Intl.NumberFormat('en-IN', {

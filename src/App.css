@@ -7514,3 +7514,40 @@ html.dark .policy-content h2 { color: #E4D8D5; }
 html.dark .policy-content p,
 html.dark .policy-content li { color: rgba(228,216,213,0.75); }
 html.dark .policy-content a { color: #9B93CC; }
+
+.policy-loading {
+  font-size: 0.88rem;
+  color: rgba(23, 44, 22, 0.45);
+  margin-top: 32px;
+}
+html.dark .policy-loading { color: rgba(228,216,213,0.4); }
+
+/* Shopify-rendered policy HTML */
+.policy-body h1,
+.policy-body h2 {
+  font-family: var(--font-heading, 'Cormorant Garamond', serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #172C16;
+  margin: 36px 0 10px;
+}
+.policy-body p,
+.policy-body li {
+  font-size: 0.93rem;
+  line-height: 1.75;
+  color: rgba(23, 44, 22, 0.8);
+  margin-bottom: 12px;
+}
+.policy-body ul,
+.policy-body ol { padding-left: 20px; margin-bottom: 12px; }
+.policy-body a {
+  color: #172C16;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.policy-body a:hover { color: #9088c0; }
+html.dark .policy-body h1,
+html.dark .policy-body h2 { color: #E4D8D5; }
+html.dark .policy-body p,
+html.dark .policy-body li { color: rgba(228,216,213,0.75); }
+html.dark .policy-body a { color: #9B93CC; }
