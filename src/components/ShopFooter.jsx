@@ -108,7 +108,7 @@ export default function ShopFooter() {
           <p className="sf-newsletter-sub">Subscribe for updates</p>
 
           {status === 'success' ? (
-            <p className="sf-newsletter-done">Almost there! Check your inbox to confirm.</p>
+            <p className="sf-newsletter-done">Thank you for signing up!</p>
           ) : status === 'already' ? (
             <p className="sf-newsletter-done">You're already on the list!</p>
           ) : (

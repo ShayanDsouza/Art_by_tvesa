@@ -30,13 +30,23 @@ export default function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    const payload = {
+      name: form.name.trim(),
+      email: form.email.trim(),
+      message: form.message.trim(),
+      read: false,
+      createdAt: serverTimestamp(),
+    }
+
+    if (!payload.name || !payload.email || !payload.message) {
+      setStatus('error')
+      setTimeout(() => setStatus('idle'), 4000)
+      return
+    }
+
     setStatus('sending')
     try {
-      await addDoc(collection(db, 'messages'), {
-        ...form,
-        read: false,
-        createdAt: serverTimestamp(),
-      })
+      await addDoc(collection(db, 'messages'), payload)
       setForm({ name: '', email: '', message: '' })
       setStatus('sent')
       setTimeout(() => setStatus('idle'), 4000)
