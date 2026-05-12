@@ -67,11 +67,11 @@ export default function ShopFooter() {
         {/* ── Col 1: Brand ── */}
         <div className="sf-brand">
           {ON_SHOP_DOMAIN ? (
-            <a href="https://artbytvesa.com">
+            <a href="https://artbytvesa.com/#hero">
               <img src="/footer logo.png" alt="Art by Tvesa" className="sf-logo" />
             </a>
           ) : (
-            <Link to="/">
+            <Link to="/#hero">
               <img src="/footer logo.png" alt="Art by Tvesa" className="sf-logo" />
             </Link>
           )}
@@ -86,9 +86,9 @@ export default function ShopFooter() {
           <ul className="sf-links">
             <li>
               {ON_SHOP_DOMAIN ? (
-                <a href="https://artbytvesa.com" className="sf-link">Home</a>
+                <a href="https://artbytvesa.com/#hero" className="sf-link">Home</a>
               ) : (
-                <Link to="/" className="sf-link">Home</Link>
+                <Link to="/#hero" className="sf-link">Home</Link>
               )}
             </li>
             {STUDIO_LINKS.map(link => (
