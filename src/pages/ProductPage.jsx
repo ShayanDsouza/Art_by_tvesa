@@ -292,11 +292,59 @@ export default function ProductPage() {
   const isAvailable = selectedVariant?.availableForSale && product?.availableForSale
   const maxQty = selectedVariant?.quantityAvailable ?? Infinity
 
+  const productJsonLd = (status === 'ok' && product) ? JSON.stringify({
+    '@context': 'https://schema.org/',
+    '@type': 'Product',
+    name: product.title,
+    url: `https://shop.artbytvesa.com/product/${product.handle}`,
+    image: images[0] ? [images[0].url] : [],
+    description: product.description || '',
+    brand: { '@type': 'Brand', name: 'Art by Tvesa' },
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: selectedVariant?.price.currencyCode || 'INR',
+      price: selectedVariant?.price.amount || '0',
+      availability: `https://schema.org/${product.availableForSale ? 'InStock' : 'OutOfStock'}`,
+      seller: { '@type': 'Organization', name: 'Art by Tvesa' },
+    },
+  }) : null
+
+  const breadcrumbJsonLd = (status === 'ok' && product) ? JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Shop', item: 'https://shop.artbytvesa.com' },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: fromTab === 'originals' ? 'Original Artworks' : fromTab === 'commissions' ? 'Commissions' : 'Prints',
+        item: `https://shop.artbytvesa.com/browse?tab=${fromTab}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: product.title,
+        item: `https://shop.artbytvesa.com/product/${product.handle}`,
+      },
+    ],
+  }) : null
+
   return (
     <>
       <Helmet>
         <title>{product ? `${product.title} — Art by Tvesa` : 'Product — Art by Tvesa'}</title>
-        <meta name="description" content={product ? `${product.title} by Art by Tvesa.` : ''} />
+        <meta name="description" content={product ? (product.description || `${product.title} by Tvesa Medh — original art.`) : ''} />
+        {product && <link rel="canonical" href={`https://shop.artbytvesa.com/product/${product.handle}`} />}
+        {product && <meta property="og:type" content="product" />}
+        {product && <meta property="og:title" content={`${product.title} — Art by Tvesa`} />}
+        {product && <meta property="og:description" content={product.description || `${product.title} by Tvesa Medh`} />}
+        {product && <meta property="og:url" content={`https://shop.artbytvesa.com/product/${product.handle}`} />}
+        {product && images[0] && <meta property="og:image" content={images[0].url} />}
+        {product && <meta name="twitter:card" content="summary_large_image" />}
+        {product && <meta name="twitter:title" content={`${product.title} — Art by Tvesa`} />}
+        {product && images[0] && <meta name="twitter:image" content={images[0].url} />}
+        {productJsonLd && <script type="application/ld+json">{productJsonLd}</script>}
+        {breadcrumbJsonLd && <script type="application/ld+json">{breadcrumbJsonLd}</script>}
       </Helmet>
       <Navbar />
 

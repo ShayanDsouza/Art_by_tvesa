@@ -119,6 +119,7 @@ export async function getProduct(handle) {
         id
         handle
         title
+        description
         descriptionHtml
         vendor
         availableForSale
@@ -344,8 +345,11 @@ export async function subscribeToNewsletter(email, name = '') {
 }
 
 /* ─── Shop policies ─────────────────────────────────────── */
+const VALID_POLICY_KEYS = new Set(['privacyPolicy', 'termsOfService', 'refundPolicy', 'shippingPolicy', 'termsOfSale'])
+
 // policyKey: 'privacyPolicy' | 'termsOfService' | 'refundPolicy' | 'shippingPolicy'
 export async function getShopPolicy(policyKey) {
+  if (!VALID_POLICY_KEYS.has(policyKey)) throw new Error(`Invalid policy key: ${policyKey}`)
   const data = await shopifyFetch(`
     query GetShopPolicy {
       shop {

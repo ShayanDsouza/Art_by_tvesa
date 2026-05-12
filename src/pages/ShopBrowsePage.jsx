@@ -501,7 +501,15 @@ export default function ShopBrowsePage() {
             ? 'Commission a custom artwork by Tvesa Medh.'
             : 'Browse fine-art prints and reproductions by Tvesa Medh. High-quality prints of selected original works.'
         } />
-        <link rel="canonical" href="https://shop.artbytvesa.com/browse" />
+        <link rel="canonical" href={`https://shop.artbytvesa.com/browse?tab=${activeTab}`} />
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Shop', item: 'https://shop.artbytvesa.com' },
+            { '@type': 'ListItem', position: 2, name: pageTitle, item: `https://shop.artbytvesa.com/browse?tab=${activeTab}` },
+          ],
+        })}</script>
       </Helmet>
       <Navbar />
 
@@ -544,7 +552,7 @@ export default function ShopBrowsePage() {
         <section className="browse-header">
           <div className="browse-header-text">
             <span className="browse-overline">Art by Tvesa</span>
-            <h2 className="browse-title">{pageTitle}</h2>
+            <h1 className="browse-title">{pageTitle}</h1>
           </div>
         </section>
 
