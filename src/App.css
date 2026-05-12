@@ -38,7 +38,7 @@
 
 .navbar-shop-dropdown {
   position: absolute;
-  top: calc(100% + 8px);
+  top: 100%;
   right: 0;
   background: #fff;
   border: 1px solid rgba(23, 44, 22, 0.12);
@@ -4002,6 +4002,34 @@ body.collection-page .navbar-collection-btn:hover {
   line-height: 1.4;
 }
 
+/* Bio live preview */
+.admin-bio-preview {
+  margin-top: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.admin-bio-preview-label {
+  background: #f4f0eb;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b5e5e;
+  margin: 0;
+  border-bottom: 1px solid #ddd;
+}
+.admin-bio-preview-body {
+  padding: 0.9rem 1rem;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: #333;
+}
+.admin-bio-preview-body p { margin: 0 0 0.75rem; }
+.admin-bio-preview-body p:last-child { margin-bottom: 0; }
+.admin-bio-preview-body a { color: #6b3e3e; text-decoration: underline; }
+
 /* ===== SHOP PAGE ===== */
 .shop-main {
   min-height: 100vh;
@@ -7432,3 +7460,122 @@ html.dark .browse-sheet { background: #2a0a0a; }
 html.dark .browse-sheet-title { color: #E7DDDA; }
 html.dark .browse-sheet-label { color: rgba(231,221,218,0.45); }
 html.dark .browse-sheet-sort-option { color: #E7DDDA; border-bottom-color: rgba(231,221,218,0.08); }
+
+/* =====================================================
+   POLICY PAGES (Privacy, Terms, Refunds, FAQs)
+   ===================================================== */
+.policy-main {
+  min-height: 100vh;
+  padding: 120px 24px 80px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+}
+
+.policy-content {
+  max-width: 720px;
+  width: 100%;
+}
+
+.policy-title {
+  font-family: var(--font-heading, 'Cormorant Garamond', serif);
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: #172C16;
+  margin-bottom: 8px;
+}
+
+.policy-updated {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: rgba(23, 44, 22, 0.45);
+  margin-bottom: 40px;
+}
+
+.policy-content h2 {
+  font-family: var(--font-heading, 'Cormorant Garamond', serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #172C16;
+  margin: 36px 0 10px;
+}
+
+.policy-content p,
+.policy-content li {
+  font-size: 0.93rem;
+  line-height: 1.75;
+  color: rgba(23, 44, 22, 0.8);
+  margin-bottom: 12px;
+}
+
+.policy-content ul,
+.policy-content ol {
+  padding-left: 20px;
+  margin-bottom: 12px;
+}
+
+.policy-content a {
+  color: #172C16;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.policy-content a:hover {
+  color: #9088c0;
+}
+
+@media (max-width: 768px) {
+  .policy-main {
+    padding: 100px 20px 60px;
+  }
+
+  .policy-title {
+    font-size: 1.9rem;
+  }
+}
+
+/* Dark mode */
+html.dark .policy-main { background: #0B180B; }
+html.dark .policy-title { color: #E4D8D5; }
+html.dark .policy-updated { color: rgba(228,216,213,0.4); }
+html.dark .policy-content h2 { color: #E4D8D5; }
+html.dark .policy-content p,
+html.dark .policy-content li { color: rgba(228,216,213,0.75); }
+html.dark .policy-content a { color: #9B93CC; }
+
+.policy-loading {
+  font-size: 0.88rem;
+  color: rgba(23, 44, 22, 0.45);
+  margin-top: 32px;
+}
+html.dark .policy-loading { color: rgba(228,216,213,0.4); }
+
+/* Shopify-rendered policy HTML */
+.policy-body h1,
+.policy-body h2 {
+  font-family: var(--font-heading, 'Cormorant Garamond', serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #172C16;
+  margin: 36px 0 10px;
+}
+.policy-body p,
+.policy-body li {
+  font-size: 0.93rem;
+  line-height: 1.75;
+  color: rgba(23, 44, 22, 0.8);
+  margin-bottom: 12px;
+}
+.policy-body ul,
+.policy-body ol { padding-left: 20px; margin-bottom: 12px; }
+.policy-body a {
+  color: #172C16;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.policy-body a:hover { color: #9088c0; }
+html.dark .policy-body h1,
+html.dark .policy-body h2 { color: #E4D8D5; }
+html.dark .policy-body p,
+html.dark .policy-body li { color: rgba(228,216,213,0.75); }
+html.dark .policy-body a { color: #9B93CC; }

@@ -4,20 +4,19 @@ import { subscribeToNewsletter } from '../lib/shopify'
 import { FaInstagram, FaPinterest } from 'react-icons/fa'
 import { HiOutlineMail } from 'react-icons/hi'
 
-const STORE_DOMAIN = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN
+const ON_SHOP_DOMAIN = window.location.hostname === 'shop.artbytvesa.com'
 
 const STUDIO_LINKS = [
-  { label: 'Home',     to: '/' },
-  { label: 'Archives', to: '/archives' },
-  { label: 'About',    to: '/#about' },
-  { label: 'Contact',  to: '/#contact' },
+  { label: 'Archives', to: ON_SHOP_DOMAIN ? null : '/archives',  href: ON_SHOP_DOMAIN ? 'https://artbytvesa.com/archives' : null },
+  { label: 'About',    to: ON_SHOP_DOMAIN ? null : '/#about',    href: ON_SHOP_DOMAIN ? 'https://artbytvesa.com/#about'   : null },
+  { label: 'Contact',  to: ON_SHOP_DOMAIN ? null : '/#contact',  href: ON_SHOP_DOMAIN ? 'https://artbytvesa.com/#contact' : null },
 ]
 
 const SUPPORT_LINKS = [
-  { label: 'Refunds & Returns', href: `https://${STORE_DOMAIN}/policies/refund-policy` },
-  { label: 'Privacy Policy',    href: `https://${STORE_DOMAIN}/policies/privacy-policy` },
-  { label: 'Terms of Service',  href: `https://${STORE_DOMAIN}/policies/terms-of-service` },
-  { label: 'FAQs',              href: `https://${STORE_DOMAIN}/pages/faqs` },
+  { label: 'Refunds & Returns', to: '/refunds' },
+  { label: 'Privacy Policy',    to: '/privacy' },
+  { label: 'Terms of Service',  to: '/terms' },
+  { label: 'FAQs',              to: '/faqs' },
 ]
 
 /* ── Accurate coloured SVG payment badges ── */
@@ -28,9 +27,6 @@ const PaymentIcons = () => (
     </span>
     <span className="sf-pay-badge" title="Mastercard" aria-label="Mastercard">
       <img src="/payment-icons/mastercard.svg" alt="Mastercard" />
-    </span>
-    <span className="sf-pay-badge" title="American Express" aria-label="American Express">
-      <img src="/payment-icons/amex.svg" alt="American Express" />
     </span>
     <span className="sf-pay-badge" title="Diners Club" aria-label="Diners Club">
       <img src="/payment-icons/diners.svg" alt="Diners Club" />
@@ -70,7 +66,15 @@ export default function ShopFooter() {
 
         {/* ── Col 1: Brand ── */}
         <div className="sf-brand">
-          <img src="/footer logo.png" alt="Art by Tvesa" className="sf-logo" />
+          {ON_SHOP_DOMAIN ? (
+            <a href="https://artbytvesa.com/#hero">
+              <img src="/footer logo.png" alt="Art by Tvesa" className="sf-logo" />
+            </a>
+          ) : (
+            <Link to="/#hero">
+              <img src="/footer logo.png" alt="Art by Tvesa" className="sf-logo" />
+            </Link>
+          )}
           <p className="sf-tagline">
             Original paintings and fine-art prints by Tvesa Medh. Each piece made with intention and love.
           </p>
@@ -80,9 +84,20 @@ export default function ShopFooter() {
         <div className="sf-col">
           <h3 className="sf-col-title">Studio</h3>
           <ul className="sf-links">
+            <li>
+              {ON_SHOP_DOMAIN ? (
+                <a href="https://artbytvesa.com/#hero" className="sf-link">Home</a>
+              ) : (
+                <Link to="/#hero" className="sf-link">Home</Link>
+              )}
+            </li>
             {STUDIO_LINKS.map(link => (
               <li key={link.label}>
-                <Link to={link.to} className="sf-link">{link.label}</Link>
+                {link.href ? (
+                  <a href={link.href} className="sf-link">{link.label}</a>
+                ) : (
+                  <Link to={link.to} className="sf-link">{link.label}</Link>
+                )}
               </li>
             ))}
           </ul>
@@ -94,9 +109,9 @@ export default function ShopFooter() {
           <ul className="sf-links">
             {SUPPORT_LINKS.map(link => (
               <li key={link.label}>
-                <a href={link.href} target="_blank" rel="noopener noreferrer" className="sf-link">
+                <Link to={link.to} className="sf-link">
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

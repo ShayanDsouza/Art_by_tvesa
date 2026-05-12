@@ -54,6 +54,7 @@ export default function ShopPage() {
         <meta property="og:title" content="Shop — Art by Tvesa" />
         <meta property="og:description" content="Shop original paintings and fine-art prints by Tvesa Medh." />
         <meta property="og:url" content="https://shop.artbytvesa.com" />
+        <meta property="og:image" content="https://artbytvesa.com/og-image.png" />
         <link rel="canonical" href="https://shop.artbytvesa.com" />
       </Helmet>
       <Navbar />

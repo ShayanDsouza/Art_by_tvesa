@@ -53,10 +53,26 @@ service cloud.firestore {
     }
 
     // ── Site Content ─────────────────────────────────────────────────────────
-    // Public reads (bio, artist photo, collection header); only admins can write.
-    match /siteContent/{docId} {
+    // Public reads; only admins can write. Field-level validation prevents
+    // an admin account from being used to store arbitrary / unexpected data.
+
+    match /siteContent/about {
       allow read: if true;
-      allow write: if isAdmin();
+      // bio and artistImageUrl are both optional (written independently with merge:true)
+      allow write: if isAdmin()
+                   && request.resource.data.keys().hasOnly(['bio', 'artistImageUrl'])
+                   && (!request.resource.data.keys().hasAny(['bio']) || request.resource.data.bio is string)
+                   && (!request.resource.data.keys().hasAny(['artistImageUrl']) || request.resource.data.artistImageUrl is string);
+    }
+
+    match /siteContent/collection {
+      allow read: if true;
+      // Collection is always written as a whole object (no merge)
+      allow write: if isAdmin()
+                   && request.resource.data.keys().hasOnly(['eyebrow', 'heading', 'subheading'])
+                   && request.resource.data.eyebrow is string
+                   && request.resource.data.heading is string
+                   && request.resource.data.subheading is string;
     }
 
     // ── Default deny ─────────────────────────────────────────────────────────
