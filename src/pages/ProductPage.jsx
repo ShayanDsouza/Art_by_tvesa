@@ -109,7 +109,7 @@ function RelatedCard({ product }) {
           <div className="browse-card-img-placeholder" />
         )}
 
-        {!product.availableForSale && (
+        {!product.available && (
           <span className="browse-card-sold-badge">Sold out</span>
         )}
       </div>
@@ -193,7 +193,7 @@ export default function ProductPage() {
   useEffect(() => {
     getCollectionProducts(collHandle)
       .then(products => {
-        const filtered = products.filter(p => p.handle !== handle).slice(0, 4)
+        const filtered = products.filter(p => p.handle !== handle && p.available).slice(0, 4)
         setRelated(filtered)
       })
       .catch(() => {})

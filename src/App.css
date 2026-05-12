@@ -7432,3 +7432,85 @@ html.dark .browse-sheet { background: #2a0a0a; }
 html.dark .browse-sheet-title { color: #E7DDDA; }
 html.dark .browse-sheet-label { color: rgba(231,221,218,0.45); }
 html.dark .browse-sheet-sort-option { color: #E7DDDA; border-bottom-color: rgba(231,221,218,0.08); }
+
+/* =====================================================
+   POLICY PAGES (Privacy, Terms, Refunds, FAQs)
+   ===================================================== */
+.policy-main {
+  min-height: 100vh;
+  padding: 120px 24px 80px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+}
+
+.policy-content {
+  max-width: 720px;
+  width: 100%;
+}
+
+.policy-title {
+  font-family: var(--font-heading, 'Cormorant Garamond', serif);
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: #172C16;
+  margin-bottom: 8px;
+}
+
+.policy-updated {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: rgba(23, 44, 22, 0.45);
+  margin-bottom: 40px;
+}
+
+.policy-content h2 {
+  font-family: var(--font-heading, 'Cormorant Garamond', serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #172C16;
+  margin: 36px 0 10px;
+}
+
+.policy-content p,
+.policy-content li {
+  font-size: 0.93rem;
+  line-height: 1.75;
+  color: rgba(23, 44, 22, 0.8);
+  margin-bottom: 12px;
+}
+
+.policy-content ul,
+.policy-content ol {
+  padding-left: 20px;
+  margin-bottom: 12px;
+}
+
+.policy-content a {
+  color: #172C16;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.policy-content a:hover {
+  color: #9088c0;
+}
+
+@media (max-width: 768px) {
+  .policy-main {
+    padding: 100px 20px 60px;
+  }
+
+  .policy-title {
+    font-size: 1.9rem;
+  }
+}
+
+/* Dark mode */
+html.dark .policy-main { background: #0B180B; }
+html.dark .policy-title { color: #E4D8D5; }
+html.dark .policy-updated { color: rgba(228,216,213,0.4); }
+html.dark .policy-content h2 { color: #E4D8D5; }
+html.dark .policy-content p,
+html.dark .policy-content li { color: rgba(228,216,213,0.75); }
+html.dark .policy-content a { color: #9B93CC; }
