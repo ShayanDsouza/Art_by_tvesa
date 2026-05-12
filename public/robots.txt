@@ -1,8 +1,9 @@
 User-agent: *
 Allow: /
 
-# Keep admin out of search indexes
+# Keep admin area out of search indexes
 Disallow: /admin/
 Disallow: /admin
 
 Sitemap: https://artbytvesa.com/sitemap.xml
+Sitemap: https://shop.artbytvesa.com/sitemap.xml

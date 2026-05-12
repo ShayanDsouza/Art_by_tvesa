@@ -119,6 +119,7 @@ export async function getProduct(handle) {
         id
         handle
         title
+        description
         descriptionHtml
         vendor
         availableForSale
@@ -341,6 +342,32 @@ export async function subscribeToNewsletter(email, name = '') {
   }
 
   return true
+}
+
+/* ─── Shop policies ─────────────────────────────────────── */
+const VALID_POLICY_KEYS = new Set(['privacyPolicy', 'termsOfService', 'refundPolicy', 'shippingPolicy', 'termsOfSale'])
+
+// policyKey: 'privacyPolicy' | 'termsOfService' | 'refundPolicy' | 'shippingPolicy'
+export async function getShopPolicy(policyKey) {
+  if (!VALID_POLICY_KEYS.has(policyKey)) throw new Error(`Invalid policy key: ${policyKey}`)
+  const data = await shopifyFetch(`
+    query GetShopPolicy {
+      shop {
+        ${policyKey} { title body }
+      }
+    }
+  `)
+  return data.shop?.[policyKey] ?? null
+}
+
+// Fetch any Shopify page by handle (Online Store → Pages)
+export async function getShopPage(handle) {
+  const data = await shopifyFetch(`
+    query GetShopPage($handle: String!) {
+      page(handle: $handle) { title body }
+    }
+  `, { handle })
+  return data.page ?? null
 }
 
 /* ─── Helpers ───────────────────────────────────────────── */

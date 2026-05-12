@@ -164,18 +164,21 @@ export default function Navbar() {
                   <Link to="/" onClick={closeAll}>Shop All</Link>
                   <Link to="/browse?tab=originals" onClick={closeAll}>Original Artworks</Link>
                   <Link to="/browse?tab=prints" onClick={closeAll}>Prints</Link>
+                  <Link to="/browse?tab=commissions" onClick={closeAll}>Commissions</Link>
                 </>
               ) : import.meta.env.DEV ? (
                 <>
                   <Link to="/shop" onClick={closeAll}>Shop All</Link>
                   <Link to="/shop/browse?tab=originals" onClick={closeAll}>Original Artworks</Link>
                   <Link to="/shop/browse?tab=prints" onClick={closeAll}>Prints</Link>
+                  <Link to="/shop/browse?tab=commissions" onClick={closeAll}>Commissions</Link>
                 </>
               ) : (
                 <>
                   <a href="https://shop.artbytvesa.com" onClick={closeAll}>Shop All</a>
                   <a href="https://shop.artbytvesa.com/browse?tab=originals" onClick={closeAll}>Original Artworks</a>
                   <a href="https://shop.artbytvesa.com/browse?tab=prints" onClick={closeAll}>Prints</a>
+                  <a href="https://shop.artbytvesa.com/browse?tab=commissions" onClick={closeAll}>Commissions</a>
                 </>
               )}
             </div>

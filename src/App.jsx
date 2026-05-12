@@ -20,6 +20,10 @@ import CollectionPage from "./pages/CollectionPage";
 import ShopPage from "./pages/ShopPage";
 import ShopBrowsePage from "./pages/ShopBrowsePage"
 import ProductPage from "./pages/ProductPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import TermsPage from "./pages/TermsPage";
+import RefundsPage from "./pages/RefundsPage";
+import FaqsPage from "./pages/FaqsPage";
 import { CartProvider } from "./contexts/CartContext";
 import { CustomerProvider } from "./contexts/CustomerContext";
 
@@ -80,6 +84,10 @@ export default function App() {
                   <Route path="/"                element={<ShopPage />} />
                   <Route path="/browse"           element={<ShopBrowsePage />} />
                   <Route path="/product/:handle"  element={<ProductPage />} />
+                  <Route path="/privacy"          element={<PrivacyPolicyPage />} />
+                  <Route path="/terms"            element={<TermsPage />} />
+                  <Route path="/refunds"          element={<RefundsPage />} />
+                  <Route path="/faqs"             element={<FaqsPage />} />
                   <Route path="*"                 element={<Navigate to="/" replace />} />
                 </>
               ) : (
@@ -90,11 +98,18 @@ export default function App() {
                   <Route path="/collection" element={<Navigate to="/archives" replace />} />
                   {/* In dev, allow testing shop locally. In prod, redirect to subdomain */}
                   {import.meta.env.DEV ? (
-                    <Route path="/shop">
-                      <Route index element={<ShopPage />} />
-                      <Route path="browse" element={<ShopBrowsePage />} />
-                      <Route path="product/:handle" element={<ProductPage />} />
-                    </Route>
+                    <>
+                      <Route path="/shop">
+                        <Route index element={<ShopPage />} />
+                        <Route path="browse" element={<ShopBrowsePage />} />
+                        <Route path="product/:handle" element={<ProductPage />} />
+                      </Route>
+                      {/* Policy pages at root so absolute <Link to="/..."> works in dev */}
+                      <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                      <Route path="/terms"   element={<TermsPage />} />
+                      <Route path="/refunds" element={<RefundsPage />} />
+                      <Route path="/faqs"    element={<FaqsPage />} />
+                    </>
                   ) : (
                     <Route path="/shop/*" element={<ExternalRedirect />} />
                   )}
