@@ -45,6 +45,7 @@ const PaymentIcons = () => (
 )
 
 export default function ShopFooter() {
+  const [name, setName]     = useState('')
   const [email, setEmail]   = useState('')
   const [status, setStatus] = useState('idle')
 
@@ -53,9 +54,10 @@ export default function ShopFooter() {
     if (!email.trim()) return
     setStatus('loading')
     try {
-      const result = await subscribeToNewsletter(email.trim())
+      const result = await subscribeToNewsletter(email.trim(), name.trim())
       setStatus(result === 'already_subscribed' ? 'already' : 'success')
       setEmail('')
+      setName('')
     } catch {
       setStatus('error')
       setTimeout(() => setStatus('idle'), 4000)
@@ -106,15 +108,25 @@ export default function ShopFooter() {
           <p className="sf-newsletter-sub">Subscribe for updates</p>
 
           {status === 'success' ? (
-            <p className="sf-newsletter-done">Almost there! Check your inbox to confirm.</p>
+            <p className="sf-newsletter-done">Thank you for signing up!</p>
           ) : status === 'already' ? (
             <p className="sf-newsletter-done">You're already on the list!</p>
           ) : (
             <form className="sf-newsletter-form" onSubmit={handleSubmit}>
               <div className="sf-newsletter-row">
                 <input
+                  type="text"
+                  className="sf-newsletter-input sf-newsletter-input--name"
+                  placeholder="Your name"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  disabled={status === 'loading'}
+                />
+              </div>
+              <div className="sf-newsletter-row">
+                <input
                   type="email"
-                  className="sf-newsletter-input"
+                  className="sf-newsletter-input sf-newsletter-input--email"
                   placeholder="Your email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}

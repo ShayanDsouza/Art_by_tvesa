@@ -306,7 +306,19 @@ export async function deleteCustomerToken(accessToken) {
 }
 
 /* ─── Newsletter ────────────────────────────────────────── */
-export async function subscribeToNewsletter(email) {
+export async function subscribeToNewsletter(email, name = '') {
+  const parts = name.trim().split(' ')
+  const firstName = parts[0] || undefined
+  const lastName = parts.slice(1).join(' ') || undefined
+
+  const input = {
+    email: email.trim().toLowerCase(),
+    password: crypto.randomUUID(),
+    acceptsMarketing: true,
+  }
+  if (firstName) input.firstName = firstName
+  if (lastName) input.lastName = lastName
+
   const data = await shopifyFetch(`
     mutation customerCreate($input: CustomerCreateInput!) {
       customerCreate(input: $input) {
@@ -314,13 +326,7 @@ export async function subscribeToNewsletter(email) {
         customerUserErrors { field message code }
       }
     }
-  `, {
-    input: {
-      email: email.trim().toLowerCase(),
-      password: crypto.randomUUID(),
-      acceptsMarketing: true,
-    },
-  })
+  `, { input })
 
   const { customer, customerUserErrors } = data.customerCreate
 

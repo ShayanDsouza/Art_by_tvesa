@@ -88,8 +88,16 @@ export default function App() {
                   <Route path="/"          element={<PublicSite />} />
                   <Route path="/archives"  element={<CollectionPage />} />
                   <Route path="/collection" element={<Navigate to="/archives" replace />} />
-                  {/* Redirect /shop paths to subdomain */}
-                  <Route path="/shop/*"            element={<ExternalRedirect />} />
+                  {/* In dev, allow testing shop locally. In prod, redirect to subdomain */}
+                  {import.meta.env.DEV ? (
+                    <Route path="/shop">
+                      <Route index element={<ShopPage />} />
+                      <Route path="browse" element={<ShopBrowsePage />} />
+                      <Route path="product/:handle" element={<ProductPage />} />
+                    </Route>
+                  ) : (
+                    <Route path="/shop/*" element={<ExternalRedirect />} />
+                  )}
                   <Route path="/admin/login" element={<AdminLogin />} />
                   <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}>
                     <Route index           element={<AdminArtworks />} />

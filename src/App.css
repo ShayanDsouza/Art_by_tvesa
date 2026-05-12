@@ -3995,6 +3995,12 @@ body.collection-page .navbar-collection-btn:hover {
   color: #2a7a2a;
   font-weight: 500;
 }
+.admin-content-error-label {
+  max-width: 260px;
+  font-size: 0.85rem;
+  color: #a33a3a;
+  line-height: 1.4;
+}
 
 /* ===== SHOP PAGE ===== */
 .shop-main {
@@ -4995,18 +5001,10 @@ html.dark body.shop-browse-page .account-avatar {
 
 .newsletter-success-title {
   font-family: var(--font-heading);
-  font-size: 1.6rem;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
   font-weight: 600;
   color: #5F578A;
   margin: 0;
-}
-
-.newsletter-success-sub {
-  font-size: 0.9rem;
-  color: #7a72aa;
-  margin: 0;
-  max-width: 380px;
-  line-height: 1.6;
 }
 
 .newsletter-error {
@@ -5760,6 +5758,18 @@ body.shop-browse-page .contact-form input::placeholder,
 body.shop-browse-page .contact-form textarea::placeholder { color: rgba(59,12,12,0.35); }
 body.shop-browse-page .contact-form input:focus,
 body.shop-browse-page .contact-form textarea:focus { border-color: rgba(59,12,12,0.55); }
+body.shop-browse-page .contact-success {
+  background: rgba(23, 94, 46, 0.1);
+  color: #175e2e;
+  border-left-color: #175e2e;
+  font-weight: 600;
+}
+body.shop-browse-page .contact-error {
+  background: rgba(129, 32, 32, 0.1);
+  color: #812020;
+  border-left-color: #812020;
+  font-weight: 600;
+}
 
 /* Dark mode commissions tab */
 html.dark body.shop-browse-page .contact { background: #3B0C0C; }

@@ -484,7 +484,7 @@ export default function ShopBrowsePage() {
     activeTab === 'commissions' ? COLLECTION_HANDLES.commissions :
     COLLECTION_HANDLES[activeSubTab] ?? COLLECTION_HANDLES.postcards
 
-  const isPostcard = activeTab === 'prints' && activeSubTab === 'postcards'
+  const isPostcard = activeTab === 'prints'
 
   const pageTitle =
     activeTab === 'originals'   ? 'Original Artworks' :

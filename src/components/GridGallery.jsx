@@ -19,6 +19,7 @@ function getThumbnailUrl(artwork) {
 function ArtworkCard({ artwork }) {
   const cardRef = useRef(null);
   const isAvailable = artwork.status === 'available' || !artwork.status;
+  const hasShopLink = isAvailable && Boolean(artwork.shopUrl);
   const statusLabel = artwork.status === 'sold' ? 'Sold' : artwork.status === 'not_for_sale' ? 'Not Available' : null;
 
   useEffect(() => {
@@ -57,6 +58,18 @@ function ArtworkCard({ artwork }) {
 
           {statusLabel ? (
             <span className="gallery-hover-status">{statusLabel}</span>
+          ) : null}
+
+          {hasShopLink ? (
+            <a
+              href={artwork.shopUrl}
+              className="gallery-hover-shop-btn"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+            >
+              View in Shop
+            </a>
           ) : null}
         </div>
       </div>

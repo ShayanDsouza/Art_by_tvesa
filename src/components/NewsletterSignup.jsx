@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { subscribeToNewsletter } from '../lib/shopify'
 
 export default function NewsletterSignup() {
+  const [name, setName]         = useState('')
   const [email, setEmail]       = useState('')
   const [status, setStatus]     = useState('idle') // idle | loading | success | already | error
   const [errorMsg, setErrorMsg] = useState('')
@@ -12,9 +13,10 @@ export default function NewsletterSignup() {
     setStatus('loading')
     setErrorMsg('')
     try {
-      const result = await subscribeToNewsletter(email.trim())
+      const result = await subscribeToNewsletter(email.trim(), name.trim())
       setStatus(result === 'already_subscribed' ? 'already' : 'success')
       setEmail('')
+      setName('')
     } catch (err) {
       setErrorMsg(err.message || 'Something went wrong. Please try again.')
       setStatus('error')
@@ -30,16 +32,24 @@ export default function NewsletterSignup() {
 
       {status === 'success' ? (
         <div className="newsletter-success">
-          <p className="newsletter-success-title">Almost there!</p>
-          <p className="newsletter-success-sub">We've sent you a confirmation email — click the link inside to complete your subscription.</p>
+          <p className="newsletter-success-title">Thank you for signing up!</p>
         </div>
       ) : status === 'already' ? (
         <div className="newsletter-success">
           <p className="newsletter-success-title">You're already on the list!</p>
-          <p className="newsletter-success-sub">Stay tuned for new collections and exclusive offers.</p>
         </div>
       ) : (
         <form className="newsletter-form" onSubmit={handleSubmit}>
+          <div className="newsletter-input-wrap" style={{ marginBottom: '-2px' }}>
+            <input
+              type="text"
+              className="newsletter-input"
+              placeholder="Name"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              disabled={status === 'loading'}
+            />
+          </div>
           <div className="newsletter-input-wrap">
             <input
               type="email"

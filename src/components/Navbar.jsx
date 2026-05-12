@@ -137,6 +137,15 @@ export default function Navbar() {
               <span className="navbar-collection-shimmer" aria-hidden="true" />
               <span className="navbar-collection-label">View Shop</span>
             </Link>
+          ) : import.meta.env.DEV ? (
+            <Link
+              to="/shop"
+              className="navbar-collection-btn"
+              onClick={closeAll}
+            >
+              <span className="navbar-collection-shimmer" aria-hidden="true" />
+              <span className="navbar-collection-label">View Shop</span>
+            </Link>
           ) : (
             <a
               href="https://shop.artbytvesa.com"
@@ -155,6 +164,12 @@ export default function Navbar() {
                   <Link to="/" onClick={closeAll}>Shop All</Link>
                   <Link to="/browse?tab=originals" onClick={closeAll}>Original Artworks</Link>
                   <Link to="/browse?tab=prints" onClick={closeAll}>Prints</Link>
+                </>
+              ) : import.meta.env.DEV ? (
+                <>
+                  <Link to="/shop" onClick={closeAll}>Shop All</Link>
+                  <Link to="/shop/browse?tab=originals" onClick={closeAll}>Original Artworks</Link>
+                  <Link to="/shop/browse?tab=prints" onClick={closeAll}>Prints</Link>
                 </>
               ) : (
                 <>
