@@ -744,6 +744,7 @@ body.gallery-active .navbar {
 
   .hero-content {
     max-width: 100%;
+    width: 100%;
     order: 2;
   }
 
