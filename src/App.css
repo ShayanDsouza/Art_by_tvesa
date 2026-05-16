@@ -5052,7 +5052,7 @@ html.dark body.shop-browse-page .account-avatar {
 
 .newsletter-success-title {
   font-family: var(--font-heading);
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
   font-weight: 600;
   color: #5F578A;
   margin: 0;
