@@ -578,6 +578,12 @@ body.gallery-active .navbar {
   transform: translateY(0);
 }
 
+.hero-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
 /* Kenao for "Art by Tvesa" hero heading — font-family only here */
 .hero-content h1 {
   font-family: 'Kenao', 'Josefin Sans', 'Inter', system-ui, sans-serif;
