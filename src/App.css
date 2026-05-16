@@ -580,8 +580,12 @@ body.gallery-active .navbar {
 
 .hero-btns {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 14px;
+}
+
+@media (max-width: 480px) {
+  .hero-btns .btn { padding-left: 24px; padding-right: 24px; }
 }
 
 /* Kenao for "Art by Tvesa" hero heading — font-family only here */
