@@ -376,23 +376,15 @@ export default function ProductPage() {
 
         {/* ── Breadcrumb + action buttons ── */}
         <div className="product-topbar">
-          <div className="product-topbar-left">
-            <Link to={`${BROWSE_BASE}?tab=${fromTab}`} className="product-back-btn" aria-label="Back">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M19 12H5M12 5l-7 7 7 7"/>
-              </svg>
-              Back
+          <nav className="product-breadcrumb">
+            <Link to={`${SHOP_BASE}/`}>Shop</Link>
+            <span> / </span>
+            <Link to={`${BROWSE_BASE}?tab=${fromTab}`}>
+              {fromTab === 'originals' ? 'Original Artworks' :
+               fromTab === 'commissions' ? 'Commissions' : 'Prints'}
             </Link>
-            <nav className="product-breadcrumb">
-              <Link to={`${SHOP_BASE}/`}>Shop</Link>
-              <span> / </span>
-              <Link to={`${BROWSE_BASE}?tab=${fromTab}`}>
-                {fromTab === 'originals' ? 'Original Artworks' :
-                 fromTab === 'commissions' ? 'Commissions' : 'Prints'}
-              </Link>
-              {product && <><span> / </span><span>{product.title}</span></>}
-            </nav>
-          </div>
+            {product && <><span> / </span><span>{product.title}</span></>}
+          </nav>
           <div className="product-topbar-actions">
             <a
               href={SHOPIFY_ORDERS_URL}
@@ -428,6 +420,16 @@ export default function ProductPage() {
         {status === 'not-found' && (
           <div className="product-status">Product not found.</div>
         )}
+
+        {/* ── Back button ── */}
+        <div className="product-back-row">
+          <Link to={`${BROWSE_BASE}?tab=${fromTab}`} className="product-back-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 5l-7 7 7 7"/>
+            </svg>
+            Back
+          </Link>
+        </div>
 
         {status === 'ok' && product && (
           <div className="product-layout">

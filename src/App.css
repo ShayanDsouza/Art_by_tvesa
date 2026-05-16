@@ -6396,34 +6396,31 @@ body.shop-page .product-breadcrumb a:hover { color: #fff; }
   box-shadow: 0 -30px 0 30px #E7DDDA, 0 1px 0 rgba(0,0,0,0.07);
 }
 
-.product-topbar-left {
-  display: flex;
-  align-items: center;
-  min-width: 0;
+/* ── Back button row (between topbar and product layout) ── */
+.product-back-row {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 40px 0;
 }
 
-/* ── Back button ── */
 .product-back-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 16px 16px 16px 24px;
   font-size: 0.72rem;
   letter-spacing: 0.07em;
   text-transform: uppercase;
   color: #999;
   text-decoration: none;
-  white-space: nowrap;
-  border-right: 1px solid rgba(0,0,0,0.1);
   transition: color 0.2s;
-  flex-shrink: 0;
 }
 .product-back-btn:hover { color: #172C16; }
-body.shop-page .product-back-btn {
-  color: rgba(255,255,255,0.6);
-  border-right-color: rgba(255,255,255,0.15);
+body.shop-page .product-back-btn { color: rgba(23,44,22,0.45); }
+body.shop-page .product-back-btn:hover { color: #172C16; }
+
+@media (max-width: 768px) {
+  .product-back-row { padding: 16px 20px 0; }
 }
-body.shop-page .product-back-btn:hover { color: #fff; }
 
 .product-topbar-actions {
   display: flex;
@@ -6433,19 +6430,17 @@ body.shop-page .product-back-btn:hover { color: #fff; }
 }
 
 .product-breadcrumb {
-  padding: 16px 20px;
+  padding: 16px 40px;
   font-size: 0.72rem;
   letter-spacing: 0.06em;
   color: #999;
   border-bottom: none;
-  /* hide on narrow screens — back button alone is enough */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 @media (max-width: 520px) {
   .product-breadcrumb { display: none; }
-  .product-back-btn   { border-right: none; }
 }
 
 .product-breadcrumb a {
