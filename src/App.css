@@ -580,21 +580,23 @@ body.gallery-active .navbar {
 
 .hero-btns {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 14px;
+  width: 100%;
 }
 
 .hero-btns .btn {
-  flex: 1 1 0%;
+  width: calc(50% - 7px); /* 7px = half the 14px gap */
+  box-sizing: border-box;
   text-align: center;
   padding-left: 16px;
   padding-right: 16px;
 }
 
-/* On very small screens, stack buttons — each takes full width */
-@media (max-width: 380px) {
-  .hero-btns {
-    flex-wrap: wrap;
+/* On very small screens (< iPhone SE), stack to full width */
+@media (max-width: 340px) {
+  .hero-btns .btn {
+    width: 100%;
   }
 }
 
