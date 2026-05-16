@@ -585,10 +585,17 @@ body.gallery-active .navbar {
 }
 
 .hero-btns .btn {
-  flex: 1;
+  flex: 1 1 0%;
   text-align: center;
   padding-left: 16px;
   padding-right: 16px;
+}
+
+/* On very small screens, stack buttons — each takes full width */
+@media (max-width: 380px) {
+  .hero-btns {
+    flex-wrap: wrap;
+  }
 }
 
 /* Kenao for "Art by Tvesa" hero heading — font-family only here */
