@@ -143,6 +143,8 @@ export default function ProductPage() {
   const [bundleStatus, setBundleStatus] = useState('idle')
   const [selectedBundleCounts, setSelectedBundleCounts] = useState({})
   const [bundleError, setBundleError]   = useState('')
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxIdx, setLightboxIdx]   = useState(0)
 
   const fromTab = searchParams.get('tab') || 'originals'
   const collHandle = COLLECTION_FROM_TAB[fromTab] ?? 'original-works'
@@ -198,6 +200,29 @@ export default function ProductPage() {
       })
       .catch(() => {})
   }, [handle, collHandle])
+
+  // Must be computed before the lightbox effect so images.length is defined
+  const images = product?.images.edges.map(e => e.node) ?? []
+
+  // Lightbox keyboard navigation + body scroll lock
+  useEffect(() => {
+    if (!lightboxOpen) {
+      document.body.style.overflow = ''
+      return
+    }
+    document.body.style.overflow = 'hidden'
+    const len = images.length
+    const onKey = (e) => {
+      if (e.key === 'Escape')     setLightboxOpen(false)
+      if (e.key === 'ArrowLeft')  setLightboxIdx(i => (i - 1 + len) % len)
+      if (e.key === 'ArrowRight') setLightboxIdx(i => (i + 1) % len)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [lightboxOpen, images.length])
 
   const bundleSize = getPostcardBundleSize(product)
   const isBundleProduct = Boolean(bundleSize)
@@ -288,7 +313,6 @@ export default function ProductPage() {
     }
   }
 
-  const images = product?.images.edges.map(e => e.node) ?? []
   const isAvailable = selectedVariant?.availableForSale && product?.availableForSale
   const maxQty = selectedVariant?.quantityAvailable ?? Infinity
 
@@ -385,7 +409,7 @@ export default function ProductPage() {
               )}
             </button>
           </div>
-        </div>
+        </div>{/* end product-topbar */}
 
         {status === 'loading' && (
           <div className="product-status">Loading…</div>
@@ -397,12 +421,27 @@ export default function ProductPage() {
           <div className="product-status">Product not found.</div>
         )}
 
+        {/* ── Back button ── */}
+        <div className="product-back-row">
+          <Link to={`${BROWSE_BASE}?tab=${fromTab}`} className="product-back-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 5l-7 7 7 7"/>
+            </svg>
+            Back
+          </Link>
+        </div>
+
         {status === 'ok' && product && (
           <div className="product-layout">
 
             {/* ── Image gallery ── */}
             <div className="product-gallery">
-              <div className="product-gallery-main">
+              <div
+                className="product-gallery-main"
+                onClick={() => { setLightboxIdx(activeImage); setLightboxOpen(true) }}
+                style={{ cursor: images[activeImage] ? 'zoom-in' : 'default' }}
+                title="Click to enlarge"
+              >
                 {images[activeImage] ? (
                   <img
                     src={images[activeImage].url}
@@ -617,11 +656,77 @@ export default function ProductPage() {
           </section>
         )}
 
-        <div className="shop-back">
-          <Link to={`${BROWSE_BASE}?tab=${fromTab}`} className="shop-back-link">
-            ← Back
-          </Link>
-        </div>
+        {/* ── Lightbox ── */}
+        {lightboxOpen && images[lightboxIdx] && (
+          <div
+            className="product-lightbox"
+            onClick={() => setLightboxOpen(false)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Image viewer"
+          >
+            {/* Close */}
+            <button
+              className="product-lightbox-close"
+              onClick={() => setLightboxOpen(false)}
+              aria-label="Close"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+
+            {/* Prev */}
+            {images.length > 1 && (
+              <button
+                className="product-lightbox-arrow product-lightbox-arrow--prev"
+                onClick={e => { e.stopPropagation(); setLightboxIdx(i => (i - 1 + images.length) % images.length) }}
+                aria-label="Previous image"
+              >
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M15 18l-6-6 6-6"/>
+                </svg>
+              </button>
+            )}
+
+            {/* Image */}
+            <div className="product-lightbox-img-wrap" onClick={e => e.stopPropagation()}>
+              <img
+                src={images[lightboxIdx].url}
+                alt={images[lightboxIdx].altText || product?.title}
+                className="product-lightbox-img"
+                draggable={false}
+              />
+            </div>
+
+            {/* Next */}
+            {images.length > 1 && (
+              <button
+                className="product-lightbox-arrow product-lightbox-arrow--next"
+                onClick={e => { e.stopPropagation(); setLightboxIdx(i => (i + 1) % images.length) }}
+                aria-label="Next image"
+              >
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+            )}
+
+            {/* Dot indicators */}
+            {images.length > 1 && (
+              <div className="product-lightbox-dots" onClick={e => e.stopPropagation()}>
+                {images.map((_, i) => (
+                  <button
+                    key={i}
+                    className={`product-lightbox-dot${i === lightboxIdx ? ' active' : ''}`}
+                    onClick={() => setLightboxIdx(i)}
+                    aria-label={`View image ${i + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
       </main>
 

@@ -327,11 +327,6 @@ export default function Gallery() {
         {/* ── Buttons above the green strip ── */}
         <div className="museum-cta-row">
           <Link to="/archives" className="museum-cta-btn museum-cta-btn--grey">View Archives</Link>
-          {import.meta.env.DEV ? (
-            <Link to="/shop" className="museum-cta-btn museum-cta-btn--green">View Shop</Link>
-          ) : (
-            <a href="https://shop.artbytvesa.com" className="museum-cta-btn museum-cta-btn--green">View Shop</a>
-          )}
         </div>
 
         {/* ── Green baseboard ── */}

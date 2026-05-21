@@ -53,9 +53,16 @@ export default function Hero() {
           <span className="hero-overline">Welcome to my studio</span>
           <h1>Art by Tvesa</h1>
           <div className="hero-divider" />
-          <a href="#gallery" className="btn btn-outline" onClick={scrollToGallery}>
-            View Gallery
-          </a>
+          <div className="hero-btns">
+            <a href="#gallery" className="btn btn-outline" onClick={scrollToGallery}>
+              View Gallery
+            </a>
+            {import.meta.env.DEV ? (
+              <a href="/shop" className="btn btn-outline">View Shop</a>
+            ) : (
+              <a href="https://shop.artbytvesa.com" className="btn btn-outline">View Shop</a>
+            )}
+          </div>
         </div>
 
         {/* Right: Icarus + floating word images */}
