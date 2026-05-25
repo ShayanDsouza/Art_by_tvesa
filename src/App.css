@@ -4948,11 +4948,11 @@ html.dark body.shop-browse-page .account-avatar {
 }
 
 .cart-total span:first-child {
-  font-size: 0.68rem;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: #aaa;
+  color: #888;
 }
 
 .cart-total span:last-child {
@@ -5056,10 +5056,11 @@ html.dark body.shop-browse-page .account-avatar {
 
 .newsletter-success-title {
   font-family: var(--font-heading);
-  font-size: clamp(1.4rem, 2.5vw, 2rem);
-  font-weight: 600;
+  font-size: clamp(2.6rem, 5vw, 3.8rem);
+  font-weight: 700;
   color: #5F578A;
   margin: 0;
+  letter-spacing: -0.5px;
 }
 
 .newsletter-error {
@@ -7267,7 +7268,8 @@ body.shop-page .product-back-btn:hover { color: #172C16; }
 }
 
 .sf-newsletter-done {
-  font-size: 0.82rem;
+  font-size: 1.1rem;
+  font-weight: 600;
   color: #5F578A;
   margin: 0;
   line-height: 1.5;
@@ -7314,6 +7316,72 @@ body.shop-page .product-back-btn:hover { color: #172C16; }
   font-size: 0.72rem;
   color: rgba(23,44,22,0.5);
   margin: 0;
+}
+
+/* ── Legal links row (shop footer) ── */
+.sf-legal-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sf-legal-link {
+  font-size: 0.72rem;
+  color: rgba(23,44,22,0.5);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.sf-legal-link:hover {
+  color: #5F578A;
+}
+
+.sf-legal-sep {
+  font-size: 0.72rem;
+  color: rgba(23,44,22,0.3);
+}
+
+/* ── Legal bar (main site footer) ── */
+.footer-legal {
+  border-top: 1px solid rgba(0,0,0,0.07);
+  padding: 18px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: #fafafa;
+}
+
+.footer-legal-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer-legal-link {
+  font-size: 0.75rem;
+  color: #888;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-legal-link:hover {
+  color: #5F578A;
+}
+
+.footer-legal-sep {
+  font-size: 0.75rem;
+  color: #ccc;
+}
+
+.footer-legal-copy {
+  font-size: 0.72rem;
+  color: #aaa;
+  margin: 0;
+  text-align: center;
 }
 
 /* ── Payment icons ── */
