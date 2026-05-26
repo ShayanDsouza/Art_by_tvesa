@@ -69,6 +69,10 @@ function ExternalRedirect() {
 
 // Detect shop subdomain once at module load — no re-render needed
 const ON_SHOP_DOMAIN = window.location.hostname === 'shop.artbytvesa.com'
+const IS_LOCAL_DEV =
+  import.meta.env.DEV ||
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
 
 export default function App() {
   return (
@@ -97,13 +101,18 @@ export default function App() {
                   <Route path="/archives"  element={<CollectionPage />} />
                   <Route path="/collection" element={<Navigate to="/archives" replace />} />
                   {/* In dev or localhost, allow testing shop locally. In prod, redirect to subdomain */}
-                  {(import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? (
+                  {IS_LOCAL_DEV ? (
                     <>
-                      <Route path="/shop">
-                        <Route index element={<ShopPage />} />
-                        <Route path="browse" element={<ShopBrowsePage />} />
-                        <Route path="product/:handle" element={<ProductPage />} />
-                      </Route>
+                      {/* Local aliases for testing shop-domain URLs without the shop subdomain. */}
+                      <Route path="/browse" element={<ShopBrowsePage />} />
+                      <Route path="/product/:handle" element={<ProductPage />} />
+                      <Route path="/shop" element={<ShopPage />} />
+                      <Route path="/shop/browse" element={<ShopBrowsePage />} />
+                      <Route path="/shop/product/:handle" element={<ProductPage />} />
+                      <Route path="/shop/privacy" element={<PrivacyPolicyPage />} />
+                      <Route path="/shop/terms" element={<TermsPage />} />
+                      <Route path="/shop/refunds" element={<RefundsPage />} />
+                      <Route path="/shop/faqs" element={<FaqsPage />} />
                     </>
                   ) : (
                     <Route path="/shop/*" element={<ExternalRedirect />} />

@@ -5,6 +5,9 @@ import { FaInstagram, FaPinterest } from 'react-icons/fa'
 import { HiOutlineMail } from 'react-icons/hi'
 
 const ON_SHOP_DOMAIN = window.location.hostname === 'shop.artbytvesa.com'
+const STORE_DOMAIN =
+  import.meta.env.VITE_SHOPIFY_PUBLIC_DOMAIN ||
+  import.meta.env.VITE_SHOPIFY_STORE_DOMAIN
 
 const STUDIO_LINKS = [
   { label: 'Archives', to: ON_SHOP_DOMAIN ? null : '/archives',  href: ON_SHOP_DOMAIN ? 'https://artbytvesa.com/archives' : null },
