@@ -96,8 +96,8 @@ export default function App() {
                   <Route path="/"          element={<PublicSite />} />
                   <Route path="/archives"  element={<CollectionPage />} />
                   <Route path="/collection" element={<Navigate to="/archives" replace />} />
-                  {/* In dev, allow testing shop locally. In prod, redirect to subdomain */}
-                  {import.meta.env.DEV ? (
+                  {/* In dev or localhost, allow testing shop locally. In prod, redirect to subdomain */}
+                  {(import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? (
                     <>
                       <Route path="/shop">
                         <Route index element={<ShopPage />} />

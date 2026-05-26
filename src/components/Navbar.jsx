@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import DarkModeToggle from './DarkModeToggle'
 
 const ON_SHOP_DOMAIN = window.location.hostname === 'shop.artbytvesa.com'
+const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen]             = useState(false)
@@ -137,7 +138,7 @@ export default function Navbar() {
               <span className="navbar-collection-shimmer" aria-hidden="true" />
               <span className="navbar-collection-label">View Shop</span>
             </Link>
-          ) : import.meta.env.DEV ? (
+          ) : (import.meta.env.DEV || IS_LOCAL) ? (
             <Link
               to="/shop"
               className="navbar-collection-btn"
@@ -166,7 +167,7 @@ export default function Navbar() {
                   <Link to="/browse?tab=prints" onClick={closeAll}>Prints</Link>
                   <Link to="/browse?tab=commissions" onClick={closeAll}>Commissions</Link>
                 </>
-              ) : import.meta.env.DEV ? (
+              ) : (import.meta.env.DEV || IS_LOCAL) ? (
                 <>
                   <Link to="/shop" onClick={closeAll}>Shop All</Link>
                   <Link to="/shop/browse?tab=originals" onClick={closeAll}>Original Artworks</Link>
