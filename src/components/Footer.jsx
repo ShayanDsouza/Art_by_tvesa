@@ -1,6 +1,5 @@
+import { Link } from 'react-router-dom'
 import NewsletterSignup from './NewsletterSignup'
-
-const STORE_DOMAIN = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN
 
 export default function Footer() {
   return (
@@ -10,32 +9,11 @@ export default function Footer() {
       </div>
       <div className="footer-legal">
         <div className="footer-legal-links">
-          <a
-            href={`https://${STORE_DOMAIN}/policies/privacy-policy`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-legal-link"
-          >
-            Privacy Policy
-          </a>
+          <Link to="/privacy" className="footer-legal-link">Privacy Policy</Link>
           <span className="footer-legal-sep">·</span>
-          <a
-            href={`https://${STORE_DOMAIN}/policies/terms-of-service`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-legal-link"
-          >
-            Terms of Service
-          </a>
+          <Link to="/terms" className="footer-legal-link">Terms of Service</Link>
           <span className="footer-legal-sep">·</span>
-          <a
-            href={`https://${STORE_DOMAIN}/policies/refund-policy`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-legal-link"
-          >
-            Refund Policy
-          </a>
+          <Link to="/refunds" className="footer-legal-link">Refund Policy</Link>
         </div>
         <p className="footer-legal-copy">© {new Date().getFullYear()} Art by Tvesa. All artwork © Tvesa Medh. All rights reserved.</p>
       </div>

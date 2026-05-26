@@ -104,15 +104,15 @@ export default function App() {
                         <Route path="browse" element={<ShopBrowsePage />} />
                         <Route path="product/:handle" element={<ProductPage />} />
                       </Route>
-                      {/* Policy pages at root so absolute <Link to="/..."> works in dev */}
-                      <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                      <Route path="/terms"   element={<TermsPage />} />
-                      <Route path="/refunds" element={<RefundsPage />} />
-                      <Route path="/faqs"    element={<FaqsPage />} />
                     </>
                   ) : (
                     <Route path="/shop/*" element={<ExternalRedirect />} />
                   )}
+                  {/* Policy pages — available on artbytvesa.com in both dev and prod */}
+                  <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                  <Route path="/terms"   element={<TermsPage />} />
+                  <Route path="/refunds" element={<RefundsPage />} />
+                  <Route path="/faqs"    element={<FaqsPage />} />
                   <Route path="/admin/login" element={<AdminLogin />} />
                   <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}>
                     <Route index           element={<AdminArtworks />} />
