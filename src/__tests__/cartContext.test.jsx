@@ -8,9 +8,20 @@ vi.mock('../lib/shopify', () => ({
   addToCartWithAttributes: vi.fn(),
   removeFromCart: vi.fn(),
   updateCartLine: vi.fn(),
+  createCartWithLines: vi.fn(),
+  addLinesToCart: vi.fn(),
+  retrieveCart: vi.fn(),
 }))
 
-import { createCartWithAttributes, addToCartWithAttributes, removeFromCart, updateCartLine } from '../lib/shopify'
+import {
+  createCartWithAttributes,
+  addToCartWithAttributes,
+  removeFromCart,
+  updateCartLine,
+  createCartWithLines,
+  addLinesToCart,
+  retrieveCart,
+} from '../lib/shopify'
 
 const MOCK_CART = {
   id: 'gid://shopify/Cart/abc123',
@@ -46,6 +57,8 @@ const wrapper = ({ children }) => <CartProvider>{children}</CartProvider>
 describe('CartContext', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    localStorage.clear()
+    retrieveCart.mockResolvedValue(null)
   })
 
   it('throws if useCart is used outside CartProvider', () => {
@@ -164,5 +177,64 @@ describe('CartContext', () => {
     })
 
     expect(updateCartLine).toHaveBeenCalledWith(MOCK_CART.id, 'gid://shopify/CartLine/1', 3)
+  })
+
+  it('restores a saved cart id from localStorage when retrievable', async () => {
+    const restored = { ...MOCK_CART, id: 'gid://shopify/Cart/restored' }
+    localStorage.setItem('shopify_cart_id', restored.id)
+    retrieveCart.mockResolvedValueOnce(restored)
+
+    const { result } = renderHook(() => useCart(), { wrapper })
+
+    await act(async () => {})
+
+    expect(retrieveCart).toHaveBeenCalledWith(restored.id)
+    expect(result.current.totalQuantity).toBe(restored.totalQuantity)
+  })
+
+  it('clears stale saved cart id when restored cart is empty', async () => {
+    localStorage.setItem('shopify_cart_id', 'gid://shopify/Cart/stale')
+    retrieveCart.mockResolvedValueOnce({ ...MOCK_CART, lines: { edges: [] } })
+
+    renderHook(() => useCart(), { wrapper })
+
+    await act(async () => {})
+
+    expect(localStorage.getItem('shopify_cart_id')).toBeNull()
+  })
+
+  it('creates cart with lines on first addItems call', async () => {
+    createCartWithLines.mockResolvedValueOnce({ ...MOCK_CART, totalQuantity: 3 })
+    const { result } = renderHook(() => useCart(), { wrapper })
+    const lines = [
+      { variantId: 'gid://shopify/ProductVariant/1', quantity: 1, attributes: [] },
+      { variantId: 'gid://shopify/ProductVariant/2', quantity: 2, attributes: [] },
+    ]
+
+    await act(async () => {
+      await result.current.addItems(lines)
+    })
+
+    expect(createCartWithLines).toHaveBeenCalledWith(lines)
+    expect(result.current.totalQuantity).toBe(3)
+    expect(result.current.cartOpen).toBe(true)
+  })
+
+  it('adds lines to existing cart on subsequent addItems call', async () => {
+    createCartWithAttributes.mockResolvedValueOnce(MOCK_CART)
+    addLinesToCart.mockResolvedValueOnce({ ...MOCK_CART, totalQuantity: 4 })
+    const { result } = renderHook(() => useCart(), { wrapper })
+    const lines = [{ variantId: 'gid://shopify/ProductVariant/3', quantity: 3, attributes: [] }]
+
+    await act(async () => {
+      await result.current.addItem('gid://shopify/ProductVariant/1')
+    })
+
+    await act(async () => {
+      await result.current.addItems(lines)
+    })
+
+    expect(addLinesToCart).toHaveBeenCalledWith(MOCK_CART.id, lines)
+    expect(result.current.totalQuantity).toBe(4)
   })
 })
