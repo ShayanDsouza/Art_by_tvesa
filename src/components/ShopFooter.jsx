@@ -5,6 +5,9 @@ import { FaInstagram, FaPinterest } from 'react-icons/fa'
 import { HiOutlineMail } from 'react-icons/hi'
 
 const ON_SHOP_DOMAIN = window.location.hostname === 'shop.artbytvesa.com'
+const STORE_DOMAIN =
+  import.meta.env.VITE_SHOPIFY_PUBLIC_DOMAIN ||
+  import.meta.env.VITE_SHOPIFY_STORE_DOMAIN
 
 const STUDIO_LINKS = [
   { label: 'Archives', to: ON_SHOP_DOMAIN ? null : '/archives',  href: ON_SHOP_DOMAIN ? 'https://artbytvesa.com/archives' : null },
@@ -173,7 +176,35 @@ export default function ShopFooter() {
 
       {/* ── Bottom bar ── */}
       <div className="sf-bottom">
-        <p className="sf-copy">© 2026 Art by Tvesa. All rights reserved.</p>
+        <div className="sf-legal-links">
+          <a
+            href={`https://${STORE_DOMAIN}/policies/privacy-policy`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="sf-legal-link"
+          >
+            Privacy Policy
+          </a>
+          <span className="sf-legal-sep">·</span>
+          <a
+            href={`https://${STORE_DOMAIN}/policies/terms-of-service`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="sf-legal-link"
+          >
+            Terms of Service
+          </a>
+          <span className="sf-legal-sep">·</span>
+          <a
+            href={`https://${STORE_DOMAIN}/policies/refund-policy`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="sf-legal-link"
+          >
+            Refund Policy
+          </a>
+        </div>
+        <p className="sf-copy">© {new Date().getFullYear()} Art by Tvesa. All artwork © Tvesa Medh. All rights reserved.</p>
         <PaymentIcons />
       </div>
     </footer>

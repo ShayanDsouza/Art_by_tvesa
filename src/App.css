@@ -2371,6 +2371,91 @@ html.dark .about-socials a:hover { color: #E7DDD9; }
   to { transform: rotate(360deg); }
 }
 
+/* ===== 404 PAGE ===== */
+.not-found-page {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 7rem 2rem 4rem;
+  text-align: center;
+  background: #E7DDDA;
+  color: #172C16;
+}
+
+.not-found-code {
+  color: #5F578A;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.not-found-title {
+  margin: 0;
+  color: #172C16;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 400;
+}
+
+.not-found-copy {
+  max-width: 380px;
+  color: rgba(59, 12, 12, 0.72);
+  line-height: 1.6;
+}
+
+.not-found-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 10px 28px;
+  border: 1px solid #172C16;
+  border-radius: 4px;
+  background: #172C16;
+  color: #E7DDDA;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.not-found-link:hover {
+  border-color: #5F578A;
+  background: #5F578A;
+  color: #fff;
+}
+
+html.dark .not-found-page {
+  background: #0d1a0d;
+  color: #E7DDDA;
+}
+
+html.dark .not-found-code {
+  color: #9088c0;
+}
+
+html.dark .not-found-title {
+  color: #E7DDDA;
+}
+
+html.dark .not-found-copy {
+  color: rgba(231, 221, 218, 0.72);
+}
+
+html.dark .not-found-link {
+  border-color: #9088c0;
+  background: #9088c0;
+  color: #0d1a0d;
+}
+
+html.dark .not-found-link:hover {
+  border-color: #E7DDDA;
+  background: #E7DDDA;
+  color: #0d1a0d;
+}
+
 /* ===== ADMIN LIGHT MODE OVERRIDE ===== */
 /* Resets CSS variables to light mode for all admin pages */
 .admin-login,
@@ -4948,11 +5033,11 @@ html.dark body.shop-browse-page .account-avatar {
 }
 
 .cart-total span:first-child {
-  font-size: 0.68rem;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: #aaa;
+  color: #888;
 }
 
 .cart-total span:last-child {
@@ -5056,10 +5141,11 @@ html.dark body.shop-browse-page .account-avatar {
 
 .newsletter-success-title {
   font-family: var(--font-heading);
-  font-size: clamp(1.4rem, 2.5vw, 2rem);
-  font-weight: 600;
+  font-size: clamp(2.6rem, 5vw, 3.8rem);
+  font-weight: 700;
   color: #5F578A;
   margin: 0;
+  letter-spacing: -0.5px;
 }
 
 .newsletter-error {
@@ -7267,7 +7353,8 @@ body.shop-page .product-back-btn:hover { color: #172C16; }
 }
 
 .sf-newsletter-done {
-  font-size: 0.82rem;
+  font-size: 1.1rem;
+  font-weight: 600;
   color: #5F578A;
   margin: 0;
   line-height: 1.5;
@@ -7314,6 +7401,72 @@ body.shop-page .product-back-btn:hover { color: #172C16; }
   font-size: 0.72rem;
   color: rgba(23,44,22,0.5);
   margin: 0;
+}
+
+/* ── Legal links row (shop footer) ── */
+.sf-legal-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sf-legal-link {
+  font-size: 0.72rem;
+  color: rgba(23,44,22,0.5);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.sf-legal-link:hover {
+  color: #5F578A;
+}
+
+.sf-legal-sep {
+  font-size: 0.72rem;
+  color: rgba(23,44,22,0.3);
+}
+
+/* ── Legal bar (main site footer) ── */
+.footer-legal {
+  border-top: 1px solid rgba(0,0,0,0.07);
+  padding: 18px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: #fafafa;
+}
+
+.footer-legal-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer-legal-link {
+  font-size: 0.75rem;
+  color: #4f4f4f;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-legal-link:hover {
+  color: #5F578A;
+}
+
+.footer-legal-sep {
+  font-size: 0.75rem;
+  color: #ccc;
+}
+
+.footer-legal-copy {
+  font-size: 0.72rem;
+  color: #aaa;
+  margin: 0;
+  text-align: center;
 }
 
 /* ── Payment icons ── */
@@ -7406,6 +7559,39 @@ html.dark .sf-link {
 
 html.dark .sf-link:hover {
   color: #E7DDDA;
+}
+
+html.dark .sf-legal-link {
+  color: rgba(231,221,218,0.6);
+}
+
+html.dark .sf-legal-link:hover {
+  color: #E7DDDA;
+}
+
+html.dark .sf-legal-sep {
+  color: rgba(231,221,218,0.4);
+}
+
+html.dark .footer-legal {
+  background: #0B180B;
+  border-top-color: rgba(228,216,213,0.08);
+}
+
+html.dark .footer-legal-link {
+  color: rgba(228,216,213,0.68);
+}
+
+html.dark .footer-legal-link:hover {
+  color: #E7DDDA;
+}
+
+html.dark .footer-legal-sep {
+  color: rgba(228,216,213,0.4);
+}
+
+html.dark .footer-legal-copy {
+  color: rgba(228,216,213,0.48);
 }
 
 html.dark .sf-newsletter-sub {
