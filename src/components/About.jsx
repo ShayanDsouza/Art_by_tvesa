@@ -21,31 +21,37 @@ Each piece here is close to my heart, and is intended to evoke a feeling you can
 If you are curious about my academic work, check out my <a href="https://www.linkedin.com/in/tvesa-medh/" target="_blank" rel="noopener noreferrer" class="about-inline-link">LinkedIn</a> and/or my publication(s).`
 
 export default function About() {
-  const [bio, setBio] = useState(DEFAULT_BIO)
-  const [artistImageUrl, setArtistImageUrl] = useState('/meet_artist.jpg')
+  // Start empty so the stale bundled photo / default text never flash before
+  // the live Firestore content loads — only the newest content is ever shown.
+  const [bio, setBio] = useState(null)
+  const [artistImageUrl, setArtistImageUrl] = useState(null)
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     getDoc(doc(db, 'siteContent', 'about'))
       .then(snap => {
-        if (!snap.exists()) return
-        if (snap.data().bio) setBio(snap.data().bio)
-        if (snap.data().artistImageUrl) setArtistImageUrl(snap.data().artistImageUrl)
+        const data = snap.exists() ? snap.data() : {}
+        setBio(data.bio || DEFAULT_BIO)
+        setArtistImageUrl(data.artistImageUrl || null)
       })
-      .catch(() => {})
+      .catch(() => setBio(DEFAULT_BIO))
+      .finally(() => setLoaded(true))
   }, [])
 
-  const paragraphs = bio.split('\n\n').filter(Boolean)
+  const paragraphs = (bio || '').split('\n\n').filter(Boolean)
 
   return (
     <section id="about" className="about">
       <div className="about-content">
         <div className="about-image">
-          <img src={artistImageUrl} alt="Tvesa Medh" className="about-photo" />
+          {loaded && artistImageUrl && (
+            <img src={artistImageUrl} alt="Tvesa Medh" className="about-photo" />
+          )}
         </div>
         <div className="about-text">
           <span className="about-overline">Meet the Artist</span>
           <h2 className="about-name">Tvesa Medh</h2>
-          {paragraphs.map((p, i) => (
+          {loaded && paragraphs.map((p, i) => (
             <p key={i} dangerouslySetInnerHTML={{ __html: sanitizeBio(p) }} />
           ))}
           <div className="about-socials">

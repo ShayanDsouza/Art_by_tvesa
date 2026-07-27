@@ -30,7 +30,7 @@ If you are curious about my academic work, check out my <a href="https://www.lin
 export default function AdminContent() {
   const { user } = useAuth()
   const [bio, setBio] = useState(DEFAULT_BIO)
-  const [artistImageUrl, setArtistImageUrl] = useState('/meet_artist.jpg')
+  const [artistImageUrl, setArtistImageUrl] = useState(null)
   const [imagePreview, setImagePreview] = useState(null)
   const [imageFile, setImageFile] = useState(null)
   const [imageUploading, setImageUploading] = useState(false)
@@ -144,11 +144,13 @@ export default function AdminContent() {
       <div className="admin-content-section">
         <h2 className="admin-content-heading">About — Artist Photo</h2>
         <div className="admin-artist-photo-row">
-          <img
-            src={imagePreview || artistImageUrl}
-            alt="Artist"
-            className="admin-artist-photo-preview"
-          />
+          {(imagePreview || artistImageUrl) && (
+            <img
+              src={imagePreview || artistImageUrl}
+              alt="Artist"
+              className="admin-artist-photo-preview"
+            />
+          )}
           <div className="admin-artist-photo-actions">
             <input
               ref={fileInputRef}
