@@ -19,7 +19,6 @@ function getThumbnailUrl(artwork) {
 // ── Artwork Card ──────────────────────────────────────────
 function ArtworkCard({ artwork, onOpen }) {
   const cardRef = useRef(null);
-  const statusLabel = artwork.status === 'sold' ? 'Sold' : artwork.status === 'not_for_sale' ? 'Not Available' : null;
 
   useEffect(() => {
     const el = cardRef.current;
@@ -56,14 +55,6 @@ function ArtworkCard({ artwork, onOpen }) {
 
         <div className="gallery-card__overlay">
           <p className="gallery-card__title">{artwork.title}</p>
-          {artwork.category && (
-            <p className="gallery-card__category">{artwork.category}</p>
-          )}
-
-          {statusLabel ? (
-            <span className="gallery-hover-status">{statusLabel}</span>
-          ) : null}
-
           <span className="gallery-hover-shop-btn">View Details</span>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import DOMPurify from 'dompurify'
 import './ArtworkModal.css'
 
@@ -46,7 +47,7 @@ export default function ArtworkModal({ artwork, onClose }) {
     ['Status', statusLabel],
   ].filter(([, value]) => value)
 
-  return (
+  return createPortal(
     <div
       className="artwork-modal"
       role="dialog"
@@ -95,6 +96,7 @@ export default function ArtworkModal({ artwork, onClose }) {
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

@@ -322,7 +322,7 @@ export default function Gallery() {
 
         {/* ── Buttons above the green strip ── */}
         <div className="museum-cta-row">
-          <Link to="/archives" className="museum-cta-btn museum-cta-btn--grey">View Archives</Link>
+          <Link to="/gallery" className="museum-cta-btn museum-cta-btn--grey">View Gallery</Link>
         </div>
 
         {/* ── Green baseboard ── */}
