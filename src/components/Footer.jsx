@@ -1,12 +1,8 @@
 import { Link } from 'react-router-dom'
-import NewsletterSignup from './NewsletterSignup'
 
 export default function Footer() {
   return (
     <footer className="footer">
-      <div className="footer-main">
-        <NewsletterSignup />
-      </div>
       <div className="footer-legal">
         <div className="footer-legal-links">
           <Link to="/privacy" className="footer-legal-link">Privacy Policy</Link>

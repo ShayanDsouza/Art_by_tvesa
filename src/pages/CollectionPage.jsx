@@ -24,12 +24,12 @@ export default function CollectionPage() {
   return (
     <>
       <Helmet>
-        <title>Archives — Art by Tvesa</title>
-        <meta name="description" content="Browse the full archive of paintings and artworks by Tvesa Medh. Acrylic, oil, and mixed media — filter by medium, style, or search by name." />
-        <meta property="og:title" content="Archives — Art by Tvesa" />
-        <meta property="og:description" content="Browse the full archive of paintings and artworks by Tvesa Medh." />
-        <meta property="og:url" content="https://artbytvesa.com/archives" />
-        <link rel="canonical" href="https://artbytvesa.com/archives" />
+        <title>Gallery — Art by Tvesa</title>
+        <meta name="description" content="Browse the full gallery of paintings and artworks by Tvesa Medh. Acrylic, oil, and mixed media — filter by medium, style, or search by name." />
+        <meta property="og:title" content="Gallery — Art by Tvesa" />
+        <meta property="og:description" content="Browse the full gallery of paintings and artworks by Tvesa Medh." />
+        <meta property="og:url" content="https://artbytvesa.com/gallery" />
+        <link rel="canonical" href="https://artbytvesa.com/gallery" />
       </Helmet>
       <Navbar />
       <GridGallery />

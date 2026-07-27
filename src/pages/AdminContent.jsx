@@ -39,7 +39,7 @@ export default function AdminContent() {
   const [imageError, setImageError] = useState('')
   const [collection, setCollection] = useState({
     eyebrow: 'The Gallery of Trying',
-    heading: 'Archives',
+    heading: 'Gallery',
     subheading: 'A curated selection of original works — exploring colour, form & emotion.',
   })
   const [saving, setSaving] = useState(null)
@@ -218,7 +218,7 @@ export default function AdminContent() {
 
       {/* ── Collection Page ── */}
       <div className="admin-content-section">
-        <h2 className="admin-content-heading">Full Collection Page — Header</h2>
+        <h2 className="admin-content-heading">Gallery Page — Header</h2>
         <div className="admin-form-group">
           <label>Eyebrow text</label>
           <input type="text" value={collection.eyebrow} onChange={e => setCollection(c => ({ ...c, eyebrow: e.target.value }))} />

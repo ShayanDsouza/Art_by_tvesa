@@ -3,6 +3,7 @@ import { collection, onSnapshot, query, orderBy } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import { Link } from 'react-router-dom'
 import GalleryLoader from './GalleryLoader'
+import ArtworkModal from './ArtworkModal'
 
 const fallbackArt = [
   { id: '1', title: 'Artwork 1', category: 'Painting', medium: 'Acrylic' },
@@ -57,6 +58,7 @@ export default function Gallery() {
   const [artworks, setArtworks]       = useState([])
   const [loading, setLoading]         = useState(true)
   const [activeIndex, setActiveIndex] = useState(0)
+  const [selectedArtwork, setSelectedArtwork] = useState(null)
 
   const wallRef         = useRef(null)
   const carouselZoneRef = useRef(null)   // scroll-intercepting zone (artwork strip area only)
@@ -240,8 +242,6 @@ export default function Gallery() {
     if (artworks.length > 0) applyOffset(0)
   }, [artworks, applyOffset])
 
-  const centerArt = artworks[activeIndex] ?? null
-
   return (
     <section id="gallery" className="gallery">
       {loading && <GalleryLoader className="gallery-loader--overlay" />}
@@ -281,7 +281,6 @@ export default function Gallery() {
             {artworks.map((art, i) => {
               const isCenter = i === activeIndex
               const url      = getThumbnailUrl(art)
-              const hasShop  = !!art.shopUrl
 
               return (
                 <div
@@ -299,17 +298,14 @@ export default function Gallery() {
                     {/* Hover overlay */}
                     <div className="museum-hover-overlay">
                       <span className="museum-hover-title">{art.title}</span>
-                      {hasShop && (
-                        <a
-                          href={art.shopUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="museum-hover-btn"
-                          onPointerDown={e => e.stopPropagation()}
-                        >
-                          View in Shop
-                        </a>
-                      )}
+                      <button
+                        type="button"
+                        className="museum-hover-btn"
+                        onPointerDown={e => e.stopPropagation()}
+                        onClick={e => { e.stopPropagation(); setSelectedArtwork(art) }}
+                      >
+                        View Details
+                      </button>
                     </div>
                   </div>
 
@@ -333,6 +329,8 @@ export default function Gallery() {
         <div className="museum-baseboard" />
 
       </div>{/* .museum-wall */}
+
+      <ArtworkModal artwork={selectedArtwork} onClose={() => setSelectedArtwork(null)} />
     </section>
   )
 }

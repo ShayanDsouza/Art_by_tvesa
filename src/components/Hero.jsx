@@ -57,11 +57,6 @@ export default function Hero() {
             <a href="#gallery" className="btn btn-outline" onClick={scrollToGallery}>
               View Gallery
             </a>
-            {(import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? (
-              <a href="/shop" className="btn btn-outline">View Shop</a>
-            ) : (
-              <a href="https://shop.artbytvesa.com" className="btn btn-outline">View Shop</a>
-            )}
           </div>
         </div>
 
