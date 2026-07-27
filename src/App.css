@@ -7452,7 +7452,7 @@ body.shop-page .product-back-btn:hover { color: #172C16; }
 
 .footer-legal-link {
   font-size: 0.75rem;
-  color: #888;
+  color: #4f4f4f;
   text-decoration: none;
   transition: color 0.2s;
 }
@@ -7563,6 +7563,39 @@ html.dark .sf-link {
 
 html.dark .sf-link:hover {
   color: #E7DDDA;
+}
+
+html.dark .sf-legal-link {
+  color: rgba(231,221,218,0.6);
+}
+
+html.dark .sf-legal-link:hover {
+  color: #E7DDDA;
+}
+
+html.dark .sf-legal-sep {
+  color: rgba(231,221,218,0.4);
+}
+
+html.dark .footer-legal {
+  background: #0B180B;
+  border-top-color: rgba(228,216,213,0.08);
+}
+
+html.dark .footer-legal-link {
+  color: rgba(228,216,213,0.68);
+}
+
+html.dark .footer-legal-link:hover {
+  color: #E7DDDA;
+}
+
+html.dark .footer-legal-sep {
+  color: rgba(228,216,213,0.4);
+}
+
+html.dark .footer-legal-copy {
+  color: rgba(228,216,213,0.48);
 }
 
 html.dark .sf-newsletter-sub {
