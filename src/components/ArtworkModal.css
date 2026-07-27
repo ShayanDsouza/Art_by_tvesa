@@ -80,17 +80,17 @@
 }
 
 .artwork-modal__eyebrow {
-  margin: 0 0 8px;
-  font-size: 0.72rem;
+  margin: 0 0 10px;
+  font-size: 0.85rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   opacity: 0.6;
 }
 
 .artwork-modal__title {
-  margin: 0 0 22px;
+  margin: 0 0 24px;
   font-family: var(--font-heading, 'Cormorant Garamond', serif);
-  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  font-size: clamp(2.1rem, 3.6vw, 3rem);
   font-weight: 500;
   line-height: 1.1;
 }
@@ -105,9 +105,9 @@
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  padding: 11px 0;
+  padding: 13px 0;
   border-bottom: 1px solid var(--color-border, rgba(0, 0, 0, 0.12));
-  font-size: 0.92rem;
+  font-size: 1.05rem;
 }
 
 .artwork-modal__meta-row dt {
@@ -121,7 +121,7 @@
 }
 
 .artwork-modal__description {
-  font-size: 0.96rem;
+  font-size: 1.1rem;
   line-height: 1.7;
   opacity: 0.9;
 }
