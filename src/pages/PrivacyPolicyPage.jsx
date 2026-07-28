@@ -1,4 +1,4 @@
-import PolicyPage from './PolicyPage'
+import LegalPage from './LegalPage'
 export default function PrivacyPolicyPage() {
-  return <PolicyPage policyKey="privacyPolicy" />
+  return <LegalPage docKey="privacy" />
 }

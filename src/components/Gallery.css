@@ -231,6 +231,21 @@
   display: inline-block; /* required for CSS columns masonry */
   break-inside: avoid;
   margin-bottom: 0.9rem;
+  /* Button element reset — no default chrome/outline around the image */
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.gallery-card:focus { outline: none; }
+.gallery-card:focus-visible {
+  outline: 2px solid var(--color-accent, #9088c0);
+  outline-offset: 3px;
 }
 
 .gallery-card--visible {
@@ -274,12 +289,14 @@
 .gallery-card__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(59, 12, 12, 0.9) 0%, rgba(59, 12, 12, 0.4) 60%, rgba(59, 12, 12, 0) 100%);
+  background: rgba(59, 12, 12, 0.55);
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   padding: 1.5rem;
-  gap: 0.75rem;
+  gap: 0.9rem;
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -297,7 +314,7 @@
   font-size: 1rem;
   font-weight: 500;
   font-style: italic;
-  text-align: left;
+  text-align: center;
   margin: 0;
   line-height: 1.4;
 }
@@ -313,7 +330,7 @@
 
 .gallery-hover-shop-btn {
   display: inline-block;
-  margin-top: 10px;
+  margin-top: 0;
   padding: 8px 18px;
   background: transparent;
   color: #E7DDDA;
@@ -325,13 +342,14 @@
   text-decoration: none;
   border: 1px solid rgba(231, 221, 218, 0.75);
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
-  align-self: flex-start;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  align-self: center;
 }
 
 .gallery-hover-shop-btn:hover {
-  background: rgba(231, 221, 218, 0.15);
+  background: #E7DDDA;
   border-color: #E7DDDA;
+  color: #3b0c0c;
 }
 
 .gallery-hover-status {

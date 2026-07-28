@@ -1,4 +1,4 @@
-import PolicyPage from './PolicyPage'
+import LegalPage from './LegalPage'
 export default function RefundsPage() {
-  return <PolicyPage policyKey="refundPolicy" />
+  return <LegalPage docKey="refunds" />
 }

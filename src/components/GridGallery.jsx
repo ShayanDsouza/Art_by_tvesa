@@ -5,6 +5,7 @@ import { useFetchArtworks } from "../hooks/useFetchArtworks";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 import GalleryLoader from "./GalleryLoader";
+import ArtworkModal from "./ArtworkModal";
 import "./Gallery.css";
 
 function getThumbnailUrl(artwork) {
@@ -16,11 +17,8 @@ function getThumbnailUrl(artwork) {
 }
 
 // ── Artwork Card ──────────────────────────────────────────
-function ArtworkCard({ artwork }) {
+function ArtworkCard({ artwork, onOpen }) {
   const cardRef = useRef(null);
-  const isAvailable = artwork.status === 'available' || !artwork.status;
-  const hasShopLink = isAvailable && Boolean(artwork.shopUrl);
-  const statusLabel = artwork.status === 'sold' ? 'Sold' : artwork.status === 'not_for_sale' ? 'Not Available' : null;
 
   useEffect(() => {
     const el = cardRef.current;
@@ -41,7 +39,12 @@ function ArtworkCard({ artwork }) {
   }, []);
 
   return (
-    <div ref={cardRef} className="gallery-card">
+    <button
+      ref={cardRef}
+      className="gallery-card"
+      onClick={() => onOpen(artwork)}
+      aria-label={`View details for ${artwork.title}`}
+    >
       <div className="gallery-card__img-wrap">
         <img
           src={getThumbnailUrl(artwork)}
@@ -52,28 +55,10 @@ function ArtworkCard({ artwork }) {
 
         <div className="gallery-card__overlay">
           <p className="gallery-card__title">{artwork.title}</p>
-          {artwork.category && (
-            <p className="gallery-card__category">{artwork.category}</p>
-          )}
-
-          {statusLabel ? (
-            <span className="gallery-hover-status">{statusLabel}</span>
-          ) : null}
-
-          {hasShopLink ? (
-            <a
-              href={artwork.shopUrl}
-              className="gallery-hover-shop-btn"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-            >
-              View in Shop
-            </a>
-          ) : null}
+          <span className="gallery-hover-shop-btn">View Details</span>
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -108,17 +93,18 @@ export default function GridGallery() {
   const [layout, setLayout] = useState("pinterest");
   const [collectionText, setCollectionText] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedArtwork, setSelectedArtwork] = useState(null);
 
   useEffect(() => {
     getDoc(doc(db, "siteContent", "collection"))
       .then(snap => {
-        const data = snap.exists() ? snap.data() : { eyebrow: "The Gallery of Trying", heading: "Archives", subheading: "" }
-        // Migrate old heading value
-        if (data.heading === 'The Collection') data.heading = 'Archives'
+        const data = snap.exists() ? snap.data() : { eyebrow: "The Gallery of Trying", heading: "Gallery", subheading: "" }
+        // Migrate old heading values
+        if (data.heading === 'The Collection' || data.heading === 'Archives') data.heading = 'Gallery'
         setCollectionText(data)
       })
       .catch(() => {
-        setCollectionText({ eyebrow: "The Gallery of Trying", heading: "Archives", subheading: "" })
+        setCollectionText({ eyebrow: "The Gallery of Trying", heading: "Gallery", subheading: "" })
       });
   }, []);
 
@@ -235,10 +221,12 @@ export default function GridGallery() {
       ) : (
         <div className={`gallery-masonry${layout === "grid" ? " gallery-masonry--grid" : ""}`}>
           {filtered.map((artwork) => (
-            <ArtworkCard key={artwork.id} artwork={artwork} />
+            <ArtworkCard key={artwork.id} artwork={artwork} onOpen={setSelectedArtwork} />
           ))}
         </div>
       )}
+
+      <ArtworkModal artwork={selectedArtwork} onClose={() => setSelectedArtwork(null)} />
 
     </section>
   );

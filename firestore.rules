@@ -75,6 +75,17 @@ service cloud.firestore {
                    && request.resource.data.subheading is string;
     }
 
+    match /siteContent/legal {
+      allow read: if true;
+      // privacy, terms and refunds are each optional HTML strings, written
+      // independently with merge:true from the admin Legal editor.
+      allow write: if isAdmin()
+                   && request.resource.data.keys().hasOnly(['privacy', 'terms', 'refunds'])
+                   && (!request.resource.data.keys().hasAny(['privacy'])  || request.resource.data.privacy is string)
+                   && (!request.resource.data.keys().hasAny(['terms'])    || request.resource.data.terms is string)
+                   && (!request.resource.data.keys().hasAny(['refunds'])  || request.resource.data.refunds is string);
+    }
+
     // ── Default deny ─────────────────────────────────────────────────────────
     match /{document=**} {
       allow read, write: if false;

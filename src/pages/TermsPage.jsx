@@ -1,4 +1,4 @@
-import PolicyPage from './PolicyPage'
+import LegalPage from './LegalPage'
 export default function TermsPage() {
-  return <PolicyPage policyKey="termsOfService" />
+  return <LegalPage docKey="terms" />
 }

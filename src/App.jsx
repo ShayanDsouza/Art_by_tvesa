@@ -14,18 +14,13 @@ import AdminDashboard from './pages/AdminDashboard'
 import AdminArtworks from './pages/AdminArtworks'
 import AdminMessages from './pages/AdminMessages'
 import AdminContent from './pages/AdminContent'
+import AdminLegal from './pages/AdminLegal'
 import NotFound from './pages/NotFound'
 import './App.css'
-import CollectionPage from "./pages/CollectionPage";
-import ShopPage from "./pages/ShopPage";
-import ShopBrowsePage from "./pages/ShopBrowsePage"
-import ProductPage from "./pages/ProductPage";
-import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
-import TermsPage from "./pages/TermsPage";
-import RefundsPage from "./pages/RefundsPage";
-import FaqsPage from "./pages/FaqsPage";
-import { CartProvider } from "./contexts/CartContext";
-import { CustomerProvider } from "./contexts/CustomerContext";
+import CollectionPage from './pages/CollectionPage'
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
+import TermsPage from './pages/TermsPage'
+import RefundsPage from './pages/RefundsPage'
 
 function PublicSite() {
   const location = useLocation()
@@ -39,8 +34,8 @@ function PublicSite() {
   return (
     <>
       <Helmet>
-        <title>Art by Tvesa — Original Paintings &amp; Fine Art Prints</title>
-        <meta name="description" content="Explore original paintings and fine-art prints by Tvesa Medh — acrylic, oil, and mixed media works. Shop unique one-of-a-kind pieces or high-quality reproductions." />
+        <title>Art by Tvesa — Original Paintings &amp; Fine Art</title>
+        <meta name="description" content="Explore original paintings and fine art by Tvesa Medh — acrylic, oil, and mixed media works." />
         <meta property="og:url" content="https://artbytvesa.com" />
         <link rel="canonical" href="https://artbytvesa.com" />
       </Helmet>
@@ -58,84 +53,34 @@ function PublicSite() {
   )
 }
 
-function ExternalRedirect() {
-  useEffect(() => {
-    // Replace the local domain with shop.artbytvesa.com and strip /shop prefix
-    const newPath = window.location.pathname.replace(/^\/shop/, '') || '/'
-    window.location.replace(`https://shop.artbytvesa.com${newPath}${window.location.search}`)
-  }, [])
-  return null
-}
-
-// Detect shop subdomain once at module load — no re-render needed
-const ON_SHOP_DOMAIN = window.location.hostname === 'shop.artbytvesa.com'
-const IS_LOCAL_DEV =
-  import.meta.env.DEV ||
-  window.location.hostname === 'localhost' ||
-  window.location.hostname === '127.0.0.1'
-
 export default function App() {
   return (
     <HelmetProvider>
       <AuthProvider>
-        <CustomerProvider>
-        <CartProvider>
-          <Router>
-            <Routes>
-              {ON_SHOP_DOMAIN ? (
-                /* ── shop.artbytvesa.com: clean paths, no /shop prefix ── */
-                <>
-                  <Route path="/"                element={<ShopPage />} />
-                  <Route path="/browse"           element={<ShopBrowsePage />} />
-                  <Route path="/product/:handle"  element={<ProductPage />} />
-                  <Route path="/privacy"          element={<PrivacyPolicyPage />} />
-                  <Route path="/terms"            element={<TermsPage />} />
-                  <Route path="/refunds"          element={<RefundsPage />} />
-                  <Route path="/faqs"             element={<FaqsPage />} />
-                  <Route path="*"                 element={<Navigate to="/" replace />} />
-                </>
-              ) : (
-                /* ── artbytvesa.com: full site ── */
-                <>
-                  <Route path="/"          element={<PublicSite />} />
-                  <Route path="/archives"  element={<CollectionPage />} />
-                  <Route path="/collection" element={<Navigate to="/archives" replace />} />
-                  {/* In dev or localhost, allow testing shop locally. In prod, redirect to subdomain */}
-                  {IS_LOCAL_DEV ? (
-                    <>
-                      {/* Local aliases for testing shop-domain URLs without the shop subdomain. */}
-                      <Route path="/browse" element={<ShopBrowsePage />} />
-                      <Route path="/product/:handle" element={<ProductPage />} />
-                      <Route path="/shop" element={<ShopPage />} />
-                      <Route path="/shop/browse" element={<ShopBrowsePage />} />
-                      <Route path="/shop/product/:handle" element={<ProductPage />} />
-                      <Route path="/shop/privacy" element={<PrivacyPolicyPage />} />
-                      <Route path="/shop/terms" element={<TermsPage />} />
-                      <Route path="/shop/refunds" element={<RefundsPage />} />
-                      <Route path="/shop/faqs" element={<FaqsPage />} />
-                    </>
-                  ) : (
-                    <Route path="/shop/*" element={<ExternalRedirect />} />
-                  )}
-                  {/* Policy pages — available on artbytvesa.com in both dev and prod */}
-                  <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                  <Route path="/terms"   element={<TermsPage />} />
-                  <Route path="/refunds" element={<RefundsPage />} />
-                  <Route path="/faqs"    element={<FaqsPage />} />
-                  <Route path="/admin/login" element={<AdminLogin />} />
-                  <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}>
-                    <Route index           element={<AdminArtworks />} />
-                    <Route path="artworks" element={<AdminArtworks />} />
-                    <Route path="messages" element={<AdminMessages />} />
-                    <Route path="content"  element={<AdminContent />} />
-                  </Route>
-                  <Route path="*" element={<NotFound />} />
-                </>
-              )}
-            </Routes>
-          </Router>
-        </CartProvider>
-        </CustomerProvider>
+        <Router>
+          <Routes>
+            <Route path="/"          element={<PublicSite />} />
+            <Route path="/gallery"   element={<CollectionPage />} />
+            {/* Legacy paths → new /gallery */}
+            <Route path="/archives"   element={<Navigate to="/gallery" replace />} />
+            <Route path="/collection" element={<Navigate to="/gallery" replace />} />
+
+            {/* Legal pages — admin-editable content */}
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms"   element={<TermsPage />} />
+            <Route path="/refunds" element={<RefundsPage />} />
+
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}>
+              <Route index           element={<AdminArtworks />} />
+              <Route path="artworks" element={<AdminArtworks />} />
+              <Route path="messages" element={<AdminMessages />} />
+              <Route path="content"  element={<AdminContent />} />
+              <Route path="legal"    element={<AdminLegal />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
       </AuthProvider>
     </HelmetProvider>
   )

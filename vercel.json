@@ -10,54 +10,6 @@
       ]
     }
   ],
-  "redirects": [
-    {
-      "source": "/shop",
-      "destination": "https://shop.artbytvesa.com",
-      "permanent": true
-    },
-    {
-      "source": "/shop/:path*",
-      "destination": "https://shop.artbytvesa.com/:path*",
-      "permanent": true
-    },
-    {
-      "source": "/browse",
-      "missing": [{ "type": "host", "value": "shop.artbytvesa.com" }],
-      "destination": "https://shop.artbytvesa.com/browse",
-      "permanent": true
-    },
-    {
-      "source": "/product/:handle",
-      "missing": [{ "type": "host", "value": "shop.artbytvesa.com" }],
-      "destination": "https://shop.artbytvesa.com/product/:handle",
-      "permanent": true
-    },
-    {
-      "source": "/privacy",
-      "missing": [{ "type": "host", "value": "shop.artbytvesa.com" }],
-      "destination": "https://shop.artbytvesa.com/privacy",
-      "permanent": true
-    },
-    {
-      "source": "/terms",
-      "missing": [{ "type": "host", "value": "shop.artbytvesa.com" }],
-      "destination": "https://shop.artbytvesa.com/terms",
-      "permanent": true
-    },
-    {
-      "source": "/refunds",
-      "missing": [{ "type": "host", "value": "shop.artbytvesa.com" }],
-      "destination": "https://shop.artbytvesa.com/refunds",
-      "permanent": true
-    },
-    {
-      "source": "/faqs",
-      "missing": [{ "type": "host", "value": "shop.artbytvesa.com" }],
-      "destination": "https://shop.artbytvesa.com/faqs",
-      "permanent": true
-    }
-  ],
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
